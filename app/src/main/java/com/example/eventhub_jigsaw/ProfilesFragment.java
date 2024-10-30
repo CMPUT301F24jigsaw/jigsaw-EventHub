@@ -9,6 +9,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 
@@ -34,6 +35,27 @@ public class ProfilesFragment extends Fragment {
         profileList = view.findViewById(R.id.profile_list);
         profileAdapter = new ProfileArrayAdapter(getContext(), dataList);
         profileList.setAdapter(profileAdapter);
+
+        profileList.setOnItemClickListener((parent, v, position, id) -> {
+            Profiles selectedProfile = dataList.get(position);
+
+            // Create an instance of DeleteProfile fragment
+            DeleteProfile deleteProfileFragment = new DeleteProfile();
+
+            // Create a Bundle to pass the selected profile's data
+            Bundle args = new Bundle();
+            args.putString("username", selectedProfile.getUsername());
+            args.putString("email", selectedProfile.getEmail());
+
+            // Set the arguments to the fragment
+            deleteProfileFragment.setArguments(args);
+
+            // Navigate to the DeleteProfile fragment
+            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.flFragment, deleteProfileFragment);
+            transaction.addToBackStack(null); // Allow back navigation
+            transaction.commit();
+        });
 
         return view;
     }
