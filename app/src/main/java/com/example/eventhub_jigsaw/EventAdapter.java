@@ -38,14 +38,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return eventList.size();
     }
 
+    public void clearEvents() {
+        eventList.clear(); // Clear the list
+        notifyDataSetChanged(); // Notify that the data has changed
+    }
+
     public static class EventViewHolder extends RecyclerView.ViewHolder {
-        ImageView eventImage, deleteIcon;
+        ImageView eventImage, viewIcon;
         TextView eventName;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             eventImage = itemView.findViewById(R.id.eventImage);
-            deleteIcon = itemView.findViewById(R.id.deleteIcon);
+            viewIcon = itemView.findViewById(R.id.ViewIcon);
             eventName = itemView.findViewById(R.id.eventName);
         }
     }

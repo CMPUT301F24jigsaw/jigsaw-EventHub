@@ -32,7 +32,7 @@ public class AdminHomePage extends AppCompatActivity {
             if (item.getItemId() == R.id.profile) {
                 fragment = new ProfilesFragment();
             } else if (item.getItemId() == R.id.events) {
-                fragment = new ProfilesFragment(); // Create this fragment
+                fragment = new EventActivity(); // Create this fragment
             } else if (item.getItemId() == R.id.facilities) {
                 fragment = new ProfilesFragment(); // Create this fragment
             }

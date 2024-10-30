@@ -19,16 +19,17 @@
         android:padding="8dp"
         android:text="Event #1"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:alpha="0.7" />
 
-    <ImageView
-        android:id="@+id/deleteIcon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+    <ImageButton
+        android:id="@+id/ViewIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="top|end"
         android:layout_margin="8dp"
-        android:src="@android:drawable/ic_menu_view"
+        android:background="@android:drawable/ic_menu_view"
         android:contentDescription="Delete event" />
 
 </FrameLayout>
+
