@@ -1,12 +1,15 @@
 package com.example.eventhub_jigsaw;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.content.Intent;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -21,23 +24,31 @@ public class AdminHomePage extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottomNavView);
 
+        // Set the default fragment to display
+        loadFragment(new ProfilesFragment());
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            Intent intent;
+            Fragment fragment = null;
             if (item.getItemId() == R.id.profile) {
-                intent = new Intent(this, AdminSignIn.class);
-                startActivity(intent);
-                return true;
+                fragment = new ProfilesFragment();
             } else if (item.getItemId() == R.id.events) {
-                intent = new Intent(this, AdminSignIn.class);
-                startActivity(intent);
-                return true;
+                fragment = new ProfilesFragment(); // Create this fragment
             } else if (item.getItemId() == R.id.facilities) {
-                intent = new Intent(this, AdminSignIn.class);
-                startActivity(intent);
+                fragment = new ProfilesFragment(); // Create this fragment
+            }
+
+            if (fragment != null) {
+                loadFragment(fragment);
                 return true;
             }
             return false;
         });
+    }
 
+    private void loadFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.flFragment, fragment);
+        fragmentTransaction.commit();
     }
 }
