@@ -19,5 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "jigsaw-EventHub"
+rootProject.name = "EventHub-jigsaw"
 include(":app")
+ 
