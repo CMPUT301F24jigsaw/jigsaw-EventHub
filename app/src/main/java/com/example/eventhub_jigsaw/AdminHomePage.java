@@ -13,9 +13,14 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * This class represents the Admin Home page, which extends
+ * It manages the bottom navigation functionality, allowing the user to switch between
+ * different fragments like Profiles, Events, and Facilities.
+ */
 public class AdminHomePage extends AppCompatActivity {
 
-    BottomNavigationView bottomNavigationView;
+    BottomNavigationView bottomNavigationView; // enables Fragment switching
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

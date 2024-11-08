@@ -13,7 +13,7 @@ public class AdminSignIn extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this); // Enables edge-to-edge display
         setContentView(R.layout.admin_signin);
 
         Button AdminSign = findViewById(R.id.admin_sign);

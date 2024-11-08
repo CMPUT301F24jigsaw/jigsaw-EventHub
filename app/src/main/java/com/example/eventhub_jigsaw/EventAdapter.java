@@ -33,14 +33,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.eventImage.setImageResource(event.getEventImage());
     }
 
+    /**
+     * Update getItemCount method
+     * @return length of eventList object
+     */
     @Override
     public int getItemCount() {
         return eventList.size();
     }
 
     public void clearEvents() {
-        eventList.clear(); // Clear the list
-        notifyDataSetChanged(); // Notify that the data has changed
+        eventList.clear(); // Remove all event items
+        notifyDataSetChanged(); // refresh adapter view
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {

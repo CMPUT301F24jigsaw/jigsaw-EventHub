@@ -18,7 +18,7 @@ import java.util.List;
 
 public class EventActivity extends Fragment {
 
-    private List<Events> eventList; // Declare eventList as a class variable
+    private List<Events> eventList; // Data structure to store list of event item objects
     private EventAdapter adapter;
 
     @Nullable
@@ -59,7 +59,7 @@ public class EventActivity extends Fragment {
         }
         // Clear the event list
         eventList.clear();
-        // Notify the adapter that the data has changed
+        // Refresh adapter
         adapter.notifyDataSetChanged();
 
         // Optionally, show a message or an empty state
