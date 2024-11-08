@@ -13,12 +13,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * DeleteProfile is a Fragment that displays user profile details and provides
+ * functionality to delete the profile.
+ */
+
 public class DeleteProfile extends Fragment {
 
     private ImageView profileImage;
     private TextView usernameText;
     private TextView emailText;
     private Button deleteProfileButton;
+
+    /**
+     * Called to initialize the fragment's user interface view.
+     *
+     * @param inflater           The LayoutInflater object to inflate views in the fragment.
+     * @param container          The parent view to attach the fragment's UI.
+     * @param savedInstanceState Bundle containing the fragment's previously saved state.
+     * @return The View for the fragment's UI, or null.
+     */
 
     @Nullable
     @Override
@@ -60,6 +74,12 @@ public class DeleteProfile extends Fragment {
 
         return view;
     }
+
+    /**
+     * Deletes the specified profile.
+     *
+     * @param username The username of the profile to be deleted.
+     */
 
     // Implement the actual deletion logic
     private void deleteProfile(String username) {

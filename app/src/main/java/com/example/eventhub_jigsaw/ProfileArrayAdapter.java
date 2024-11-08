@@ -11,13 +11,30 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+/**
+ * ProfileArrayAdapter is a custom adapter for displaying profile data in a list view.
+ * It maps a list of Profiles objects to a view layout.
+ */
 
 public class ProfileArrayAdapter extends ArrayAdapter<Profiles> {
 
+    /**
+     * Constructor for the ProfileArrayAdapter.
+     *
+     * @param context The current context.
+     * @param profiles The list of Profiles objects to display.
+     */
     public ProfileArrayAdapter(Context context, ArrayList<Profiles> cities) {
         super(context, 0, cities);
     }
-
+    /**
+     * Provides a view for an AdapterView (ListView, GridView, etc.).
+     *
+     * @param position The position of the item within the adapter's data set.
+     * @param convertView The recycled view to populate.
+     * @param parent The parent ViewGroup that is used for inflation.
+     * @return The View for the position in the AdapterView.
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
