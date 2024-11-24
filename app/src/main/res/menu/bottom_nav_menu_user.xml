@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profile_user"
+        android:title="My Profile"
+        android:icon="@drawable/ic_person_foreground">
+
+    </item>
+    <item
+        android:id="@+id/invites_user"
+        android:title="Invites"
+        android:icon="@drawable/ic_events_foreground">
+
+    </item>
+
+    <item
+        android:id="@+id/notifications_user"
+        android:title="Notifications"
+        android:icon="@drawable/ic_admin_settings_foreground">
+
+    </item>
+
+    <item
+        android:id="@+id/scan_qr_user"
+        android:title="Scan QR"
+        android:icon="@drawable/ic_admin_settings_foreground">
+
+    </item>
+</menu>

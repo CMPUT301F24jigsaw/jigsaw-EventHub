@@ -15,9 +15,9 @@ import java.util.ArrayList;
 
 public class ProfilesFragment extends Fragment {
 
-    private ArrayList<Profiles> dataList;
+    private ArrayList<com.example.eventhub_jigsaw.Profiles> dataList;
     private ListView profileList;
-    private ProfileArrayAdapter profileAdapter;
+    private com.example.eventhub_jigsaw.ProfileArrayAdapter profileAdapter;
 
     @Nullable
     @Override
@@ -29,18 +29,18 @@ public class ProfilesFragment extends Fragment {
 
         dataList = new ArrayList<>();
         for (int i = 0; i < usernames.length; i++) {
-            dataList.add(new Profiles(usernames[i], emails[i]));
+            dataList.add(new com.example.eventhub_jigsaw.Profiles(usernames[i], emails[i]));
         }
 
         profileList = view.findViewById(R.id.profile_list);
-        profileAdapter = new ProfileArrayAdapter(getContext(), dataList);
+        profileAdapter = new com.example.eventhub_jigsaw.ProfileArrayAdapter(getContext(), dataList);
         profileList.setAdapter(profileAdapter);
 
         profileList.setOnItemClickListener((parent, v, position, id) -> {
-            Profiles selectedProfile = dataList.get(position);
+            com.example.eventhub_jigsaw.Profiles selectedProfile = dataList.get(position);
 
             // Create an instance of DeleteProfile fragment
-            DeleteProfile deleteProfileFragment = new DeleteProfile();
+            com.example.eventhub_jigsaw.DeleteProfile deleteProfileFragment = new com.example.eventhub_jigsaw.DeleteProfile();
 
             // Create a Bundle to pass the selected profile's data
             Bundle args = new Bundle();

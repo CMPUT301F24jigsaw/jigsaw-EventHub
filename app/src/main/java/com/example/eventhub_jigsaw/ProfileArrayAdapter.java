@@ -12,9 +12,9 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class ProfileArrayAdapter extends ArrayAdapter<Profiles> {
+public class ProfileArrayAdapter extends ArrayAdapter<com.example.eventhub_jigsaw.Profiles> {
 
-    public ProfileArrayAdapter(Context context, ArrayList<Profiles> cities) {
+    public ProfileArrayAdapter(Context context, ArrayList<com.example.eventhub_jigsaw.Profiles> cities) {
         super(context, 0, cities);
     }
 
@@ -25,7 +25,7 @@ public class ProfileArrayAdapter extends ArrayAdapter<Profiles> {
                 LayoutInflater.from(getContext()).inflate(R.layout.profiles_content, parent, false) :
                 convertView;
 
-        Profiles profiles = getItem(position);
+        com.example.eventhub_jigsaw.Profiles profiles = getItem(position);
         TextView Uname = view.findViewById(R.id.username_profile_text);
         TextView EmailU = view.findViewById(R.id.email_profiles_text);
 

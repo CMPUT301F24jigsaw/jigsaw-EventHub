@@ -31,6 +31,12 @@
         <activity android:name=".ProfilesFragment">
 
         </activity>
+        <activity android:name=".UserSignIn">
+
+        </activity>
+        <activity android:name=".UserHomePage">
+
+        </activity>
     </application>
 
 </manifest>
