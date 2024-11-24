@@ -1,5 +1,6 @@
 package com.example.eventhub_jigsaw;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -27,10 +28,16 @@ public class UserHomePage extends AppCompatActivity {
             Fragment fragment = null;
             if (item.getItemId() == R.id.profile_user) {
                 fragment = new UserMyprofile();
+            } else if (item.getItemId() == R.id.home_user) {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                return true;
             } else if (item.getItemId() == R.id.invites_user) {
-                fragment = new EventActivity(); // Create this fragment
+                fragment = new EventActivity();  // Create this fragment
             } else if (item.getItemId() == R.id.notifications_user) {
                 fragment = new com.example.eventhub_jigsaw.ProfilesFragment(); // Create this fragment
+            } else if (item.getItemId() == R.id.scan_qr_user) {
+                fragment = new UserScanQR(); // Create this fragment
             }
 
             if (fragment != null) {
