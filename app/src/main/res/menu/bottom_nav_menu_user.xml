@@ -3,7 +3,7 @@
     <item
         android:id="@+id/home_user"
         android:title="Home"
-        android:icon="@drawable/ic_person_foreground">
+        android:icon="@drawable/ic_home_page_foreground">
 
     </item>
     <item
@@ -22,14 +22,14 @@
     <item
         android:id="@+id/notifications_user"
         android:title="Notifications"
-        android:icon="@drawable/ic_admin_settings_foreground">
+        android:icon="@drawable/ic_notifications_foreground">
 
     </item>
 
     <item
         android:id="@+id/scan_qr_user"
         android:title="Scan QR"
-        android:icon="@drawable/ic_admin_settings_foreground">
+        android:icon="@drawable/ic_scan_qr_foreground">
 
     </item>
 </menu>
