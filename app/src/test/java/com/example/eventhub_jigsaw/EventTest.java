@@ -3,7 +3,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.example.eventhub_jigsaw.admin.Events;
-
 public class EventTest {
     @Test
     void testGetEventName() {
