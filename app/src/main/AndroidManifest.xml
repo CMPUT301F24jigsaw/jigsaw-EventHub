@@ -42,5 +42,9 @@
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"/>
 
+        <activity android:name=".OrganizerHomePage">
+
+        </activity>
+
     </application>
 </manifest>
