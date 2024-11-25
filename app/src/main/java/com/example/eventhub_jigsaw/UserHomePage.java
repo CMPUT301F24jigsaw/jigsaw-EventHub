@@ -33,7 +33,7 @@ public class UserHomePage extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             } else if (item.getItemId() == R.id.invites_user) {
-                fragment = new EventActivity();  // Create this fragment
+                fragment = new UserInvitePageActivity();  // Create this fragment
             } else if (item.getItemId() == R.id.notifications_user) {
                 fragment = new com.example.eventhub_jigsaw.ProfilesFragment(); // Create this fragment
             } else if (item.getItemId() == R.id.scan_qr_user) {

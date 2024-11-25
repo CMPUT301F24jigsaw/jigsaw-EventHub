@@ -19,7 +19,7 @@ import java.util.List;
 public class EventActivity extends Fragment {
 
     private List<Events> eventList; // Declare eventList as a class variable
-    private EventAdapter adapter;
+    private UserInvitePageAdapter adapter;
 
     @Nullable
     @Override
