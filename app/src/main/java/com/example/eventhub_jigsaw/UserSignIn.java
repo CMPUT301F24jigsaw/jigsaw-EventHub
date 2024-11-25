@@ -14,9 +14,14 @@ public class UserSignIn extends AppCompatActivity {
         setContentView(R.layout.user_signin);
 
         Button UserSign = findViewById(R.id.user_sign);
+        Button Organizer = findViewById(R.id.organizer_sign);
 
         UserSign.setOnClickListener(v -> {
             Intent intent = new Intent(UserSignIn.this, UserHomePage.class);
+            startActivity(intent);
+        });
+        Organizer.setOnClickListener(v -> {
+            Intent intent = new Intent(UserSignIn.this, OrganizerHomePage.class);
             startActivity(intent);
         });
     }
