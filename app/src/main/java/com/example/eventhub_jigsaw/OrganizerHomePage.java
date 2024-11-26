@@ -21,10 +21,9 @@ public class OrganizerHomePage extends AppCompatActivity {
         setContentView(R.layout.organizer_homepage);
 
         bottomNavigationView = findViewById(R.id.bottomNavView_organizer);
-        FloatingActionButton addButton = findViewById(R.id.addButton); // Correct placement
 
         // Set the default fragment to display (optional)
-        loadFragment(new UserMyprofile()); // TEMPORARY, replace with actual default fragment
+        loadFragment(new EventActivity()); // TEMPORARY, replace with actual default fragment
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
@@ -49,9 +48,6 @@ public class OrganizerHomePage extends AppCompatActivity {
             return false;
         });
 
-        addButton.setOnClickListener(v -> {
-            loadFragment(new AddEvent()); // Ensure AddEventFragment exists
-        });
     }
 
     private void loadFragment(Fragment fragment) {
