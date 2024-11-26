@@ -42,11 +42,7 @@
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"/>
 
-<<<<<<< Updated upstream
         <activity android:name=".OrganizerHomePage">
-=======
-        <activity android:name=".UserInviteInfo">
->>>>>>> Stashed changes
 
         </activity>
 
