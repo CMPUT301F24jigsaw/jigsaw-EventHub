@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class OrganizerHomePage extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
@@ -17,27 +18,28 @@ public class OrganizerHomePage extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_homepage);
+        setContentView(R.layout.organizer_homepage);
 
-        bottomNavigationView = findViewById(R.id.bottomNavView_user);
+        bottomNavigationView = findViewById(R.id.bottomNavView_organizer);
+        FloatingActionButton addButton = findViewById(R.id.addButton); // Correct placement
 
-        // Set the default fragment to display
-        loadFragment(new UserMyprofile());
+        // Set the default fragment to display (optional)
+        loadFragment(new UserMyprofile()); // TEMPORARY, replace with actual default fragment
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
-            if (item.getItemId() == R.id.profile_user) {
-                fragment = new UserMyprofile();
-            } else if (item.getItemId() == R.id.home_user) {
+            if (item.getItemId() == R.id.profile_organizer) {
+                fragment = new UserMyprofile(); // TEMPORARILY HARDCODED
+            } else if (item.getItemId() == R.id.home_organizer) {
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 return true;
-            } else if (item.getItemId() == R.id.invites_user) {
-                fragment = new EventActivity();  // Create this fragment
-            } else if (item.getItemId() == R.id.notifications_user) {
-                fragment = new com.example.eventhub_jigsaw.ProfilesFragment(); // Create this fragment
-            } else if (item.getItemId() == R.id.scan_qr_user) {
-                fragment = new UserScanQR(); // Create this fragment
+            } else if (item.getItemId() == R.id.invites_organizer) {
+                fragment = new OrganizerEventActivity();
+            } else if (item.getItemId() == R.id.notifications_organizer) {
+                fragment = new ProfilesFragment();
+            } else if (item.getItemId() == R.id.scan_qr_organizer) {
+                fragment = new UserScanQR();
             }
 
             if (fragment != null) {
@@ -46,12 +48,16 @@ public class OrganizerHomePage extends AppCompatActivity {
             }
             return false;
         });
+
+        addButton.setOnClickListener(v -> {
+            loadFragment(new AddEvent()); // Ensure AddEventFragment exists
+        });
     }
 
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.flFragment_user, fragment);
+        fragmentTransaction.replace(R.id.flFragment_organizer, fragment);
         fragmentTransaction.commit();
     }
 }

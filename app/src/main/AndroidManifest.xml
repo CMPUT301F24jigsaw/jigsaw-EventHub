@@ -42,12 +42,15 @@
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"/>
 
-<<<<<<< Updated upstream
+        <!-- Organizer Home Page -->
         <activity android:name=".OrganizerHomePage">
-=======
-        <activity android:name=".UserInviteInfo">
->>>>>>> Stashed changes
+        </activity>
 
+        <!-- Add Event Page -->
+        <activity android:name=".AddEvent">
+        </activity>
+
+        <activity android:name=".UserInviteInfo">
         </activity>
 
     </application>
