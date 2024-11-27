@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw;
+package com.example.eventhub_jigsaw.entrant;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.eventhub_jigsaw.MainActivity;
+import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.admin.ProfilesFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class UserHomePage extends AppCompatActivity {
@@ -35,7 +38,7 @@ public class UserHomePage extends AppCompatActivity {
             } else if (item.getItemId() == R.id.invites_user) {
                 fragment = new UserInvitePageActivity();  // Create this fragment
             } else if (item.getItemId() == R.id.notifications_user) {
-                fragment = new com.example.eventhub_jigsaw.ProfilesFragment(); // Create this fragment
+                fragment = new ProfilesFragment(); // Create this fragment
             } else if (item.getItemId() == R.id.scan_qr_user) {
                 fragment = new UserScanQR(); // Create this fragment
             }

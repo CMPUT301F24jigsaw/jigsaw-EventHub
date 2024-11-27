@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw;
+package com.example.eventhub_jigsaw.admin;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,11 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.eventhub_jigsaw.R;
+
 import java.util.ArrayList;
 
-public class ProfileArrayAdapter extends ArrayAdapter<com.example.eventhub_jigsaw.Profiles> {
+public class ProfileArrayAdapter extends ArrayAdapter<Profiles> {
 
-    public ProfileArrayAdapter(Context context, ArrayList<com.example.eventhub_jigsaw.Profiles> cities) {
+    public ProfileArrayAdapter(Context context, ArrayList<Profiles> cities) {
         super(context, 0, cities);
     }
 
@@ -25,7 +27,7 @@ public class ProfileArrayAdapter extends ArrayAdapter<com.example.eventhub_jigsa
                 LayoutInflater.from(getContext()).inflate(R.layout.profiles_content, parent, false) :
                 convertView;
 
-        com.example.eventhub_jigsaw.Profiles profiles = getItem(position);
+        Profiles profiles = getItem(position);
         TextView Uname = view.findViewById(R.id.username_profile_text);
         TextView EmailU = view.findViewById(R.id.email_profiles_text);
 

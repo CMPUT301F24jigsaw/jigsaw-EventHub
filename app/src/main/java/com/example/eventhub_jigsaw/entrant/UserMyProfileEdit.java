@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw;
+package com.example.eventhub_jigsaw.entrant;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
+
+import com.example.eventhub_jigsaw.R;
 
 public class UserMyProfileEdit extends DialogFragment {
 

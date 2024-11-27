@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw;
+package com.example.eventhub_jigsaw.entrant;
 
 public class UserInvitePage {
     private String eventName_user;

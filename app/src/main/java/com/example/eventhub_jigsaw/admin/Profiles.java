@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw;
+package com.example.eventhub_jigsaw.admin;
 
 /**
  * Represents a user profile in the EventHub app, containing

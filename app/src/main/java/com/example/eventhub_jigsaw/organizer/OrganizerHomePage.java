@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw;
+package com.example.eventhub_jigsaw.organizer;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +9,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.eventhub_jigsaw.MainActivity;
+import com.example.eventhub_jigsaw.admin.ProfilesFragment;
+import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.entrant.UserMyprofile;
+import com.example.eventhub_jigsaw.entrant.UserScanQR;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class OrganizerHomePage extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
@@ -28,7 +32,7 @@ public class OrganizerHomePage extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             if (item.getItemId() == R.id.profile_organizer) {
-                fragment = new UserMyprofile(); // TEMPORARILY HARDCODED
+                fragment = new OrganizerMyProfile(); // TEMPORARILY HARDCODED
             } else if (item.getItemId() == R.id.home_organizer) {
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);

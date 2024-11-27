@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw;
+package com.example.eventhub_jigsaw.entrant;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+
+import com.example.eventhub_jigsaw.R;
 
 public class UserInvitePageAdapter extends RecyclerView.Adapter<UserInvitePageAdapter.EventViewHolder> {
 
