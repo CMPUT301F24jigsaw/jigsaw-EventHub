@@ -10,20 +10,19 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.eventhub_jigsaw.R;
-import com.example.eventhub_jigsaw.entrant.UserInviteInfo;
-import com.example.eventhub_jigsaw.entrant.UserInvitePage;
+
+import java.util.List;
 
 public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAdapter.EventViewHolder> {
 
-    private List<UserInvitePage> eventList;
+    private List<OrganizerEventPage> eventList;
     private FragmentManager fragmentManager;
 
-    public OrganizerEventAdapter(List<UserInvitePage> eventList, FragmentManager fragmentManager) {
+    // Constructor to pass event list and FragmentManager
+    public OrganizerEventAdapter(List<OrganizerEventPage> eventList, FragmentManager fragmentManager) {
         this.eventList = eventList;
         this.fragmentManager = fragmentManager;
     }
@@ -31,54 +30,39 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_itemsinvite, parent, false);
+        // Inflate the layout for each event item
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.organizer_itemsinvite, parent, false);
         return new EventViewHolder(view);
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        UserInvitePage event = eventList.get(position);
-        holder.eventName.setText(event.getEventName_user());
-        holder.eventImage.setImageResource(event.getEventImage_user());
+        OrganizerEventPage event = eventList.get(position);
+        holder.eventName.setText(event.getEventName_organizer());
+        holder.eventImage.setImageResource(event.getEventImage_organizer());
 
         holder.MoreInfo.setOnClickListener(v -> {
-            // Create a new fragment instance
-            UserInviteInfo infoFragment = new UserInviteInfo();
+            // Create a new DialogFragment instance
+            OrganizerEventInfo infoFragment = new OrganizerEventInfo();
 
-            // Pass data to the fragment
+            // Pass data to the DialogFragment
             Bundle bundle = new Bundle();
-            bundle.putString("event_name", event.getEventName_user());
-            bundle.putInt("event_image", event.getEventImage_user());
-            bundle.putString("event_address", "123 Event Street"); // Example address
-            bundle.putString("event_date", "2024-11-30"); // Example date
+            bundle.putString("event_name", event.getEventName_organizer());
+            bundle.putInt("event_image", event.getEventImage_organizer());
             infoFragment.setArguments(bundle);
 
-
-
-            // Hide RecyclerView and show the fragment container
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, infoFragment)
-                    .addToBackStack(null) // Add to back stack for navigation
-                    .commit();
-
-            // Programmatically hide RecyclerView and show fragment container
-            View recyclerView = ((ViewGroup) v.getRootView()).findViewById(R.id.recyclerViewEvents_user);
-            View fragmentContainer = ((ViewGroup) v.getRootView()).findViewById(R.id.fragment_container);
-
-            recyclerView.setVisibility(View.GONE);
-            fragmentContainer.setVisibility(View.VISIBLE);
+            // Show the DialogFragment
+            infoFragment.show(fragmentManager, "event_info_dialog");
         });
-
-
     }
-
 
     @Override
     public int getItemCount() {
+        // Return the total number of events
         return eventList.size();
     }
 
+    // ViewHolder class to represent individual event items
     public static class EventViewHolder extends RecyclerView.ViewHolder {
         ImageView eventImage;
         Button MoreInfo;
@@ -86,9 +70,10 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
-            eventImage = itemView.findViewById(R.id.eventImage_user);
-            MoreInfo = itemView.findViewById(R.id.MoreInfo_user);
-            eventName = itemView.findViewById(R.id.eventName_user);
+            // Initialize views
+            eventImage = itemView.findViewById(R.id.eventImage_organizer);
+            MoreInfo = itemView.findViewById(R.id.MoreInfo_organizer);
+            eventName = itemView.findViewById(R.id.eventName_organizer);
         }
     }
 }

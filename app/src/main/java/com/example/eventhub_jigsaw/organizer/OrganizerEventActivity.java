@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventhub_jigsaw.R;
-import com.example.eventhub_jigsaw.entrant.UserInvitePage;
-import com.example.eventhub_jigsaw.entrant.UserInvitePageAdapter;
+import com.example.eventhub_jigsaw.organizer.OrganizerEventPage;
+import com.example.eventhub_jigsaw.organizer.OrganizerEventAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class OrganizerEventActivity extends Fragment {
 
-    private List<UserInvitePage> eventList; // Declare eventList as a class variable
+    private List<OrganizerEventPage> eventList; // Declare eventList as a class variable
     private OrganizerEventAdapter adapter;
 
     @Nullable
@@ -35,11 +35,11 @@ public class OrganizerEventActivity extends Fragment {
 
         // Sample event data
         eventList = new ArrayList<>();
-        eventList.add(new UserInvitePage("Event #1", R.drawable.event_image_placeholder));
-        eventList.add(new UserInvitePage("Event #2", R.drawable.event_image_placeholder));
+        eventList.add(new OrganizerEventPage("Event #1", R.drawable.event_image_placeholder));
+        eventList.add(new OrganizerEventPage("Event #2", R.drawable.event_image_placeholder));
 
         // Set the adapter for the RecyclerView
-        UserInvitePageAdapter adapter = new UserInvitePageAdapter(eventList, getChildFragmentManager());
+        OrganizerEventAdapter adapter = new OrganizerEventAdapter(eventList, getChildFragmentManager());
         recyclerView.setAdapter(adapter);
 
         // Find the FloatingActionButton and set an OnClickListener
