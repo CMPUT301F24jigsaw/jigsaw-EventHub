@@ -1,6 +1,7 @@
 package com.example.eventhub_jigsaw.entrant;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.eventhub_jigsaw.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UserMyProfileEdit extends DialogFragment {
 
@@ -19,11 +21,21 @@ public class UserMyProfileEdit extends DialogFragment {
         void onProfileUpdate(String newUsername, String newEmail);
     }
 
+    private FirebaseFirestore db;
+    private String userID;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the dialog layout
         View view = inflater.inflate(R.layout.user_myprofile_edit, container, false);
+
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // Retrieve userID from arguments
+        if (getArguments() != null) {
+            userID = getArguments().getString("userID");
+        }
 
         // Find input fields and button
         TextView inputUsername = view.findViewById(R.id.edit_username_field);
@@ -31,30 +43,37 @@ public class UserMyProfileEdit extends DialogFragment {
         Button saveButton = view.findViewById(R.id.save_button);
 
         // Handle save button click
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String newUsername = inputUsername.getText().toString();
-                String newEmail = inputEmail.getText().toString();
+        saveButton.setOnClickListener(v -> {
+            String newUsername = inputUsername.getText().toString();
+            String newEmail = inputEmail.getText().toString();
 
-                // Validate inputs
-                if (newUsername.isEmpty() || newEmail.isEmpty()) {
-                    // Optional: Show an error message if needed
-                    return;
-                }
-
-                // Send data back to the parent fragment
-                OnProfileUpdateListener listener = (OnProfileUpdateListener) getTargetFragment();
-                if (listener != null) {
-                    listener.onProfileUpdate(newUsername, newEmail);
-                }
-
-                // Close the dialog
-                dismiss();
+            if (newUsername.isEmpty() || newEmail.isEmpty()) {
+                // Show error message if needed
+                return;
             }
+
+            updateFirestoreData(newUsername, newEmail);
         });
 
         return view;
     }
-}
 
+    private void updateFirestoreData(String newUsername, String newEmail) {
+        if (userID == null || userID.isEmpty()) {
+            System.err.println("Error: userID is null or empty. Cannot update Firestore.");
+            return;
+        }
+
+        db.collection("users").document(userID)
+                .update("name", newUsername, "email", newEmail)
+                .addOnSuccessListener(aVoid -> {
+                    if (getTargetFragment() instanceof OnProfileUpdateListener) {
+                        ((OnProfileUpdateListener) getTargetFragment()).onProfileUpdate(newUsername, newEmail);
+                    }
+                    dismiss();
+                })
+                .addOnFailureListener(e -> {
+                    System.err.println("Error updating profile: " + e.getMessage());
+                });
+    }
+}

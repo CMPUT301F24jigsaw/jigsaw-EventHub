@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.eventhub_jigsaw.MainActivity;
 import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.entrant.UserMyprofile;
 import com.example.eventhub_jigsaw.admin.ProfilesFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
