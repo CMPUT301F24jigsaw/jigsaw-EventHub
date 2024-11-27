@@ -34,7 +34,6 @@ android {
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
     }
-
 }
 
 
@@ -44,8 +43,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.auth)
 
     // JUnit 5
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
@@ -62,4 +59,6 @@ dependencies {
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
 }
