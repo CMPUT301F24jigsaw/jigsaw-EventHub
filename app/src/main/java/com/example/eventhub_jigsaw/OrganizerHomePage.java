@@ -27,15 +27,9 @@ public class OrganizerHomePage extends AppCompatActivity {
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
-<<<<<<< Updated upstream
             if (item.getItemId() == R.id.profile_organizer) {
                 fragment = new UserMyprofile(); // TEMPORARILY HARDCODED
             } else if (item.getItemId() == R.id.home_organizer) {
-=======
-            if (item.getItemId() == R.id.profile_user) {
-                fragment = new OrganizerMyProfile();
-            } else if (item.getItemId() == R.id.home_user) {
->>>>>>> Stashed changes
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 return true;
