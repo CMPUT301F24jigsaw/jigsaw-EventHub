@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -43,6 +44,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
 
     // JUnit 5
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
@@ -56,4 +59,7 @@ dependencies {
     // Additional libraries
     implementation("com.google.android.material:material:1.9.0")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
 }

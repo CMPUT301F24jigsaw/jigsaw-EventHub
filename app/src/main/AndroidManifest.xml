@@ -31,7 +31,7 @@
         <activity android:name=".ProfilesFragment">
 
         </activity>
-        <activity android:name=".UserSignIn">
+        <activity android:name=".UserSignUp">
 
         </activity>
         <activity android:name=".UserHomePage">
