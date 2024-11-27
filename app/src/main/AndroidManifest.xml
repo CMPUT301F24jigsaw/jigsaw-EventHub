@@ -21,20 +21,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AdminSignIn">
+        <activity android:name=".admin.AdminSignIn">
 
         </activity>
-        <activity android:name=".AdminHomePage">
+        <activity android:name=".admin.AdminHomePage">
 
         </activity>
 
-        <activity android:name=".ProfilesFragment">
+        <activity android:name=".admin.ProfilesFragment">
 
         </activity>
-        <activity android:name=".UserSignIn">
+        <activity android:name=".entrant.UserSignIn">
 
         </activity>
-        <activity android:name=".UserHomePage">
+        <activity android:name=".entrant.UserHomePage">
 
         </activity>
         <activity android:name=".CaptureAct"
@@ -43,14 +43,14 @@
             android:theme="@style/zxing_CaptureTheme"/>
 
         <!-- Organizer Home Page -->
-        <activity android:name=".OrganizerHomePage">
+        <activity android:name=".organizer.OrganizerHomePage">
         </activity>
 
         <!-- Add Event Page -->
-        <activity android:name=".AddEvent">
+        <activity android:name=".organizer.OrganizerAddEvent">
         </activity>
 
-        <activity android:name=".UserInviteInfo">
+        <activity android:name=".entrant.UserInviteInfo">
         </activity>
 
     </application>

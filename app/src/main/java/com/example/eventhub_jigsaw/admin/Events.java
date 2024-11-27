@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw;
+package com.example.eventhub_jigsaw.admin;
 
 /**
  * Represents an event in the EventHub app, containing an event name and image.

@@ -9,6 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.eventhub_jigsaw.admin.AdminSignIn;
+import com.example.eventhub_jigsaw.entrant.UserSignIn;
+
 /**
  * MainActivity is the entry point of the app, displaying the main screen with options
  * for user and admin login. It also manages edge-to-edge UI configurations.

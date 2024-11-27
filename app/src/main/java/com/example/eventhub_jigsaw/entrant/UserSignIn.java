@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw;
+package com.example.eventhub_jigsaw.entrant;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,9 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.organizer.OrganizerHomePage;
 
 public class UserSignIn extends AppCompatActivity {
     @Override
