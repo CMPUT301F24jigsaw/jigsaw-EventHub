@@ -61,6 +61,4 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
-
-    implementation(files("/Users/tomiwaorimoloye/Library/Android/sdk/platforms/android-34/android.jar"))
 }
