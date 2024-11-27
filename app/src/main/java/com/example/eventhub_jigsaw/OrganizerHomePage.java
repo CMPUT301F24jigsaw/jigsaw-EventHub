@@ -23,7 +23,7 @@ public class OrganizerHomePage extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavView_organizer);
 
         // Set the default fragment to display (optional)
-        loadFragment(new EventActivity()); // TEMPORARY, replace with actual default fragment
+        loadFragment(new OrganizerEventActivity()); // TEMPORARY, replace with actual default fragment
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment = null;

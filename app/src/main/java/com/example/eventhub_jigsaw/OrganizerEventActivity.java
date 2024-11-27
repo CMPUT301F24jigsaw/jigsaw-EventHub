@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -18,7 +19,7 @@ import java.util.List;
 public class OrganizerEventActivity extends Fragment {
 
     private List<UserInvitePage> eventList; // Declare eventList as a class variable
-    private UserInvitePageAdapter adapter;
+    private OrganizerEventAdapter adapter;
 
 
 
@@ -26,7 +27,7 @@ public class OrganizerEventActivity extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.organizer_homepage, container, false);
+        View view = inflater.inflate(R.layout.organizer_eventspage, container, false);
 
         // Set up RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewEvents_organizer);
@@ -44,8 +45,6 @@ public class OrganizerEventActivity extends Fragment {
 
         return view;
     }
-
-
 
 
 }
