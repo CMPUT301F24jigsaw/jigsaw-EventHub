@@ -43,5 +43,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, AdminSignIn.class);
             startActivity(intent);
         });
+
+        UserLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, UserSignIn.class);
+            startActivity(intent);
+        });
     }
 }
