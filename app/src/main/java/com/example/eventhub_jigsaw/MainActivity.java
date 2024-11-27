@@ -2,55 +2,88 @@ package com.example.eventhub_jigsaw;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.eventhub_jigsaw.admin.AdminSignIn;
-import com.example.eventhub_jigsaw.entrant.UserSignIn;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * MainActivity is the entry point of the app, displaying the main screen with options
- * for user and admin login. It also manages edge-to-edge UI configurations.
+ * MainActivity is the entry point of the app, providing options for user and admin login.
  */
 public class MainActivity extends AppCompatActivity {
-    /**
-     * Called when the activity is first created. Sets up the main layout,
-     * configures edge-to-edge display, and initializes buttons for navigation.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied.
-     */
+
+    private FirebaseFirestore db; // Firestore database instance
+    private String userID; // Unique user identifier based on the device ID
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main); // Link to the layout for this activity
 
-        // Enable edge-to-edge display.
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        // Adjust padding to account for system bars.
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
 
-        // Initialize UI elements.
-        Button UserLogin = findViewById(R.id.user_login);
-        Button AdminLogin = findViewById(R.id.admin_login);
+        // Retrieve the unique device ID
+        //userID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        // Set up click listener for Admin Login button to navigate to AdminSignIn activity.
-        AdminLogin.setOnClickListener(v -> {
+        Log.d("MainActivity", "Device ID: " + userID);
+
+        // Initialize buttons for user and admin login
+        Button userLogin = findViewById(R.id.user_login);
+        Button adminLogin = findViewById(R.id.admin_login);
+
+        // Handle Admin Login button click
+        adminLogin.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AdminSignIn.class);
             startActivity(intent);
         });
 
-        UserLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, UserSignIn.class);
+        // Handle User Login button click
+        userLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, UserSignUp.class);
             startActivity(intent);
+        });
+    }
+
+    /**
+     * Checks if the user exists in Firestore by userID.
+     * Navigates to UserHomePage if the user exists, otherwise navigates to SignUpPage.
+     *
+     * @param userID The unique device ID of the user.
+     */
+    private void checkUserAndNavigate(String userID) {
+        // Reference the user's document in the Firestore database
+        DocumentReference docRef = db.collection("users").document(userID);
+
+        // Fetch the document from Firestore
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // User exists, navigate to UserHomePage
+                    Log.d("Firestore", "User exists: " + userID);
+                    Intent intent = new Intent(MainActivity.this, UserHomePage.class);
+                    intent.putExtra("userID", userID); // Pass userID to the UserHomePage
+                    startActivity(intent);
+                    finish(); // Close MainActivity
+                } else {
+                    // User does not exist, navigate to SignUpPage
+                    Log.d("Firestore", "No user found for ID: " + userID);
+                    Toast.makeText(this, "User not found. Redirecting to sign-up.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, UserSignUp.class);
+                    startActivity(intent);
+                }
+            } else {
+                // Task failed, log the exception
+                Log.e("Firestore", "Error fetching user", task.getException());
+                Toast.makeText(this, "Error checking user. Try again later.", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

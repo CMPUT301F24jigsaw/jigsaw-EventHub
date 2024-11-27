@@ -4,20 +4,68 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical">
-    <Button
-        android:id="@+id/user_sign"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/red"
-        android:text="Entrants">
 
-    </Button>
-    <Button
-        android:id="@+id/organizer_sign"
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/red"
-        android:text="Organizers">
+        android:id="@+id/text_name"
+        android:text="Enter Name:"
+        >
+
+    </TextView>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_name"
+        android:hint="Name">
+
+    </EditText>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_email"
+        android:text="Enter Email: ">
+
+    </TextView>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_email"
+        android:hint="Email">
+    </EditText>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_phone"
+        android:text="Enter Phone No: ">
+
+    </TextView>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_phone"
+        android:hint="Phone number">
+    </EditText>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_user"
+        android:entries="@array/user_type">
+
+    </Spinner>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_signup"
+        android:text="Sign Up">
 
     </Button>
 
