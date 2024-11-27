@@ -16,24 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * EventActivity is a Fragment that displays a list of events and provides functionality
- * to remove all events from the list.
- */
-
 public class EventActivity extends Fragment {
 
-    private List<Events> eventList; // Data structure to store list of event item objects
-    private EventAdapter adapter;
+    private List<Events> eventList; // Declare eventList as a class variable
+    private UserInvitePageAdapter adapter;
 
-    /**
-     * Called to initialize the fragment's user interface view.
-     *
-     * @param inflater           The LayoutInflater object to inflate views in the fragment.
-     * @param container          The parent view to attach the fragment's UI.
-     * @param savedInstanceState Bundle containing the fragment's previously saved state.
-     * @return The View for the fragment's UI, or null.
-     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,11 +51,6 @@ public class EventActivity extends Fragment {
         return view;
     }
 
-    /**
-     * Removes all events from the event list and updates the adapter.
-     * Shows a message if there are no events to remove.
-     */
-
     private void removeAllEvents() {
 
         if (eventList.isEmpty()) {
@@ -77,7 +59,7 @@ public class EventActivity extends Fragment {
         }
         // Clear the event list
         eventList.clear();
-        // Refresh adapter
+        // Notify the adapter that the data has changed
         adapter.notifyDataSetChanged();
 
         // Optionally, show a message or an empty state
