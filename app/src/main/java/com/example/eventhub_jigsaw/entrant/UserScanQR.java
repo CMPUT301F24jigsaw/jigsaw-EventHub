@@ -1,16 +1,18 @@
 package com.example.eventhub_jigsaw.entrant;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.eventhub_jigsaw.EventDetailsActivity;
 import com.example.eventhub_jigsaw.CaptureAct;
 import com.example.eventhub_jigsaw.R;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -22,15 +24,29 @@ public class UserScanQR extends Fragment {
 
     private final ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            builder.setTitle("Result");
-            builder.setMessage(result.getContents());
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            }).show();
+            // Handle scanned QR code
+            String scannedData = result.getContents();
+
+            // Check if scanned data is a valid deep link
+            if (scannedData.startsWith("https://yourapp.example.com/event/")) {
+                // Extract event ID from the URL (last segment of the path)
+                Uri uri = Uri.parse(scannedData);
+                String eventId = uri.getLastPathSegment();
+
+                // Open EventDetailsDialogFragment
+                EventDetailsActivity dialogFragment = new EventDetailsActivity();
+                Bundle args = new Bundle();
+                args.putString("event_id", eventId); // Pass the event ID to the dialog fragment
+                dialogFragment.setArguments(args);
+                dialogFragment.show(getChildFragmentManager(), "EventDetailsDialog");
+            } else {
+                // Show dialog for invalid QR code
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setTitle("Invalid QR Code");
+                builder.setMessage("The scanned QR code is not a valid event link.");
+                builder.setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss());
+                builder.show();
+            }
         }
     });
 
@@ -58,4 +74,3 @@ public class UserScanQR extends Fragment {
         barLauncher.launch(options);
     }
 }
-

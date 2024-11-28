@@ -1,71 +1,39 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:color/white">
-
-    <!-- Event Image -->
-    <ImageView
-        android:id="@+id/eventInfoImage_user"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="8dp"
-        android:scaleType="centerCrop" />
+    android:gravity="center_horizontal">
 
     <!-- Event Name -->
     <TextView
         android:id="@+id/eventnameInfo_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Event #1"
-        android:textSize="25sp"
+        android:text="Event Name"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/eventInfoImage_user"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:padding="8dp"
+        android:textColor="@color/black" />
+
+    <!-- QR Code -->
+    <ImageView
+        android:id="@+id/eventInfoImage_user"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp" />
+        android:contentDescription="QR Code Image"
+        android:scaleType="fitCenter" />
 
-    <!-- Event Address -->
-    <TextView
-        android:id="@+id/eventaddress_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="123 Event Street"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/eventnameInfo_user"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp" />
-
-    <!-- Event Date -->
-    <TextView
-        android:id="@+id/eventdate_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2024-11-30 | 10:00 AM"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/eventaddress_user"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Accept Button -->
+    <!-- Close Button (Optional) -->
     <Button
-        android:id="@+id/waitinglistbutton"
+        android:id="@+id/closeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="View Waiting List"
-        app:layout_constraintTop_toBottomOf="@id/eventdate_user"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:text="Close"
+        android:layout_marginTop="16dp"
+        android:onClick="dismissDialog" />
+</LinearLayout>
