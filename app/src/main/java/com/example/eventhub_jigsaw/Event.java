@@ -1,7 +1,6 @@
 package com.example.eventhub_jigsaw;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.List;
 
 public class Event implements Serializable {

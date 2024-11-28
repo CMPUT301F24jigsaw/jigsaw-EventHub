@@ -3,6 +3,7 @@ package com.example.eventhub_jigsaw.organizer;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,9 @@ import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.ByteArrayOutputStream;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OrganizerAddEvent extends DialogFragment {
 
@@ -75,9 +79,42 @@ public class OrganizerAddEvent extends DialogFragment {
                 return;
             }
 
+            // Validate input
+            if (TextUtils.isEmpty(name)) {
+                Toast.makeText(getContext(), "Event name is required.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (TextUtils.isEmpty(date)) {
+                Toast.makeText(getContext(), "Event date is required.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (TextUtils.isEmpty(description)) {
+                Toast.makeText(getContext(), "Event description is required.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (TextUtils.isEmpty(maxAttendeesStr)) {
+                Toast.makeText(getContext(), "Max attendees is required.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // Validate event description length
+            if (description.length() < 10 || description.length() > 500) {
+                Toast.makeText(getContext(), "Description must be between 10 and 500 characters.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Validate date format (dd/mm/yyyy)
+            if (!isValidDate(date)) {
+                Toast.makeText(getContext(), "Invalid date format. Use dd/mm/yyyy.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             int maxAttendeesInt;
             try {
                 maxAttendeesInt = Integer.parseInt(maxAttendeesStr);
+                if (maxAttendeesInt <= 0 || maxAttendeesInt > 1000) {
+                    Toast.makeText(getContext(), "Max attendees must be a positive number.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             } catch (NumberFormatException e) {
                 Toast.makeText(getContext(), "Max attendees must be a valid number.", Toast.LENGTH_SHORT).show();
                 return;
@@ -138,4 +175,76 @@ public class OrganizerAddEvent extends DialogFragment {
     public interface OnEventAddedListener {
         void onEventAdded();
     }
+
+    private boolean isValidDate(String date) {
+        // Split the date string into day, month, and year
+        String[] parts = date.split("/");
+
+        // Check if the date has exactly three parts (day, month, year)
+        if (parts.length != 3) {
+            Toast.makeText(getContext(), "Invalid date format. Please use dd/mm/yyyy.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        int day, month, year;
+
+        try {
+            // Convert parts into integers
+            day = Integer.parseInt(parts[0]);
+            month = Integer.parseInt(parts[1]);
+            year = Integer.parseInt(parts[2]);
+
+            // Convert 2-digit year to 4-digit year (assumes 21st century for 2-digit year)
+            if (year < 100) {
+                year += 2000;
+            }
+
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Invalid date format. Please use dd/mm/yyyy.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Get the current year
+        int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+
+        // Validate year (event should not be more than 3 years beyond the current year)
+        if (year > currentYear + 3) {
+            Toast.makeText(getContext(), "Event year must not be more than 3 years from now.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validate month range (should be between 01 and 12)
+        if (month < 1 || month > 12) {
+            Toast.makeText(getContext(), "Month must be between 01 and 12.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validate day range (should be between 01 and 31)
+        if (day < 1 || day > 31) {
+            Toast.makeText(getContext(), "Day must be between 01 and 31.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Handle month-day specific checks (e.g., February 30)
+        if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) {
+            Toast.makeText(getContext(), "This month has only 30 days.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (month == 2) {
+            // Handle leap year for February
+            if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+                if (day > 29) {
+                    Toast.makeText(getContext(), "February in a leap year has only 29 days.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            } else {
+                if (day > 28) {
+                    Toast.makeText(getContext(), "February has only 28 days in a non-leap year.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
