@@ -21,32 +21,31 @@ public class UserInvitePageActivity extends Fragment {
     private List<UserInvitePage> eventList; // Declare eventList as a class variable
     private UserInvitePageAdapter adapter;
 
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.user_invitepage, container, false);
 
-        // Set up RecyclerView
+        // Initialize RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewEvents_user);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Sample event data
+        // Sample data
         eventList = new ArrayList<>();
         eventList.add(new UserInvitePage("Event #1", R.drawable.event_image_placeholder));
         eventList.add(new UserInvitePage("Event #2", R.drawable.event_image_placeholder));
 
-        UserInvitePageAdapter adapter = new UserInvitePageAdapter(eventList, getChildFragmentManager());
+        adapter = new UserInvitePageAdapter(eventList, getChildFragmentManager());
         recyclerView.setAdapter(adapter);
-
 
 
         return view;
     }
 
-
-
-
+    public void removeEvent(String eventName) {
+        // Remove the declined event from the list
+        eventList.removeIf(event -> event.getEventName_user().equals(eventName));
+        adapter.notifyDataSetChanged(); // Refresh RecyclerView
+    }
 }
+

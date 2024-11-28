@@ -1,6 +1,7 @@
 package com.example.eventhub_jigsaw;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class User implements Serializable {
 
@@ -14,7 +15,9 @@ public class User implements Serializable {
     private int phone;
     private Boolean adminNotification;
     private Boolean organizerNotification;
-    private Role role; // Role of the user (ENTRANT or ORGANIZER)
+    private Role role;
+    private List<Event> waitList;
+    private  List<Event> registeredEvents;
 
     // Constructor for general users
     public User(String name, String email, String userID, int phone, Role role) {

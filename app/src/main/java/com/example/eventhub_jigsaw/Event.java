@@ -10,6 +10,8 @@ public class Event implements Serializable {
     private String eventDate;
     private int maxAttendees;
     private String description;
+    private List<User> waitingList;
+    private List<User> acceptedUsers;
 
     public String getEventName() {
         return eventName;

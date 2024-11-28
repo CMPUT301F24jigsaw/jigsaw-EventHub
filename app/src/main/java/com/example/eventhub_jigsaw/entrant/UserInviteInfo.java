@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,24 +25,72 @@ public class UserInviteInfo extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.user_inviteinfo, container, false);
 
-        Button declineButton = view.findViewById(R.id.DeclineButton);
-        declineButton.setOnClickListener(v -> {
-            // Navigate to the loading screen
+        // Retrieve data passed to this fragment
+        Bundle args = getArguments();
+        String eventName = args != null ? args.getString("event_name") : null;
+        int eventImage = args != null ? args.getInt("event_image", 0) : 0;
+        String eventAddress = args != null ? args.getString("event_address") : null;
+        String eventDate = args != null ? args.getString("event_date") : null;
+
+        // Set up the UI elements with the received data
+        ImageView eventImageView = view.findViewById(R.id.eventInfoImage_user);
+        TextView eventNameView = view.findViewById(R.id.eventnameInfo_user);
+        TextView eventAddressView = view.findViewById(R.id.eventaddress_user);
+        TextView eventDateView = view.findViewById(R.id.eventdate_user);
+
+        if (eventImage != 0) {
+            eventImageView.setImageResource(eventImage);
+        }
+        eventNameView.setText(eventName);
+        eventAddressView.setText(eventAddress);
+        eventDateView.setText(eventDate);
+
+        // Accept Button
+        Button acceptButton = view.findViewById(R.id.AcceptButton);
+        acceptButton.setOnClickListener(v -> {
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, new LoadingFragment());
+            LoadingFragment loadingFragment = new LoadingFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("message", "You have accepted the event: " + eventName);
+            loadingFragment.setArguments(bundle);
+
+            transaction.replace(R.id.fragment_container, loadingFragment);
             transaction.addToBackStack(null);
             transaction.commit();
 
-            // Delay for 2 seconds and then go back to the Invites page
             new Handler().postDelayed(() -> {
-                // Simulate removal of the declined event and return to the Invites list
-                getParentFragmentManager().popBackStack(); // Removes LoadingFragment
-                getParentFragmentManager().popBackStack(); // Removes UserInviteInfo
-            }, 2000); // 2-second delay
-
+                getParentFragmentManager().popBackStack();
+                navigateToPage1();
+            }, 2000);
         });
 
+        // Decline Button
+        Button declineButton = view.findViewById(R.id.DeclineButton);
+        declineButton.setOnClickListener(v -> {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            LoadingFragment loadingFragment = new LoadingFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("message", "You have declined the event: " + eventName);
+            loadingFragment.setArguments(bundle);
+
+            transaction.replace(R.id.fragment_container, loadingFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+
+            new Handler().postDelayed(() -> {
+                getParentFragmentManager().popBackStack();
+                navigateToPage1();
+            }, 2000);
+        });
 
         return view;
+    }
+
+    private void navigateToPage1() {
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, new UserInvitePageActivity()); // Replace with your Page1 fragment class
+        transaction.commit();
     }
 }

@@ -52,21 +52,17 @@ public class UserInvitePageAdapter extends RecyclerView.Adapter<UserInvitePageAd
             bundle.putString("event_date", "2024-11-30"); // Example date
             infoFragment.setArguments(bundle);
 
-
-
-            // Hide RecyclerView and show the fragment container
+            // Navigate to the UserInviteInfo fragment
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, infoFragment)
-                    .addToBackStack(null) // Add to back stack for navigation
+                    .addToBackStack(null)
                     .commit();
 
-            // Programmatically hide RecyclerView and show fragment container
             View recyclerView = ((ViewGroup) v.getRootView()).findViewById(R.id.recyclerViewEvents_user);
             View fragmentContainer = ((ViewGroup) v.getRootView()).findViewById(R.id.fragment_container);
 
             recyclerView.setVisibility(View.GONE);
-            fragmentContainer.setVisibility(View.VISIBLE);
-        });
+            fragmentContainer.setVisibility(View.VISIBLE);        });
 
 
     }
@@ -89,4 +85,7 @@ public class UserInvitePageAdapter extends RecyclerView.Adapter<UserInvitePageAd
             eventName = itemView.findViewById(R.id.eventName_user);
         }
     }
+
+
+
 }
