@@ -67,6 +67,7 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
         ImageView eventImage;
         Button MoreInfo;
         TextView eventName;
+        Button SampleUser;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +75,7 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
             eventImage = itemView.findViewById(R.id.eventImage_organizer);
             MoreInfo = itemView.findViewById(R.id.MoreInfo_organizer);
             eventName = itemView.findViewById(R.id.eventName_organizer);
+            SampleUser = itemView.findViewById(R.id.button_sample_User);
         }
     }
 }

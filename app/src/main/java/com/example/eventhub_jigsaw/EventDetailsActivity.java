@@ -2,12 +2,13 @@ package com.example.eventhub_jigsaw;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,19 +17,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class EventDetailsActivity extends DialogFragment {
 
     private TextView eventNameTextView, eventDescriptionTextView;
     private ImageView eventQrImageView;
+    private Button buttonJoinWaitlist;
 
     private FirebaseFirestore db;
+    private String eventId;
+    private String userId;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for the dialog fragment
         return inflater.inflate(R.layout.qr_scan_event_details, container, false);
     }
 
@@ -40,16 +45,20 @@ public class EventDetailsActivity extends DialogFragment {
         eventNameTextView = view.findViewById(R.id.eventNameTextView);
         eventDescriptionTextView = view.findViewById(R.id.eventDescriptionTextView);
         eventQrImageView = view.findViewById(R.id.eventQrImageView);
+        buttonJoinWaitlist = view.findViewById(R.id.buttonJoinWaitlist);
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Retrieve event ID passed through arguments
+        // Retrieve user ID safely
+        userId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        // Retrieve event ID from arguments
         Bundle args = getArguments();
         if (args != null) {
-            String eventId = args.getString("event_id");
+            eventId = args.getString("event_id");
             if (eventId != null) {
-                fetchEventDetails(eventId); // Fetch and display event details
+                fetchEventDetails(eventId);
             } else {
                 Toast.makeText(requireContext(), "Invalid event ID", Toast.LENGTH_SHORT).show();
                 dismiss();
@@ -58,6 +67,12 @@ public class EventDetailsActivity extends DialogFragment {
             Toast.makeText(requireContext(), "No event data provided", Toast.LENGTH_SHORT).show();
             dismiss();
         }
+
+        // Handle Join Waitlist button click
+        buttonJoinWaitlist.setOnClickListener(v -> {
+            buttonJoinWaitlist.setEnabled(false); // Disable button to prevent duplicate actions
+            joinWaitlist();
+        });
     }
 
     private void fetchEventDetails(String eventId) {
@@ -65,7 +80,6 @@ public class EventDetailsActivity extends DialogFragment {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Retrieve and display event details
                         String name = documentSnapshot.getString("eventName");
                         String description = documentSnapshot.getString("description");
                         String qrCodeBase64 = documentSnapshot.getString("qrCode");
@@ -73,7 +87,6 @@ public class EventDetailsActivity extends DialogFragment {
                         eventNameTextView.setText(name);
                         eventDescriptionTextView.setText(description);
 
-                        // Decode and display the QR code if available
                         if (qrCodeBase64 != null) {
                             Bitmap qrCodeBitmap = decodeBase64ToBitmap(qrCodeBase64);
                             eventQrImageView.setImageBitmap(qrCodeBitmap);
@@ -94,7 +107,34 @@ public class EventDetailsActivity extends DialogFragment {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-    // Customize dialog appearance if needed
+    private void joinWaitlist() {
+        if (eventId == null || userId == null) {
+            Toast.makeText(requireContext(), "Event or user information missing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Update event waitlist
+        DocumentReference eventRef = db.collection("events").document(eventId);
+        eventRef.update("waitingList", FieldValue.arrayUnion(userId))
+                .addOnSuccessListener(aVoid -> {
+                    // Update user waitlist
+                    DocumentReference userRef = db.collection("users").document(userId);
+                    userRef.update("waitingList", FieldValue.arrayUnion(eventId))
+                            .addOnSuccessListener(aVoid2 -> {
+                                Toast.makeText(requireContext(), "Added to waitlist!", Toast.LENGTH_SHORT).show();
+                                dismiss(); // Close the dialog
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(requireContext(), "Failed to update user waitlist: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                buttonJoinWaitlist.setEnabled(true); // Re-enable button
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Failed to update event waitlist: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    buttonJoinWaitlist.setEnabled(true); // Re-enable button
+                });
+    }
+
     @Override
     public void onStart() {
         super.onStart();

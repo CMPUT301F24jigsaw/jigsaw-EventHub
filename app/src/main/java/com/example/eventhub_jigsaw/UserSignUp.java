@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -163,24 +164,29 @@ public class UserSignUp extends AppCompatActivity {
         saveUserToFirestore(userID, name, email, phone, role);
     }
 
-    private void saveUserToFirestore(String userID, String name, String email, int phone, String role) {
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("userID", userID);
-        userData.put("name", name);
-        userData.put("email", email);
-        userData.put("phone", phone);
-        userData.put("role", role); // Save role (Entrant or Organizer)
-        userData.put("adminNotification", false);
-        userData.put("organizerNotification", false);
 
+    private void saveUserToFirestore(String userID, String name, String email, int phone, String role) {
+        // Convert role from String to Role enum
+        User.Role userRole;
+        try {
+            userRole = User.Role.valueOf(role.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(this, "Invalid role provided.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create User object and ensure WaitingList is explicitly set
+        User user = new User(name, email, userID, phone, userRole);
+        user.setWaitingList(new ArrayList<>()); // Explicitly set an empty list
+
+        // Save the User object to Firestore
         db.collection("users").document(userID)
-                .set(userData)
+                .set(user)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "User registered successfully!", Toast.LENGTH_SHORT).show();
                         clearFields();
 
-                        // Navigate to the appropriate homepage based on role
                         if (role.equalsIgnoreCase("ENTRANT")) {
                             navigateToHomePage();
                         } else if (role.equalsIgnoreCase("ORGANIZER")) {
@@ -193,6 +199,9 @@ public class UserSignUp extends AppCompatActivity {
                     }
                 });
     }
+
+
+
 
 
     private void clearFields() {

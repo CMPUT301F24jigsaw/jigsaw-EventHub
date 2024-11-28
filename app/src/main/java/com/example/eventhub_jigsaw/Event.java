@@ -1,6 +1,7 @@
 package com.example.eventhub_jigsaw;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Event implements Serializable {
@@ -10,6 +11,8 @@ public class Event implements Serializable {
     private String eventDate;
     private int maxAttendees;
     private String description;
+    private List<User> waitingList;
+    private List<String> sampledUsers;
 
     public String getEventName() {
         return eventName;
@@ -65,6 +68,23 @@ public class Event implements Serializable {
         this.organizerID = organizerID;
         this.maxAttendees = maxAttendees;
         this.description = description;
+        this.waitingList = new ArrayList<>();
+    }
+
+    public List<User> getWaitingList() {
+        return waitingList;
+    }
+
+    public void setWaitingList(List<User> waitingList) {
+        this.waitingList = waitingList;
+    }
+
+    public List<String> getSampledUsers() {
+        return sampledUsers;
+    }
+
+    public void setSampledUsers(List<String> sampledUsers) {
+        this.sampledUsers = sampledUsers;
     }
 }
 

@@ -26,6 +26,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.ByteArrayOutputStream;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,7 +124,11 @@ public class OrganizerAddEvent extends DialogFragment {
             // Create a new event object
             Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
 
-            // Save to Firestore
+// Ensure Waitlist is explicitly set to an empty list (optional, as it's already set in the constructor)
+            newEvent.setWaitingList(new ArrayList<>());
+            newEvent.setSampledUsers(new ArrayList<>());
+
+// Save to Firestore
             db.collection("events").add(newEvent)
                     .addOnSuccessListener(documentReference -> {
                         String eventId = documentReference.getId(); // Get unique ID

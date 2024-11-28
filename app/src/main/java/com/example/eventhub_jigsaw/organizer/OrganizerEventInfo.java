@@ -41,6 +41,12 @@ public class OrganizerEventInfo extends DialogFragment {
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
+        view.findViewById(R.id.button_ViewWaitlist).setOnClickListener(v -> {
+            // Open the WaitlistDialogFragment
+            OrganizerViewWaitlist waitlistDialog = new OrganizerViewWaitlist();
+            waitlistDialog.show(getParentFragmentManager(), "WaitlistDialog");
+        });
+
         // Retrieve event name and organizer ID passed from the previous fragment
         Bundle args = getArguments();
         if (args != null) {

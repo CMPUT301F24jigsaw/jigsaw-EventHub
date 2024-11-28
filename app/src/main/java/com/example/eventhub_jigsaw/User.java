@@ -1,6 +1,10 @@
 package com.example.eventhub_jigsaw;
 
+import com.example.eventhub_jigsaw.admin.Events;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User implements Serializable {
 
@@ -15,6 +19,7 @@ public class User implements Serializable {
     private Boolean adminNotification;
     private Boolean organizerNotification;
     private Role role; // Role of the user (ENTRANT or ORGANIZER)
+    private List<Events> WaitingList;
 
     // Constructor for general users
     public User(String name, String email, String userID, int phone, Role role) {
@@ -25,6 +30,7 @@ public class User implements Serializable {
         this.role = role;
         this.adminNotification = false;
         this.organizerNotification = false;
+        this.WaitingList = new ArrayList<>();
     }
 
     // Getters and setters
@@ -80,7 +86,16 @@ public class User implements Serializable {
         return role;
     }
 
+    public List<Events> getWaitingList() {
+        return WaitingList;
+    }
+
+    public void setWaitingList(List<Events> waitingList) {
+        WaitingList = waitingList;
+    }
+
     public void setRole(Role role) {
         this.role = role;
     }
+
 }
