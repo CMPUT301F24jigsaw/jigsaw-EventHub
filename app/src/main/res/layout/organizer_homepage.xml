@@ -25,6 +25,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu_user" />
+        app:menu="@menu/bottom_nav_menu_organizer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
