@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.eventhub_jigsaw.Event;
+import com.example.eventhub_jigsaw.Facility;
 import com.example.eventhub_jigsaw.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
@@ -33,10 +34,11 @@ import java.util.regex.Pattern;
 public class OrganizerAddEvent extends DialogFragment {
 
     private FirebaseFirestore db;
-    private EditText eventName, maxAttendees, dateTime, eventDescription;
+    private EditText eventName, maxAttendees, dateTime, eventDescription, facilityName, facilityLocation;
     private ImageView qrCodeImageView;
 
     private OnEventAddedListener eventAddedListener; // Listener for notifying when an event is added
+
 
     public void setOnEventAddedListener(OnEventAddedListener listener) {
         this.eventAddedListener = listener;
@@ -57,6 +59,8 @@ public class OrganizerAddEvent extends DialogFragment {
         dateTime = view.findViewById(R.id.dateTime);
         eventDescription = view.findViewById(R.id.eventDescription);
         qrCodeImageView = view.findViewById(R.id.eventQR);
+        facilityName = view.findViewById(R.id.facilityName);
+        facilityLocation = view.findViewById(R.id.facilityLocation);
 
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -73,9 +77,11 @@ public class OrganizerAddEvent extends DialogFragment {
             String date = dateTime.getText().toString().trim();
             String description = eventDescription.getText().toString().trim();
             String maxAttendeesStr = maxAttendees.getText().toString().trim();
+            String facilityname = facilityName.getText().toString().trim();
+            String location = facilityLocation.getText().toString().trim();
 
             // Validate input
-            if (name.isEmpty() || date.isEmpty() || description.isEmpty() || maxAttendeesStr.isEmpty()) {
+            if (name.isEmpty() || date.isEmpty() || description.isEmpty() || maxAttendeesStr.isEmpty() || facilityname.isEmpty() || location.isEmpty()) {
                 Toast.makeText(getContext(), "All fields are required.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -85,6 +91,17 @@ public class OrganizerAddEvent extends DialogFragment {
                 Toast.makeText(getContext(), "Event name is required.", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            if (TextUtils.isEmpty(facilityname)) {
+                Toast.makeText(getContext(), "Facility name is required.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (TextUtils.isEmpty(location)) {
+                Toast.makeText(getContext(), "Facility location is required.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (TextUtils.isEmpty(date)) {
                 Toast.makeText(getContext(), "Event date is required.", Toast.LENGTH_SHORT).show();
                 return;
@@ -124,6 +141,9 @@ public class OrganizerAddEvent extends DialogFragment {
             // Create a new event object
             Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
 
+            //Create a new facility object
+            Facility newFacility = new Facility(facilityname, location, maxAttendeesInt);
+
 // Ensure Waitlist is explicitly set to an empty list (optional, as it's already set in the constructor)
             newEvent.setWaitingList(new ArrayList<>());
             newEvent.setSampledUsers(new ArrayList<>());
@@ -140,7 +160,19 @@ public class OrganizerAddEvent extends DialogFragment {
                         dismiss();
                     })
                     .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to create event: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+
+            db.collection("facility").add(newFacility)
+                    .addOnSuccessListener(documentReference -> {
+                        String facilityId = documentReference.getId(); //get unique ID
+                        Toast.makeText(getContext(), "Facility created successfully!", Toast.LENGTH_SHORT).show();
+                        if (eventAddedListener != null){
+                            eventAddedListener.onEventAdded(); //Notify Listener
+                        }
+                        dismiss();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to create facility: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         });
+
     }
 
     private void generateAndSaveQrCode(String eventId) {
