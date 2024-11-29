@@ -7,21 +7,29 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.eventhub_jigsaw.Event;
 import com.example.eventhub_jigsaw.R;
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.List;
 
 public class UserInvitePageAdapter extends RecyclerView.Adapter<UserInvitePageAdapter.EventViewHolder> {
 
-    private List<UserInvitePage> eventList;
+    private List<Event> eventList;
     private FragmentManager fragmentManager;
+    private String eventDescription;
+    private String eventDate;
+    private FirebaseFirestore db;
 
-    public UserInvitePageAdapter(List<UserInvitePage> eventList, FragmentManager fragmentManager) {
+    public UserInvitePageAdapter(List<Event> eventList, FragmentManager fragmentManager) {
         this.eventList = eventList;
         this.fragmentManager = fragmentManager;
     }
@@ -31,46 +39,70 @@ public class UserInvitePageAdapter extends RecyclerView.Adapter<UserInvitePageAd
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_itemsinvite, parent, false);
         return new EventViewHolder(view);
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        UserInvitePage event = eventList.get(position);
-        holder.eventName.setText(event.getEventName_user());
-        holder.eventImage.setImageResource(event.getEventImage_user());
+        Event event = eventList.get(position);
+        holder.eventName.setText(event.getEventName());
+        eventDescription = event.getDescription();
+        eventDate = event.getEventDate();
+
+        android.util.Log.e("UserInvitePageAdapter", "Event Details:");
+        android.util.Log.e("UserInvitePageAdapter", "Name: " + event.getEventName());
+        android.util.Log.e("UserInvitePageAdapter", "Description: " + event.getDescription());
+        android.util.Log.e("UserInvitePageAdapter", "Date: " + event.getEventDate());
 
         holder.MoreInfo.setOnClickListener(v -> {
-            // Create a new fragment instance
-            UserInviteInfo infoFragment = new UserInviteInfo();
+            db = FirebaseFirestore.getInstance();
 
-            // Pass data to the fragment
-            Bundle bundle = new Bundle();
-            bundle.putString("event_name", event.getEventName_user());
-            bundle.putInt("event_image", event.getEventImage_user());
-            bundle.putString("event_address", "123 Event Street"); // Example address
-            bundle.putString("event_date", "2024-11-30"); // Example date
-            infoFragment.setArguments(bundle);
+            db.collection("events")
+                    .whereEqualTo("eventName", event.getEventName())
+                    .whereEqualTo("description", event.getDescription())
+                    .whereEqualTo("eventDate", event.getEventDate())
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        if (!querySnapshot.isEmpty()) {
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+                                String eventId = document.getId(); // Get the event ID
 
+                                // Create a new fragment instance for event details
+                                UserInviteInfo infoFragment = new UserInviteInfo();
 
+                                // Pass event details and eventId to the fragment
+                                Bundle bundle = new Bundle();
+                                bundle.putString("event_name", event.getEventName());
+                                bundle.putString("event_description", event.getDescription());
+                                bundle.putString("event_date", event.getEventDate());
+                                bundle.putString("event_id", eventId); // Pass the event ID
+                                infoFragment.setArguments(bundle);
 
-            // Hide RecyclerView and show the fragment container
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, infoFragment)
-                    .addToBackStack(null) // Add to back stack for navigation
-                    .commit();
+                                // Transition to the fragment
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_container, infoFragment)
+                                        .addToBackStack(null) // Allow navigation back to RecyclerView
+                                        .commit();
 
-            // Programmatically hide RecyclerView and show fragment container
-            View recyclerView = ((ViewGroup) v.getRootView()).findViewById(R.id.recyclerViewEvents_user);
-            View fragmentContainer = ((ViewGroup) v.getRootView()).findViewById(R.id.fragment_container);
+                                // Hide RecyclerView and show fragment container
+                                View recyclerView = ((ViewGroup) v.getRootView()).findViewById(R.id.recyclerViewEvents_user);
+                                View fragmentContainer = ((ViewGroup) v.getRootView()).findViewById(R.id.fragment_container);
 
-            recyclerView.setVisibility(View.GONE);
-            fragmentContainer.setVisibility(View.VISIBLE);
+                                if (recyclerView != null && fragmentContainer != null) {
+                                    recyclerView.setVisibility(View.GONE);
+                                    fragmentContainer.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        } else {
+                            // Handle case where no matching event is found
+                            Toast.makeText(v.getContext(), "Event not found", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle errors in querying Firestore
+                        Toast.makeText(v.getContext(), "Error fetching event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
         });
-
-
     }
-
 
     @Override
     public int getItemCount() {

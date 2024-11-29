@@ -31,7 +31,7 @@
 
     <!-- Event Address -->
     <TextView
-        android:id="@+id/eventaddress_user"
+        android:id="@+id/eventdescription_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
