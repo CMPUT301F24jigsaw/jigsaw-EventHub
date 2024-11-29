@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.eventhub_jigsaw.Event;
+import com.example.eventhub_jigsaw.Facility;
 import com.example.eventhub_jigsaw.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
@@ -32,10 +33,10 @@ import java.util.regex.Pattern;
 public class OrganizerAddEvent extends DialogFragment {
 
     private FirebaseFirestore db;
-    private EditText eventName, maxAttendees, dateTime, eventDescription;
+    private EditText eventName, maxAttendees, dateTime, eventDescription, facilityName, facilityLocation;
     private ImageView qrCodeImageView;
 
-    private OnEventAddedListener eventAddedListener; // Listener for notifying when an event is added
+    private OnEventAddedListener eventAddedListener;// Listener for notifying when an event is added
 
     public void setOnEventAddedListener(OnEventAddedListener listener) {
         this.eventAddedListener = listener;
@@ -56,6 +57,8 @@ public class OrganizerAddEvent extends DialogFragment {
         dateTime = view.findViewById(R.id.dateTime);
         eventDescription = view.findViewById(R.id.eventDescription);
         qrCodeImageView = view.findViewById(R.id.eventQR);
+        facilityName = view.findViewById(R.id.facilityName);
+        facilityLocation = view.findViewById(R.id.facilityLocation);
 
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -76,11 +79,16 @@ public class OrganizerAddEvent extends DialogFragment {
             String date = dateTime.getText().toString().trim();
             String description = eventDescription.getText().toString().trim();
             int maxAttendeesInt = Integer.parseInt(maxAttendees.getText().toString().trim());
+            String facilityname = facilityName.getText().toString().trim();
+            String facilitylocation = facilityLocation.getText().toString().trim();
 
             // Create a new event object
             Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
             newEvent.setWaitingList(new ArrayList<>()); // Initialize waiting list
             newEvent.setSampledUsers(new ArrayList<>()); // Initialize sampled users
+
+            //Create a new facility
+            Facility newFacility = new Facility(organizerID, facilityname, facilitylocation, maxAttendeesInt);
 
             // Save to Firestore
             db.collection("events").add(newEvent)
@@ -90,6 +98,13 @@ public class OrganizerAddEvent extends DialogFragment {
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(getContext(), "Failed to create event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+
+            db.collection("facility").add(newFacility)
+                    .addOnSuccessListener(documentReference -> {
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Failed to create facility: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         });
     }
