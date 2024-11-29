@@ -16,7 +16,8 @@ public class Facility implements Serializable {
     private List<String> eventIDs; // List of event IDs hosted in this building
 
     // Constructor
-    public Facility(String name, String location, int capacity) {
+    public Facility(String id, String name, String location, int capacity) {
+        this.id = id;
         this.facilityname = name;
         this.facilitylocation = location;
         this.capacity = capacity;
