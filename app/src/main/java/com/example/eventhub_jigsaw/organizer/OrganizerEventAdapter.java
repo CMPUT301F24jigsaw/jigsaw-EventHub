@@ -54,6 +54,15 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
             // Show the DialogFragment
             infoFragment.show(fragmentManager, "event_info_dialog");
         });
+
+//        holder.SampleUser.setOnClickListener(v -> {
+//            OrganizerSampleEntrant sampleUsersDialog = new OrganizerSampleEntrant();
+//            Bundle bundle = new Bundle();
+//            bundle.putString("event_id", event.getEventId()); // Pass event ID
+//            sampleUsersDialog.setArguments(bundle);
+//            sampleUsersDialog.show(fragmentManager, "sample_users_dialog");
+//
+//        });
     }
 
     @Override

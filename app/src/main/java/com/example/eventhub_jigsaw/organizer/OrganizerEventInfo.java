@@ -8,6 +8,7 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,8 @@ public class OrganizerEventInfo extends DialogFragment {
 
     private ImageView eventQrImage;
     private TextView eventNameTextView;
+    private String eventID;
+    private Button closeButton;
 
     private FirebaseFirestore db;
 
@@ -41,11 +44,6 @@ public class OrganizerEventInfo extends DialogFragment {
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        view.findViewById(R.id.button_ViewWaitlist).setOnClickListener(v -> {
-            // Open the WaitlistDialogFragment
-            OrganizerViewWaitlist waitlistDialog = new OrganizerViewWaitlist();
-            waitlistDialog.show(getParentFragmentManager(), "WaitlistDialog");
-        });
 
         // Retrieve event name and organizer ID passed from the previous fragment
         Bundle args = getArguments();
@@ -55,6 +53,21 @@ public class OrganizerEventInfo extends DialogFragment {
 
             // Fetch event data from Firestore using name and organizer ID
             fetchEventDetails(eventName, organizerId);
+
+            view.findViewById(R.id.button_ViewWaitlist).setOnClickListener(v -> {
+                // Open the WaitlistDialogFragment
+                OrganizerViewWaitlist waitlistDialog = new OrganizerViewWaitlist();
+                // Create a Bundle to pass eventId
+                Bundle bundle = new Bundle();
+                bundle.putString("event_id", eventID); // Replace `eventId` with the actual eventId variable
+
+                // Set the arguments for the dialog fragment
+                waitlistDialog.setArguments(bundle);
+                waitlistDialog.show(getParentFragmentManager(), "WaitlistDialog");
+            });
+
+            view.findViewById(R.id.closeButton).setOnClickListener(v -> dismiss());
+
         }
 
         // Return the view for the dialog
@@ -79,6 +92,7 @@ public class OrganizerEventInfo extends DialogFragment {
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             // Retrieve event details
                             String name = document.getString("eventName");
+                            eventID = document.getId();
                             String qrCodeBase64 = document.getString("qrCode");
 
                             // Display event name

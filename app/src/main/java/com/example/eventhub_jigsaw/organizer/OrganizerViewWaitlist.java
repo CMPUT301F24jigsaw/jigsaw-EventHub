@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -12,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventhub_jigsaw.R;
 import com.example.eventhub_jigsaw.User;
+import com.example.eventhub_jigsaw.organizer.WaitlistAdapter;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +24,7 @@ public class OrganizerViewWaitlist extends DialogFragment {
     private RecyclerView recyclerView;
     private WaitlistAdapter adapter;
     private List<User> userList = new ArrayList<>();
+    private String eventId; // Store eventId
 
     @Nullable
     @Override
@@ -32,13 +36,22 @@ public class OrganizerViewWaitlist extends DialogFragment {
         adapter = new WaitlistAdapter(userList);
         recyclerView.setAdapter(adapter);
 
-        fetchWaitlistUsers();
+        // Retrieve the eventId passed in arguments
+        if (getArguments() != null) {
+            eventId = getArguments().getString("eventId");
+            fetchWaitlistUsers();
+        } else {
+            // If no eventId is provided, dismiss the dialog or show an error
+            dismiss();
+        }
 
         return view;
     }
 
     private void fetchWaitlistUsers() {
-        String eventId = "nANFHl5f3GhUuhFsY8JM"; // Replace with the actual event ID
+        if (eventId == null) {
+            return; // Exit if eventId is not set
+        }
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
