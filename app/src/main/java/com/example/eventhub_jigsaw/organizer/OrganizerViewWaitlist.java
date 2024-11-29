@@ -1,6 +1,7 @@
 package com.example.eventhub_jigsaw.organizer;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,33 +39,48 @@ public class OrganizerViewWaitlist extends DialogFragment {
 
         // Retrieve the eventId passed in arguments
         if (getArguments() != null) {
-            eventId = getArguments().getString("eventId");
+            eventId = getArguments().getString("event_id");
             fetchWaitlistUsers();
         } else {
             // If no eventId is provided, dismiss the dialog or show an error
             dismiss();
         }
 
+        view.findViewById(R.id.button_sample_User).setOnClickListener(v -> {
+            OrganizerSampleEntrant sampleEntrant = new OrganizerSampleEntrant();
+            Bundle bundle = new Bundle();
+            bundle.putString("event_id", eventId);
+            sampleEntrant.setArguments(bundle);
+            sampleEntrant.show(getParentFragmentManager(), "sampleEntrant");
+        });
+
+        view.findViewById(R.id.button_close).setOnClickListener(V -> {
+            dismiss();
+        });
+
         return view;
     }
 
     private void fetchWaitlistUsers() {
         if (eventId == null) {
+            Log.e("OrganizerViewWaitlist", "Event ID is null.");
             return; // Exit if eventId is not set
         }
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Fetch the event's waiting list
         db.collection("events").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
 
-                if (waitingList != null) {
+                if (waitingList != null && !waitingList.isEmpty()) {
+                    Log.e("OrganizerViewWaitlist", "Waiting List: " + waitingList);
+
                     for (String userId : waitingList) {
-                        // Fetch user details for each user in the waiting list
                         db.collection("users").document(userId).get().addOnSuccessListener(userSnapshot -> {
                             if (userSnapshot.exists()) {
+                                Log.e("OrganizerViewWaitlist", "User found: " + userId);
+
                                 User user = new User(
                                         userSnapshot.getString("name"),
                                         userSnapshot.getString("email"),
@@ -75,11 +91,26 @@ public class OrganizerViewWaitlist extends DialogFragment {
 
                                 userList.add(user);
                                 adapter.notifyDataSetChanged();
+                            } else {
+                                Log.e("OrganizerViewWaitlist", "User document not found: " + userId);
                             }
-                        });
+                        }).addOnFailureListener(e -> Log.e("OrganizerViewWaitlist", "Error fetching user: " + e.getMessage()));
                     }
+                } else {
+                    Log.e("OrganizerViewWaitlist", "Waiting list is empty or null.");
                 }
+            } else {
+                Log.e("OrganizerViewWaitlist", "Event document not found.");
             }
-        });
+        }).addOnFailureListener(e -> Log.e("OrganizerViewWaitlist", "Error fetching event: " + e.getMessage()));
+    }@Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null) {
+            getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
     }
+
+
+
 }
