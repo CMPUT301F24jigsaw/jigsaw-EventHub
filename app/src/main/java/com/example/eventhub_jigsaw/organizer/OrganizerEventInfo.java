@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class OrganizerEventInfo extends DialogFragment {
+
+    private static final String TAG = "OrganizerEventInfo";
 
     private ImageView eventQrImage;
     private TextView eventNameTextView;
@@ -59,8 +62,15 @@ public class OrganizerEventInfo extends DialogFragment {
                 OrganizerViewWaitlist waitlistDialog = new OrganizerViewWaitlist();
                 // Create a Bundle to pass eventId
                 Bundle bundle = new Bundle();
-                bundle.putString("event_id", eventID); // Replace `eventId` with the actual eventId variable
-
+                bundle.putString("event_id", eventID);// Replace `eventId` with the actual eventId variable
+                if (eventID != null) {
+                    bundle.putString("event_id", eventID);
+                    Log.e(TAG, "EventID is: " + eventID); // Log the eventID to check its value
+                } else {
+                    Log.e(TAG, "EventID is null! Cannot pass it to WaitlistDialog.");
+                    Toast.makeText(getContext(), "Error: Event ID not found.", Toast.LENGTH_SHORT).show();
+                    return; // Prevent opening the dialog if eventID is null
+                }
                 // Set the arguments for the dialog fragment
                 waitlistDialog.setArguments(bundle);
                 waitlistDialog.show(getParentFragmentManager(), "WaitlistDialog");
