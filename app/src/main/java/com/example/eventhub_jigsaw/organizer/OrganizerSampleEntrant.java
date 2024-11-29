@@ -63,6 +63,7 @@ public class OrganizerSampleEntrant extends DialogFragment {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         // Get waiting list
+                        Long maxEntries = documentSnapshot.getLong("maxAttendees");
                         List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
                         if (waitingList == null || waitingList.isEmpty()) {
                             Toast.makeText(requireContext(), "No users in the waiting list", Toast.LENGTH_SHORT).show();
@@ -72,7 +73,7 @@ public class OrganizerSampleEntrant extends DialogFragment {
 
                         // Shuffle and sample 10 users
                         Collections.shuffle(waitingList);
-                        List<String> sampledUsers = waitingList.subList(0, Math.min(10, waitingList.size()));
+                        List<String> sampledUsers = waitingList.subList(0, Math.min(maxEntries.intValue(), waitingList.size()));
 
                         // Update Firestore with sampled users
                         db.collection("events").document(eventId)
