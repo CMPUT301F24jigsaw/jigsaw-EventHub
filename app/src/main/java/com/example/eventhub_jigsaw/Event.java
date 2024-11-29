@@ -86,5 +86,11 @@ public class Event implements Serializable {
     public void setSampledUsers(List<String> sampledUsers) {
         this.sampledUsers = sampledUsers;
     }
+
+    public Event(String eventName, String eventDate, String description) {
+        this.eventName = eventName;
+        this.eventDate = eventDate;
+        this.description = description;
+    }
 }
 

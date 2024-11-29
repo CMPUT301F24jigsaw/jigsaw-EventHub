@@ -1,6 +1,7 @@
 package com.example.eventhub_jigsaw.organizer;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +82,18 @@ public class OrganizerSampleEntrant extends DialogFragment {
                                 .addOnSuccessListener(aVoid -> {
                                     sampledUsersTextView.setText(String.join("\n", sampledUsers));
                                     Toast.makeText(requireContext(), "Sampled users updated", Toast.LENGTH_SHORT).show();
+
+                                    // Update each user's "eventAcceptedByOrganizer" list
+                                    for (String userId : sampledUsers) {
+                                        db.collection("users").document(userId)
+                                                .update("eventAcceptedByOrganizer", FieldValue.arrayUnion(eventId))
+                                                .addOnSuccessListener(aVoid2 -> {
+                                                    Log.d("OrganizerSampleEntrant", "User " + userId + " updated with event ID " + eventId);
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Toast.makeText(requireContext(), "Failed to update user " + userId + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                });
+                                    }
                                 })
                                 .addOnFailureListener(e -> {
                                     Toast.makeText(requireContext(), "Failed to update sampled users: " + e.getMessage(), Toast.LENGTH_SHORT).show();

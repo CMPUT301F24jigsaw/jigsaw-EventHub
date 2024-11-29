@@ -19,7 +19,8 @@ public class User implements Serializable {
     private Boolean adminNotification;
     private Boolean organizerNotification;
     private Role role; // Role of the user (ENTRANT or ORGANIZER)
-    private List<Events> WaitingList;
+    private List<String> WaitingList;
+    private List<String> eventAcceptedByOrganizer;
 
     // Constructor for general users
     public User(String name, String email, String userID, int phone, Role role) {
@@ -86,11 +87,11 @@ public class User implements Serializable {
         return role;
     }
 
-    public List<Events> getWaitingList() {
+    public List<String> getWaitingList() {
         return WaitingList;
     }
 
-    public void setWaitingList(List<Events> waitingList) {
+    public void setWaitingList(List<String> waitingList) {
         WaitingList = waitingList;
     }
 
@@ -98,4 +99,11 @@ public class User implements Serializable {
         this.role = role;
     }
 
+    public List<String> getEventAcceptedByOrganizer() {
+        return eventAcceptedByOrganizer;
+    }
+
+    public void setEventAcceptedByOrganizer(List<String> eventAcceptedByOrganizer) {
+        this.eventAcceptedByOrganizer = eventAcceptedByOrganizer;
+    }
 }
