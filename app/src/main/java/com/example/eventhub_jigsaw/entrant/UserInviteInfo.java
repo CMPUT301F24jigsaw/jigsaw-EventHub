@@ -1,12 +1,14 @@
 package com.example.eventhub_jigsaw.entrant;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +17,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.eventhub_jigsaw.R;
 import com.example.eventhub_jigsaw.admin.LoadingFragment;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UserInviteInfo extends Fragment {
 
@@ -23,11 +27,17 @@ public class UserInviteInfo extends Fragment {
     private TextView eventDescriptionTextView;
     private Button acceptButton;
     private Button declineButton;
+    private FirebaseFirestore db;
+    private String userId;
+    private String eventID;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.user_inviteinfo, container, false);
+        db = FirebaseFirestore.getInstance();
+
+        userId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Initialize views
         eventNameTextView = view.findViewById(R.id.eventnameInfo_user);
@@ -42,7 +52,7 @@ public class UserInviteInfo extends Fragment {
             String eventName = getArguments().getString("event_name");
             String eventDescription = getArguments().getString("event_description");
             String eventDate = getArguments().getString("event_date");
-            String eventID = getArguments().getString("event_id");
+            eventID = getArguments().getString("event_id");
 
             // Set the data to views
             eventNameTextView.setText(eventName);
@@ -54,20 +64,13 @@ public class UserInviteInfo extends Fragment {
         acceptButton.setOnClickListener(v -> {
             // TODO: Add logic to handle the event acceptance
             // For now, just navigate to the loading screen
-            navigateToLoadingScreen();
+            acceptEvent(eventID);
         });
 
         // Handle Decline Button Click
         declineButton.setOnClickListener(v -> {
             // Navigate to the loading screen
-            navigateToLoadingScreen();
-
-            // Delay for 2 seconds and then go back to the invites page
-            new android.os.Handler().postDelayed(() -> {
-                // Simulate removal of the declined event and return to the invites list
-                getParentFragmentManager().popBackStack(); // Removes LoadingFragment
-                getParentFragmentManager().popBackStack(); // Removes UserInviteInfo
-            }, 2000); // 2-second delay
+            declineEvent(eventID);
         });
 
         return view;
@@ -79,4 +82,48 @@ public class UserInviteInfo extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+    private void acceptEvent(String eventID) {
+        // Add eventID to user's registeredEvents list
+        db.collection("users").document(userId)
+                .update("registeredEvents", FieldValue.arrayUnion(eventID),
+                        "eventAcceptedByOrganizer", FieldValue.arrayRemove(eventID))
+                .addOnSuccessListener(unused -> {
+                    // Add userId to event's registeredUsers list
+                    db.collection("events").document(eventID)
+                            .update("registeredUsers", FieldValue.arrayUnion(userId))
+                            .addOnSuccessListener(unused2 -> navigateToLoadingScreen())
+                            .addOnFailureListener(e -> showError("Failed to update event's registered users."));
+                })
+                .addOnFailureListener(e -> showError("Failed to accept the event."));
+    }
+
+    private void declineEvent(String eventID) {
+        // Remove eventID from user's eventAcceptedByOrganizer list
+        db.collection("users").document(userId)
+                .update("eventAcceptedByOrganizer", FieldValue.arrayRemove(eventID))
+                .addOnSuccessListener(unused -> {
+                    // Remove userId from event's sampledUsers list
+                    db.collection("events").document(eventID)
+                            .update("sampledUsers", FieldValue.arrayRemove(userId))
+                            .addOnSuccessListener(unused2 -> {
+                                navigateToLoadingScreen();
+                                // Delay for 2 seconds before returning to the previous fragment
+                                new android.os.Handler().postDelayed(() -> {
+                                    getParentFragmentManager().popBackStack(); // Removes LoadingFragment
+                                    getParentFragmentManager().popBackStack(); // Removes UserInviteInfo
+                                }, 2000); // 2-second delay
+                            })
+                            .addOnFailureListener(e -> showError("Failed to update event's sampled users."));
+                })
+                .addOnFailureListener(e -> showError("Failed to decline the event."));
+    }
+
+    private void showError(String message) {
+        if (getContext() != null) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        }
+    }
 }
+
+

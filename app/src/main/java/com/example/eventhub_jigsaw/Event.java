@@ -13,6 +13,7 @@ public class Event implements Serializable {
     private String description;
     private List<User> waitingList;
     private List<String> sampledUsers;
+    private List<String> registeredUsers;
 
     public String getEventName() {
         return eventName;
@@ -56,6 +57,14 @@ public class Event implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public List<String> getRegisteredUsers() {
+        return registeredUsers;
+    }
+
+    public void setRegisteredUsers(List<String> registeredUsers) {
+        this.registeredUsers = registeredUsers;
     }
 
     public void setDescription(String description) {

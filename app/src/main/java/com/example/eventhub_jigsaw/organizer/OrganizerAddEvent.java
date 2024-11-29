@@ -81,6 +81,7 @@ public class OrganizerAddEvent extends DialogFragment {
             Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
             newEvent.setWaitingList(new ArrayList<>()); // Initialize waiting list
             newEvent.setSampledUsers(new ArrayList<>()); // Initialize sampled users
+            newEvent.setRegisteredUsers(new ArrayList<>());
 
             // Save to Firestore
             db.collection("events").add(newEvent)

@@ -21,6 +21,7 @@ public class User implements Serializable {
     private Role role; // Role of the user (ENTRANT or ORGANIZER)
     private List<String> WaitingList;
     private List<String> eventAcceptedByOrganizer;
+    private List<String> registeredEvents;
 
     // Constructor for general users
     public User(String name, String email, String userID, int phone, Role role) {
@@ -89,6 +90,14 @@ public class User implements Serializable {
 
     public List<String> getWaitingList() {
         return WaitingList;
+    }
+
+    public List<String> getRegisteredEvents() {
+        return registeredEvents;
+    }
+
+    public void setRegisteredEvents(List<String> registeredEvents) {
+        this.registeredEvents = registeredEvents;
     }
 
     public void setWaitingList(List<String> waitingList) {
