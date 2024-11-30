@@ -63,22 +63,33 @@ public class OrganizerSampleEntrant extends DialogFragment {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Get waiting list
+                        // Get max entries, waiting list, and declinedInvitationUser list
                         Long maxEntries = documentSnapshot.getLong("maxAttendees");
                         List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
+                        List<String> declinedInvitationUser = (List<String>) documentSnapshot.get("declinedInvitationUser");
+
                         if (waitingList == null || waitingList.isEmpty()) {
                             Toast.makeText(requireContext(), "No users in the waiting list", Toast.LENGTH_SHORT).show();
                             dismiss();
                             return;
                         }
 
-                        // Shuffle and sample 10 users
-                        Collections.shuffle(waitingList);
-                        List<String> sampledUsers = waitingList.subList(0, Math.min(maxEntries.intValue(), waitingList.size()));
+                        // Determine the size for sampling
+                        int sampleSize = maxEntries.intValue();
+                        if (declinedInvitationUser != null && !declinedInvitationUser.isEmpty()) {
+                            sampleSize = Math.min(declinedInvitationUser.size(), waitingList.size());
+                        } else {
+                            sampleSize = Math.min(maxEntries.intValue(), waitingList.size());
+                        }
 
-                        // Update Firestore with sampled users
+                        // Shuffle and sample users
+                        Collections.shuffle(waitingList);
+                        List<String> sampledUsers = waitingList.subList(0, sampleSize);
+
+                        // Update Firestore with sampled users and remove from waitingList
                         db.collection("events").document(eventId)
-                                .update("sampledUsers", sampledUsers)
+                                .update("sampledUsers", sampledUsers,
+                                        "waitingList", FieldValue.arrayRemove(sampledUsers.toArray(new String[0])))
                                 .addOnSuccessListener(aVoid -> {
                                     sampledUsersTextView.setText(String.join("\n", sampledUsers));
                                     Toast.makeText(requireContext(), "Sampled users updated", Toast.LENGTH_SHORT).show();
@@ -108,5 +119,6 @@ public class OrganizerSampleEntrant extends DialogFragment {
                     dismiss();
                 });
     }
+
 }
 

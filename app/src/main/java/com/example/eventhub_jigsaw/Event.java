@@ -11,9 +11,10 @@ public class Event implements Serializable {
     private String eventDate;
     private int maxAttendees;
     private String description;
-    private List<User> waitingList;
+    private List<String> waitingList;
     private List<String> sampledUsers;
     private List<String> registeredUsers;
+    private List<String> declinedInvitationUser;
 
     public String getEventName() {
         return eventName;
@@ -80,11 +81,11 @@ public class Event implements Serializable {
         this.waitingList = new ArrayList<>();
     }
 
-    public List<User> getWaitingList() {
+    public List<String> getWaitingList() {
         return waitingList;
     }
 
-    public void setWaitingList(List<User> waitingList) {
+    public void setWaitingList(List<String> waitingList) {
         this.waitingList = waitingList;
     }
 
@@ -100,6 +101,14 @@ public class Event implements Serializable {
         this.eventName = eventName;
         this.eventDate = eventDate;
         this.description = description;
+    }
+
+    public List<String> getDeclinedInvitationUser() {
+        return declinedInvitationUser;
+    }
+
+    public void setDeclinedInvitationUser(List<String> declinedInvitationUser) {
+        this.declinedInvitationUser = declinedInvitationUser;
     }
 }
 

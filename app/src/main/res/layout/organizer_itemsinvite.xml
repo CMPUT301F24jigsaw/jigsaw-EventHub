@@ -37,12 +37,23 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button_sample_User"
-        android:text="Sample Users"
+        android:id="@+id/button_selected_user"
+        android:text="Registered Users"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="70dp">
 
     </Button>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_cancelled_user"
+        android:text="Canceled Users"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="130dp">
+
+    </Button>
+
 
 
 

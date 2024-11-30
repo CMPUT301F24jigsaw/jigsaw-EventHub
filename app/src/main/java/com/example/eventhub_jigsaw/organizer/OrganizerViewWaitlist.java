@@ -103,7 +103,9 @@ public class OrganizerViewWaitlist extends DialogFragment {
                 Log.e("OrganizerViewWaitlist", "Event document not found.");
             }
         }).addOnFailureListener(e -> Log.e("OrganizerViewWaitlist", "Error fetching event: " + e.getMessage()));
-    }@Override
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         if (getDialog() != null) {
