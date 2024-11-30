@@ -37,7 +37,7 @@ public class UserHomePage extends AppCompatActivity {
             } else if (item.getItemId() == R.id.invites_user) {
                 fragment = new UserInvitePageActivity();  // Create this fragment
             } else if (item.getItemId() == R.id.notifications_user) {
-                fragment = new ProfilesFragment(); // Create this fragment
+                fragment = new NotificationActivity(); // Create this fragment
             } else if (item.getItemId() == R.id.scan_qr_user) {
                 fragment = new UserScanQR(); // Create this fragment
             }
