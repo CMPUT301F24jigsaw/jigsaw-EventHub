@@ -30,6 +30,7 @@ public class UserInviteInfo extends Fragment {
     private FirebaseFirestore db;
     private String userId;
     private String eventID;
+    private String eventName;
 
     @Nullable
     @Override
@@ -49,7 +50,7 @@ public class UserInviteInfo extends Fragment {
 
         // Retrieve data from the bundle
         if (getArguments() != null) {
-            String eventName = getArguments().getString("event_name");
+            eventName = getArguments().getString("event_name");
             String eventDescription = getArguments().getString("event_description");
             String eventDate = getArguments().getString("event_date");
             eventID = getArguments().getString("event_id");
@@ -81,7 +82,8 @@ public class UserInviteInfo extends Fragment {
         // Add eventID to user's registeredEvents list
         db.collection("users").document(userId)
                 .update("registeredEvents", FieldValue.arrayUnion(eventID),
-                        "eventAcceptedByOrganizer", FieldValue.arrayRemove(eventID))
+                        "eventAcceptedByOrganizer", FieldValue.arrayRemove(eventID),
+                        "notifications", FieldValue.arrayUnion("You have accepted the invitation for " + eventName))
                 .addOnSuccessListener(unused -> {
                     // Add userId to event's registeredUsers list
                     db.collection("events").document(eventID)
@@ -97,7 +99,7 @@ public class UserInviteInfo extends Fragment {
     private void declineEvent(String eventID) {
         // Remove eventID from user's eventAcceptedByOrganizer list
         db.collection("users").document(userId)
-                .update("eventAcceptedByOrganizer", FieldValue.arrayRemove(eventID))
+                .update("eventAcceptedByOrganizer", FieldValue.arrayRemove(eventID), "notifications", FieldValue.arrayUnion("You have declined the invitation for " + eventName))
                 .addOnSuccessListener(unused -> {
                     // Remove userId from event's sampledUsers list
                     db.collection("events").document(eventID)
@@ -123,5 +125,3 @@ public class UserInviteInfo extends Fragment {
         }
     }
 }
-
-
