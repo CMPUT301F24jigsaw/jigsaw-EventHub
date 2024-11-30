@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.firebase.storage)
 
     // JUnit 5
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")

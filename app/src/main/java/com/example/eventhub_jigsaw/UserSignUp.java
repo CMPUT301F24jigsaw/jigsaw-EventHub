@@ -1,6 +1,7 @@
 package com.example.eventhub_jigsaw;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -8,10 +9,13 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,6 +35,11 @@ public class UserSignUp extends AppCompatActivity {
     EditText EditName, EditEmail, EditPhone;
     Button ButtonSignUp;
     Spinner SpinnerUserType;
+    private ImageView selectedImageView;
+    private Button buttonUploadImage;
+    private Uri selectedImageUri;
+    private SelectImage selectImage;
+    private UploadImage uploadImage;
 
     String userID; // Unique userID for the device
     private FirebaseFirestore db;
@@ -42,6 +51,10 @@ public class UserSignUp extends AppCompatActivity {
         // Initialize Firestore and retrieve userID
         db = FirebaseFirestore.getInstance();
         userID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        // Initialize image selection and upload components
+        selectImage = new SelectImage(activityResultLauncher, selectedImageView);
+        uploadImage = new UploadImage();
 
         // Check if the user already exists in Firestore
         checkUserExists(userID);
@@ -101,6 +114,10 @@ public class UserSignUp extends AppCompatActivity {
 
         ButtonSignUp = findViewById(R.id.button_signup);
 
+        // Initialize image selection view
+        selectedImageView = findViewById(R.id.image_profile);
+        buttonUploadImage = findViewById(R.id.button_upload_image);
+
         // Set up Spinner with role options
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
@@ -112,7 +129,19 @@ public class UserSignUp extends AppCompatActivity {
 
         // Set up click listener for Sign Up button
         ButtonSignUp.setOnClickListener(v -> registerUser());
+
+        // Set up click listener for the image selection button
+        buttonUploadImage.setOnClickListener(v -> selectImage.selectImage());
     }
+
+    // ActivityResultLauncher setup for handling result from gallery
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                selectImage.getActivityResultCallback().onActivityResult(result);
+                selectedImageUri = selectImage.getSelectedImageUri();
+            }
+    );
 
     private void navigateToHomePage() {
         Intent intent = new Intent(UserSignUp.this, UserHomePage.class);
@@ -160,12 +189,24 @@ public class UserSignUp extends AppCompatActivity {
             return;
         }
 
-        // Create User object and save to Firestore
-        saveUserToFirestore(userID, name, email, phone, role);
+        // Upload image and save user to Firestore
+        uploadImage.uploadImage(selectedImageUri, new UploadImage.OnUploadCompleteListener() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                // Image uploaded successfully, save the URL to Firestore or use it in the user object
+                saveUserToFirestore(userID, name, email, phone, role, imageUrl);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                // Handle failure in image upload
+                Toast.makeText(UserSignUp.this, "Failed to upload image: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
-    private void saveUserToFirestore(String userID, String name, String email, int phone, String role) {
+    private void saveUserToFirestore(String userID, String name, String email, int phone, String role, String imageUrl) {
         // Convert role from String to Role enum
         User.Role userRole;
         try {
@@ -177,6 +218,7 @@ public class UserSignUp extends AppCompatActivity {
 
         // Create User object and ensure WaitingList is explicitly set
         User user = new User(name, email, userID, phone, userRole);
+        user.setProfileImageUrl(imageUrl);  // Set the image URL
         user.setWaitingList(new ArrayList<>()); // Explicitly set an empty list
         user.setEventAcceptedByOrganizer(new ArrayList<>());
         user.setRegisteredEvents(new ArrayList<>());
@@ -201,9 +243,6 @@ public class UserSignUp extends AppCompatActivity {
                     }
                 });
     }
-
-
-
 
 
     private void clearFields() {

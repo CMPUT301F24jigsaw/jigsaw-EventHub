@@ -19,6 +19,7 @@ public class User implements Serializable {
     private Boolean adminNotification;
     private Boolean organizerNotification;
     private Role role; // Role of the user (ENTRANT or ORGANIZER)
+    private String profileImageUrl; // URL for the profile image
     private List<String> WaitingList;
     private List<String> eventAcceptedByOrganizer;
     private List<String> registeredEvents;
@@ -106,6 +107,14 @@ public class User implements Serializable {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 
     public List<String> getEventAcceptedByOrganizer() {
