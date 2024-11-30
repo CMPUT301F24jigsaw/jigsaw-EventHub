@@ -49,6 +49,15 @@
 
         </Button>
 
+        <Button
+            android:id="@+id/button_invited_users"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Invited Users"
+            android:layout_marginTop="16dp">
+
+        </Button>
+
     </LinearLayout>
 
 </LinearLayout>

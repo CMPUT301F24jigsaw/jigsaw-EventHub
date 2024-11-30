@@ -55,6 +55,22 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
             infoFragment.show(fragmentManager, "event_info_dialog");
         });
 
+        holder.selectedUser.setOnClickListener(v -> {
+            OrganizerSelectedUser selectedUser = new OrganizerSelectedUser();
+            Bundle bundle = new Bundle();
+            bundle.putString("event_name", event.getEventName_organizer());
+            selectedUser.setArguments(bundle);
+            selectedUser.show(fragmentManager, "event_selected_user");
+        });
+
+        holder.canceledUsers.setOnClickListener(v -> {
+            OrganizerCanceledUser canceledUser = new OrganizerCanceledUser();
+            Bundle bundle = new Bundle();
+            bundle.putString("event_name", event.getEventName_organizer());
+            canceledUser.setArguments(bundle);
+            canceledUser.show(fragmentManager, "event_canceled_user");
+        });
+
 //        holder.SampleUser.setOnClickListener(v -> {
 //            OrganizerSampleEntrant sampleUsersDialog = new OrganizerSampleEntrant();
 //            Bundle bundle = new Bundle();
@@ -76,7 +92,8 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
         ImageView eventImage;
         Button MoreInfo;
         TextView eventName;
-        Button SampleUser;
+        Button selectedUser;
+        Button canceledUsers;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,7 +101,8 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
             eventImage = itemView.findViewById(R.id.eventImage_organizer);
             MoreInfo = itemView.findViewById(R.id.MoreInfo_organizer);
             eventName = itemView.findViewById(R.id.eventName_organizer);
-            SampleUser = itemView.findViewById(R.id.button_sample_User);
+            selectedUser = itemView.findViewById(R.id.button_selected_user);
+            canceledUsers = itemView.findViewById(R.id.button_cancelled_user);
         }
     }
 }

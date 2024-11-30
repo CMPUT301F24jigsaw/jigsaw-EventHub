@@ -78,7 +78,16 @@ public class OrganizerEventInfo extends DialogFragment {
 
             view.findViewById(R.id.closeButton).setOnClickListener(v -> dismiss());
 
+            view.findViewById(R.id.button_invited_users).setOnClickListener(v -> {
+                OrganizerInvitedUsers invitedUsers = new OrganizerInvitedUsers();
+                Bundle bundle = new Bundle();
+                bundle.putString("event_id", eventID);
+                invitedUsers.setArguments(bundle);
+                invitedUsers.show(getParentFragmentManager(), "invitedUsers");
+            });
+
         }
+
 
         // Return the view for the dialog
         return view;

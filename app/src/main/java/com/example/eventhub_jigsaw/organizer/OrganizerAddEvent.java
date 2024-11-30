@@ -87,6 +87,7 @@ public class OrganizerAddEvent extends DialogFragment {
             newEvent.setWaitingList(new ArrayList<>()); // Initialize waiting list
             newEvent.setSampledUsers(new ArrayList<>()); // Initialize sampled users
             newEvent.setRegisteredUsers(new ArrayList<>());
+            newEvent.setDeclinedInvitationUser(new ArrayList<>());
 
             //Create a new facility
             Facility newFacility = new Facility(organizerID, facilityname, facilitylocation, maxAttendeesInt);

@@ -101,7 +101,8 @@ public class UserInviteInfo extends Fragment {
                 .addOnSuccessListener(unused -> {
                     // Remove userId from event's sampledUsers list
                     db.collection("events").document(eventID)
-                            .update("sampledUsers", FieldValue.arrayRemove(userId))
+                            .update("sampledUsers", FieldValue.arrayRemove(userId),
+                            "declinedInvitationUser", FieldValue.arrayUnion(userId))
                             .addOnSuccessListener(unused2 -> {
                                 dismissFragment(); // Navigate back
                             })
