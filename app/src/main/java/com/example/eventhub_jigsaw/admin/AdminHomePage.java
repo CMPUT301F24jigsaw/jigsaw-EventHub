@@ -33,12 +33,13 @@ public class AdminHomePage extends AppCompatActivity {
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
+
             if (item.getItemId() == R.id.profile) {
                 fragment = new ProfilesFragment();
             } else if (item.getItemId() == R.id.events) {
                 fragment = new EventActivity(); // Create this fragment
             } else if (item.getItemId() == R.id.facilities) {
-                fragment = new ProfilesFragment(); // Create this fragment
+                fragment = new FacilitiesFragment();
             }
 
             if (fragment != null) {

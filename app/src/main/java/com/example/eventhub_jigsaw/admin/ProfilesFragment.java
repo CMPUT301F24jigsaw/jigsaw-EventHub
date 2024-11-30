@@ -42,7 +42,6 @@ public class ProfilesFragment extends Fragment {
         View view = inflater.inflate(R.layout.profiles_page, container, false);
 
         db = FirebaseFirestore.getInstance();
-
         dataList = new ArrayList<>();
         dataListcpy = new ArrayList<>();
 

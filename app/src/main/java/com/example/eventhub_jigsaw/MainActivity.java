@@ -2,14 +2,13 @@ package com.example.eventhub_jigsaw;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventhub_jigsaw.admin.AdminSignIn;
+import com.example.eventhub_jigsaw.admin.AdminHomePage;
 import com.example.eventhub_jigsaw.entrant.UserHomePage;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -42,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Handle Admin Login button click
         adminLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AdminSignIn.class);
+            Intent intent = new Intent(MainActivity.this, AdminHomePage.class);
             startActivity(intent);
         });
 

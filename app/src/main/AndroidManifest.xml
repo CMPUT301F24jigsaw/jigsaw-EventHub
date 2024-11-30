@@ -28,9 +28,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".admin.AdminSignIn">
-
-        </activity>
         <activity android:name=".admin.AdminHomePage">
 
         </activity>

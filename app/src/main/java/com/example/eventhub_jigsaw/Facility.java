@@ -44,7 +44,11 @@ public class Facility {
     }
 
     public void setName(String name) {
-        this.name = name != null ? name.trim() : null;
+        if (name != "") {
+            this.name = name.trim();
+        } else {
+            throw new IllegalArgumentException("Name cannot be Empty");
+        }
     }
 
     public String getLocation() {
@@ -52,7 +56,11 @@ public class Facility {
     }
 
     public void setLocation(String location) {
-        this.location = location != null ? location.trim() : null;
+        if (location != "") {
+            this.location = location.trim();
+        } else {
+            throw new IllegalArgumentException("Location cannot be empty");
+        }
     }
 
     public int getCapacity() {
