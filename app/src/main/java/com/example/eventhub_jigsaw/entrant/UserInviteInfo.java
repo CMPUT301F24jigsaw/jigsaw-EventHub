@@ -76,12 +76,6 @@ public class UserInviteInfo extends Fragment {
         return view;
     }
 
-    private void navigateToLoadingScreen() {
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, new LoadingFragment());
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
 
     private void acceptEvent(String eventID) {
         // Add eventID to user's registeredEvents list
@@ -92,7 +86,9 @@ public class UserInviteInfo extends Fragment {
                     // Add userId to event's registeredUsers list
                     db.collection("events").document(eventID)
                             .update("registeredUsers", FieldValue.arrayUnion(userId))
-                            .addOnSuccessListener(unused2 -> navigateToLoadingScreen())
+                            .addOnSuccessListener(unused2 -> {
+                                dismissFragment(); // Navigate back
+                            })
                             .addOnFailureListener(e -> showError("Failed to update event's registered users."));
                 })
                 .addOnFailureListener(e -> showError("Failed to accept the event."));
@@ -107,12 +103,7 @@ public class UserInviteInfo extends Fragment {
                     db.collection("events").document(eventID)
                             .update("sampledUsers", FieldValue.arrayRemove(userId))
                             .addOnSuccessListener(unused2 -> {
-                                navigateToLoadingScreen();
-                                // Delay for 2 seconds before returning to the previous fragment
-                                new android.os.Handler().postDelayed(() -> {
-                                    getParentFragmentManager().popBackStack(); // Removes LoadingFragment
-                                    getParentFragmentManager().popBackStack(); // Removes UserInviteInfo
-                                }, 2000); // 2-second delay
+                                dismissFragment(); // Navigate back
                             })
                             .addOnFailureListener(e -> showError("Failed to update event's sampled users."));
                 })
@@ -122,6 +113,12 @@ public class UserInviteInfo extends Fragment {
     private void showError(String message) {
         if (getContext() != null) {
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void dismissFragment() {
+        if (getParentFragmentManager() != null) {
+            getParentFragmentManager().popBackStack(); // Remove this fragment
         }
     }
 }
