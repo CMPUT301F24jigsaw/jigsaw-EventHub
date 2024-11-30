@@ -1,6 +1,9 @@
 package com.example.eventhub_jigsaw;
 
+import com.example.eventhub_jigsaw.admin.Events;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class User implements Serializable {
@@ -15,9 +18,10 @@ public class User implements Serializable {
     private int phone;
     private Boolean adminNotification;
     private Boolean organizerNotification;
-    private Role role;
-    private List<Event> waitList;
-    private  List<Event> registeredEvents;
+    private Role role; // Role of the user (ENTRANT or ORGANIZER)
+    private List<String> WaitingList;
+    private List<String> eventAcceptedByOrganizer;
+    private List<String> registeredEvents;
 
     // Constructor for general users
     public User(String name, String email, String userID, int phone, Role role) {
@@ -28,6 +32,7 @@ public class User implements Serializable {
         this.role = role;
         this.adminNotification = false;
         this.organizerNotification = false;
+        this.WaitingList = new ArrayList<>();
     }
 
     // Getters and setters
@@ -83,7 +88,31 @@ public class User implements Serializable {
         return role;
     }
 
+    public List<String> getWaitingList() {
+        return WaitingList;
+    }
+
+    public List<String> getRegisteredEvents() {
+        return registeredEvents;
+    }
+
+    public void setRegisteredEvents(List<String> registeredEvents) {
+        this.registeredEvents = registeredEvents;
+    }
+
+    public void setWaitingList(List<String> waitingList) {
+        WaitingList = waitingList;
+    }
+
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<String> getEventAcceptedByOrganizer() {
+        return eventAcceptedByOrganizer;
+    }
+
+    public void setEventAcceptedByOrganizer(List<String> eventAcceptedByOrganizer) {
+        this.eventAcceptedByOrganizer = eventAcceptedByOrganizer;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.eventhub_jigsaw.entrant;
 
 import android.os.Bundle;
-import android.os.Handler;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,80 +17,110 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.eventhub_jigsaw.R;
 import com.example.eventhub_jigsaw.admin.LoadingFragment;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UserInviteInfo extends Fragment {
+
+    private TextView eventNameTextView;
+    private TextView eventDateTextView;
+    private TextView eventDescriptionTextView;
+    private Button acceptButton;
+    private Button declineButton;
+    private FirebaseFirestore db;
+    private String userId;
+    private String eventID;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.user_inviteinfo, container, false);
+        db = FirebaseFirestore.getInstance();
 
-        // Retrieve data passed to this fragment
-        Bundle args = getArguments();
-        String eventName = args != null ? args.getString("event_name") : null;
-        int eventImage = args != null ? args.getInt("event_image", 0) : 0;
-        String eventAddress = args != null ? args.getString("event_address") : null;
-        String eventDate = args != null ? args.getString("event_date") : null;
+        userId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        // Set up the UI elements with the received data
-        ImageView eventImageView = view.findViewById(R.id.eventInfoImage_user);
-        TextView eventNameView = view.findViewById(R.id.eventnameInfo_user);
-        TextView eventAddressView = view.findViewById(R.id.eventaddress_user);
-        TextView eventDateView = view.findViewById(R.id.eventdate_user);
+        // Initialize views
+        eventNameTextView = view.findViewById(R.id.eventnameInfo_user);
+        eventDateTextView = view.findViewById(R.id.eventdate_user);
+        eventDescriptionTextView = view.findViewById(R.id.eventdescription_user);
 
-        if (eventImage != 0) {
-            eventImageView.setImageResource(eventImage);
+        acceptButton = view.findViewById(R.id.AcceptButton);
+        declineButton = view.findViewById(R.id.DeclineButton);
+
+        // Retrieve data from the bundle
+        if (getArguments() != null) {
+            String eventName = getArguments().getString("event_name");
+            String eventDescription = getArguments().getString("event_description");
+            String eventDate = getArguments().getString("event_date");
+            eventID = getArguments().getString("event_id");
+
+            // Set the data to views
+            eventNameTextView.setText(eventName);
+            eventDateTextView.setText(eventDate);
+            eventDescriptionTextView.setText(eventDescription);
         }
-        eventNameView.setText(eventName);
-        eventAddressView.setText(eventAddress);
-        eventDateView.setText(eventDate);
 
-        // Accept Button
-        Button acceptButton = view.findViewById(R.id.AcceptButton);
+        // Handle Accept Button Click
         acceptButton.setOnClickListener(v -> {
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            LoadingFragment loadingFragment = new LoadingFragment();
-
-            Bundle bundle = new Bundle();
-            bundle.putString("message", "You have accepted the event: " + eventName);
-            loadingFragment.setArguments(bundle);
-
-            transaction.replace(R.id.fragment_container, loadingFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-
-            new Handler().postDelayed(() -> {
-                getParentFragmentManager().popBackStack();
-                navigateToPage1();
-            }, 2000);
+            // TODO: Add logic to handle the event acceptance
+            // For now, just navigate to the loading screen
+            acceptEvent(eventID);
         });
 
-        // Decline Button
-        Button declineButton = view.findViewById(R.id.DeclineButton);
+        // Handle Decline Button Click
         declineButton.setOnClickListener(v -> {
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            LoadingFragment loadingFragment = new LoadingFragment();
-
-            Bundle bundle = new Bundle();
-            bundle.putString("message", "You have declined the event: " + eventName);
-            loadingFragment.setArguments(bundle);
-
-            transaction.replace(R.id.fragment_container, loadingFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-
-            new Handler().postDelayed(() -> {
-                getParentFragmentManager().popBackStack();
-                navigateToPage1();
-            }, 2000);
+            // Navigate to the loading screen
+            declineEvent(eventID);
         });
 
         return view;
     }
 
-    private void navigateToPage1() {
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, new UserInvitePageActivity()); // Replace with your Page1 fragment class
-        transaction.commit();
+
+    private void acceptEvent(String eventID) {
+        // Add eventID to user's registeredEvents list
+        db.collection("users").document(userId)
+                .update("registeredEvents", FieldValue.arrayUnion(eventID),
+                        "eventAcceptedByOrganizer", FieldValue.arrayRemove(eventID))
+                .addOnSuccessListener(unused -> {
+                    // Add userId to event's registeredUsers list
+                    db.collection("events").document(eventID)
+                            .update("registeredUsers", FieldValue.arrayUnion(userId))
+                            .addOnSuccessListener(unused2 -> {
+                                dismissFragment(); // Navigate back
+                            })
+                            .addOnFailureListener(e -> showError("Failed to update event's registered users."));
+                })
+                .addOnFailureListener(e -> showError("Failed to accept the event."));
+    }
+
+    private void declineEvent(String eventID) {
+        // Remove eventID from user's eventAcceptedByOrganizer list
+        db.collection("users").document(userId)
+                .update("eventAcceptedByOrganizer", FieldValue.arrayRemove(eventID))
+                .addOnSuccessListener(unused -> {
+                    // Remove userId from event's sampledUsers list
+                    db.collection("events").document(eventID)
+                            .update("sampledUsers", FieldValue.arrayRemove(userId))
+                            .addOnSuccessListener(unused2 -> {
+                                dismissFragment(); // Navigate back
+                            })
+                            .addOnFailureListener(e -> showError("Failed to update event's sampled users."));
+                })
+                .addOnFailureListener(e -> showError("Failed to decline the event."));
+    }
+
+    private void showError(String message) {
+        if (getContext() != null) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void dismissFragment() {
+        if (getParentFragmentManager() != null) {
+            getParentFragmentManager().popBackStack(); // Remove this fragment
+        }
     }
 }
+
+

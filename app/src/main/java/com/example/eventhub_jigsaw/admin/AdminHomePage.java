@@ -25,6 +25,7 @@ public class AdminHomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_homepage);
 
+
         bottomNavigationView = findViewById(R.id.bottomNavView);
 
         // Set the default fragment to display
