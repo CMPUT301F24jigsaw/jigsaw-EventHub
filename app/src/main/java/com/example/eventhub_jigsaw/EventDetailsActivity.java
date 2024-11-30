@@ -30,6 +30,7 @@ public class EventDetailsActivity extends DialogFragment {
     private FirebaseFirestore db;
     private String eventId;
     private String userId;
+    private String name;
 
     @Nullable
     @Override
@@ -80,7 +81,7 @@ public class EventDetailsActivity extends DialogFragment {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("eventName");
+                        name = documentSnapshot.getString("eventName");
                         String description = documentSnapshot.getString("description");
                         String qrCodeBase64 = documentSnapshot.getString("qrCode");
 
@@ -119,7 +120,8 @@ public class EventDetailsActivity extends DialogFragment {
                 .addOnSuccessListener(aVoid -> {
                     // Update user waitlist
                     DocumentReference userRef = db.collection("users").document(userId);
-                    userRef.update("waitingList", FieldValue.arrayUnion(eventId))
+                    userRef.update("waitingList", FieldValue.arrayUnion(eventId),
+                                    "notifications", FieldValue.arrayUnion("You have joined the waiting list for " + name))
                             .addOnSuccessListener(aVoid2 -> {
                                 Toast.makeText(requireContext(), "Added to waitlist!", Toast.LENGTH_SHORT).show();
                                 dismiss(); // Close the dialog

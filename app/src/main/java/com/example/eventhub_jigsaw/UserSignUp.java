@@ -180,6 +180,7 @@ public class UserSignUp extends AppCompatActivity {
         user.setWaitingList(new ArrayList<>()); // Explicitly set an empty list
         user.setEventAcceptedByOrganizer(new ArrayList<>());
         user.setRegisteredEvents(new ArrayList<>());
+        user.setNotifications(new ArrayList<>());
 
         // Save the User object to Firestore
         db.collection("users").document(userID)
