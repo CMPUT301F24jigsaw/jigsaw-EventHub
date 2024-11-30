@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw.organizer;
+package com.example.eventhub_jigsaw.organizer.event;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,8 +19,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.organizer.OrganizerViewWaitlist;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class OrganizerEventInfo extends DialogFragment {

@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw.organizer;
+package com.example.eventhub_jigsaw.organizer.event;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;

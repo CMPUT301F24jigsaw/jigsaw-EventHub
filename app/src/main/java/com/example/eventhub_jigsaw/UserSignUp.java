@@ -114,8 +114,8 @@ public class UserSignUp extends AppCompatActivity {
 
         ButtonSignUp = findViewById(R.id.button_signup);
 
-        // Initialize image selection view
         selectedImageView = findViewById(R.id.image_profile);
+        selectImage = new SelectImage(activityResultLauncher, selectedImageView);  // Pass initialized ImageView
         buttonUploadImage = findViewById(R.id.button_upload_image);
 
         // Set up Spinner with role options
@@ -189,20 +189,28 @@ public class UserSignUp extends AppCompatActivity {
             return;
         }
 
-        // Upload image and save user to Firestore
-        uploadImage.uploadImage(selectedImageUri, new UploadImage.OnUploadCompleteListener() {
-            @Override
-            public void onSuccess(String imageUrl) {
-                // Image uploaded successfully, save the URL to Firestore or use it in the user object
-                saveUserToFirestore(userID, name, email, phone, role, imageUrl);
-            }
+        // Save image URL if uploaded
+        String imageUrl = null;
+        // Check if an image was selected
+        if (selectedImageUri != null) {
+            // If an image was selected, upload it
+            uploadImage.uploadImage(selectedImageUri, new UploadImage.OnUploadCompleteListener() {
+                @Override
+                public void onSuccess(String imageUrl) {
+                    // Image uploaded successfully, save the URL to Firestore or use it in the user object
+                    saveUserToFirestore(userID, name, email, phone, role, imageUrl);
+                }
 
-            @Override
-            public void onFailure(String errorMessage) {
-                // Handle failure in image upload
-                Toast.makeText(UserSignUp.this, "Failed to upload image: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(String errorMessage) {
+                    // Handle failure in image upload
+                    Toast.makeText(UserSignUp.this, "Failed to upload image: " + errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // No image selected, proceed with saving the user to Firestore without an image
+            saveUserToFirestore(userID, name, email, phone, role, null); // Pass null for imageUrl if no image was selected
+        }
     }
 
 

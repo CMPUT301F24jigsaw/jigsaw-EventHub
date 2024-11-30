@@ -12,8 +12,9 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.eventhub_jigsaw.MainActivity;
 import com.example.eventhub_jigsaw.admin.ProfilesFragment;
 import com.example.eventhub_jigsaw.R;
-import com.example.eventhub_jigsaw.entrant.UserMyprofile;
 import com.example.eventhub_jigsaw.entrant.UserScanQR;
+import com.example.eventhub_jigsaw.organizer.event.OrganizerEventActivity;
+import com.example.eventhub_jigsaw.organizer.facility.OrganizerFacilityActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class OrganizerHomePage extends AppCompatActivity {
@@ -37,12 +38,12 @@ public class OrganizerHomePage extends AppCompatActivity {
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 return true;
-            } else if (item.getItemId() == R.id.invites_organizer) {
+            } else if (item.getItemId() == R.id.events_organizer) {
                 fragment = new OrganizerEventActivity();
             } else if (item.getItemId() == R.id.notifications_organizer) {
                 fragment = new ProfilesFragment();
-            } else if (item.getItemId() == R.id.scan_qr_organizer) {
-                fragment = new UserScanQR();
+            } else if (item.getItemId() == R.id.facilities_organizer) {
+                fragment = new OrganizerFacilityActivity();
             }
 
             if (fragment != null) {

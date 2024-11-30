@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw.organizer.event;
+package com.example.eventhub_jigsaw.organizer.facility;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,33 +13,34 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.organizer.event.OrganizerEventInfo;
+import com.example.eventhub_jigsaw.organizer.event.OrganizerEventPage;
 
 import java.util.List;
 
-public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAdapter.EventViewHolder> {
+public class OrganizerFacilityAdapter extends RecyclerView.Adapter<OrganizerFacilityAdapter.FacilityViewHolder> {
 
-    private List<OrganizerEventPage> eventList;
+    private List<OrganizerFacilityPage> facilityList;
     private FragmentManager fragmentManager;
 
     // Constructor to pass event list and FragmentManager
-    public OrganizerEventAdapter(List<OrganizerEventPage> eventList, FragmentManager fragmentManager) {
-        this.eventList = eventList;
+    public OrganizerFacilityAdapter(List<OrganizerFacilityPage> facilityList, FragmentManager fragmentManager) {
+        this.facilityList = facilityList;
         this.fragmentManager = fragmentManager;
     }
 
     @NonNull
     @Override
-    public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FacilityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Inflate the layout for each event item
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.organizer_itemsinvite, parent, false);
-        return new EventViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.organizers_facilities_page, parent, false);
+        return new FacilityViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        OrganizerEventPage event = eventList.get(position);
-        holder.eventName.setText(event.getEventName_organizer());
-        holder.eventImage.setImageResource(event.getEventImage_organizer());
+    public void onBindViewHolder(@NonNull FacilityViewHolder holder, int position) {
+        OrganizerFacilityPage event = facilityList.get(position);
+        holder.facilityName.setText(event.getEventName_organizer());
 
         holder.MoreInfo.setOnClickListener(v -> {
             // Create a new DialogFragment instance
@@ -48,7 +49,6 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
             // Pass data to the DialogFragment
             Bundle bundle = new Bundle();
             bundle.putString("event_name", event.getEventName_organizer());
-            bundle.putInt("event_image", event.getEventImage_organizer());
             infoFragment.setArguments(bundle);
 
             // Show the DialogFragment
@@ -68,23 +68,21 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
     @Override
     public int getItemCount() {
         // Return the total number of events
-        return eventList.size();
+        return facilityList.size();
     }
 
     // ViewHolder class to represent individual event items
-    public static class EventViewHolder extends RecyclerView.ViewHolder {
+    public static class FacilityViewHolder extends RecyclerView.ViewHolder {
         ImageView eventImage;
         Button MoreInfo;
-        TextView eventName;
+        TextView facilityName;
         Button SampleUser;
 
-        public EventViewHolder(@NonNull View itemView) {
+        public FacilityViewHolder(@NonNull View itemView) {
             super(itemView);
             // Initialize views
-            eventImage = itemView.findViewById(R.id.eventImage_organizer);
             MoreInfo = itemView.findViewById(R.id.MoreInfo_organizer);
-            eventName = itemView.findViewById(R.id.eventName_organizer);
-            SampleUser = itemView.findViewById(R.id.button_sample_User);
+            facilityName = itemView.findViewById(R.id.facility_name);
         }
     }
 }

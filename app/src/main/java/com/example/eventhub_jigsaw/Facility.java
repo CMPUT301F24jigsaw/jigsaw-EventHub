@@ -1,31 +1,26 @@
 package com.example.eventhub_jigsaw;
 
-import android.util.Log;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Facility implements Serializable {
-    private String id;
-    private String facilityname;
-    private String facilitylocation;
-    private int capacity;
-    private List<String> eventIDs; // List of event IDs hosted in this building
+    private static final long serialVersionUID = 1L; // For serialization
 
-    // Constructor
-    public Facility(String id, String name, String location, int capacity) {
-        this.id = id;
-        this.facilityname = name;
-        this.facilitylocation = location;
-        this.capacity = capacity;
-    }
+    private final String organizerID;
+    private String id; // Unique identifier for the facility
+    private String name; // Facility name
+    private String location; // Facility location
+    private int capacity; // Maximum capacity of the facility
+    private List<String> eventIds; // List of event IDs hosted in this facility
 
-    // Default Constructor
-    public Facility() {
-        this.eventIDs = new ArrayList<>();
+    // Constructor with name, organizer ID, location (String), and capacity
+    public Facility(String name, String organizerID, String location, int maxAttendees) {
+        this.name = name;
+        this.organizerID = organizerID;
+        this.location = location;
+        this.capacity = maxAttendees;
+        this.eventIds = new ArrayList<>();
     }
 
     // Getters and Setters
@@ -34,23 +29,23 @@ public class Facility implements Serializable {
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = id != null ? id.trim() : null;
     }
 
     public String getName() {
-        return facilityname;
+        return name;
     }
 
     public void setName(String name) {
-        this.facilityname = name;
+        this.name = name != null ? name.trim() : null;
     }
 
     public String getLocation() {
-        return facilitylocation;
+        return location;
     }
 
     public void setLocation(String location) {
-        this.facilitylocation = location;
+        this.location = location != null ? location.trim() : null;
     }
 
     public int getCapacity() {
@@ -58,40 +53,59 @@ public class Facility implements Serializable {
     }
 
     public void setCapacity(int capacity) {
-        this.capacity = capacity;
+        if (capacity > 0) {
+            this.capacity = capacity;
+        } else {
+            throw new IllegalArgumentException("Capacity must be greater than 0.");
+        }
     }
 
-    public List<String> getEventIDs() {
-        return eventIDs;
+    public List<String> getEventIds() {
+        return new ArrayList<>(eventIds); // Return a copy for safety
     }
 
-    public void addEvent(String eventID) {
-        this.eventIDs.add(eventID);
+    // Add an event ID to the facility's event list
+    public void addEvent(String eventId) {
+        if (eventId != null && !eventId.trim().isEmpty()) {
+            eventIds.add(eventId.trim());
+        } else {
+            throw new IllegalArgumentException("Event ID cannot be null or empty.");
+        }
     }
 
-    public void removeEvent(String eventID) {
-        this.eventIDs.remove(eventID);
+    // Remove an event ID from the facility's event list
+    public void removeEvent(String eventId) {
+        if (eventId != null && !eventId.trim().isEmpty()) {
+            eventIds.remove(eventId.trim());
+        } else {
+            throw new IllegalArgumentException("Event ID cannot be null or empty.");
+        }
     }
 
-    // Utility Method: Check if a specific event is hosted in this building
-    public boolean hasEvent(String eventID) {
-        return this.eventIDs.contains(eventID);
+    // Check if a specific event is hosted in this facility
+    public boolean hasEvent(String eventId) {
+        if (eventId == null || eventId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Event ID cannot be null or empty.");
+        }
+        return eventIds.contains(eventId.trim());
     }
 
-
+    // Validate facility fields
     public boolean checkFields() {
-        // Check for null or empty string fields
-        if (id == null || id.trim().isEmpty()) return false;
-        if (facilityname == null || facilityname.trim().isEmpty()) return false;
-        if (facilitylocation == null || facilitylocation.trim().isEmpty()) return false;
-
-        // Check for invalid capacity (e.g., negative or zero)
-        if (capacity <= 0) return false;
-
-        // All fields are valid
-        return true;
+        return id != null && !id.trim().isEmpty() &&
+                name != null && !name.trim().isEmpty() &&
+                location != null && !location.trim().isEmpty() &&
+                capacity > 0;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Facility{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", capacity=" + capacity +
+                ", eventIds=" + eventIds +
+                '}';
+    }
 }

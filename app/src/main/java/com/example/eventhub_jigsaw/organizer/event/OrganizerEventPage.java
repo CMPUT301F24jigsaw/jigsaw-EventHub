@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw.organizer;
+package com.example.eventhub_jigsaw.organizer.event;
 
 // This is a model class representing a single event
 public class OrganizerEventPage {

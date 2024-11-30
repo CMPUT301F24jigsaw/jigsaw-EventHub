@@ -1,0 +1,24 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <!-- TextView for facility name -->
+    <TextView
+        android:id="@+id/facility_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:layout_weight="1"
+        android:textSize="30sp"
+        android:text="Username" />
+
+    <!-- Button aligned to the right -->
+    <Button
+        android:id="@+id/button_sample_User"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sample Users"
+        android:layout_marginBottom="70dp" />
+</LinearLayout>

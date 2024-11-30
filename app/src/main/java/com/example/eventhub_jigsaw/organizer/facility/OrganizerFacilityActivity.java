@@ -1,4 +1,4 @@
-package com.example.eventhub_jigsaw.organizer.event;
+package com.example.eventhub_jigsaw.organizer.facility;
 
 import android.os.Bundle;
 import android.provider.Settings;
@@ -21,57 +21,56 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrganizerEventActivity extends Fragment {
+public class OrganizerFacilityActivity extends Fragment {
 
-    private List<OrganizerEventPage> eventList;
-    private OrganizerEventAdapter adapter;
+    private List<OrganizerFacilityPage> facilityList;
+    private OrganizerFacilityAdapter adapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.organizer_eventspage, container, false);
+        View view = inflater.inflate(R.layout.organizers_facilities_page, container, false);
 
         // Set up RecyclerView
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewEvents_organizer);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewFacilities_organizer);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        eventList = new ArrayList<>();
-        adapter = new OrganizerEventAdapter(eventList, getChildFragmentManager());
+        facilityList = new ArrayList<>();
+        adapter = new OrganizerFacilityAdapter(facilityList, getChildFragmentManager());
         recyclerView.setAdapter(adapter);
 
-        // Fetch initial events
-        fetchEventsByOrganizer();
+        // Fetch initial facilities
+        fetchFacilitiesByOrganizer();
 
-        // Add event button logic
-        FloatingActionButton addEventButton = view.findViewById(R.id.addButton);
-        addEventButton.setOnClickListener(v -> {
-            OrganizerAddEvent addEventDialog = new OrganizerAddEvent();
-            addEventDialog.setOnEventAddedListener(this::fetchEventsByOrganizer); // Refresh events after adding
-            addEventDialog.show(getChildFragmentManager(), "AddEventDialog");
+        // Add facility button logic
+        FloatingActionButton addFacilityButton = view.findViewById(R.id.addFacility);
+        addFacilityButton.setOnClickListener(v -> {
+            OrganizerAddFacility addFacilityDialog = new OrganizerAddFacility();
+            addFacilityDialog.setOnEventAddedListener(this::fetchFacilitiesByOrganizer); // Refresh events after adding
+            addFacilityDialog.show(getChildFragmentManager(), "AddEventDialog");
         });
 
         return view;
     }
 
-    private void fetchEventsByOrganizer() {
+    private void fetchFacilitiesByOrganizer() {
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("events")
+        db.collection("facilities")
                 .whereEqualTo("organizerID", organizerID)
                 .addSnapshotListener((querySnapshot, error) -> {
                     if (error != null) {
-                        Toast.makeText(getContext(), "Error fetching events: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Error fetching facilities: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     if (querySnapshot != null) {
-                        eventList.clear();
+                        facilityList.clear();
                         for (QueryDocumentSnapshot document : querySnapshot) {
-                            String eventName = document.getString("eventName");
-                            int placeholderImage = R.drawable.event_image_placeholder;
+                            String facilityName = document.getString("facilityName");
 
-                            eventList.add(new OrganizerEventPage(eventName, placeholderImage));
+                            facilityList.add(new OrganizerFacilityPage(facilityName));
                         }
                         adapter.notifyDataSetChanged();
                     }
