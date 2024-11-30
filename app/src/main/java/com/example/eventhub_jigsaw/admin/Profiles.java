@@ -5,6 +5,8 @@ package com.example.eventhub_jigsaw.admin;
  * basic information such as username and email.
  */
 public class Profiles {
+
+    private String userId;
     /** The username associated with the profile */
     private String username;
 
