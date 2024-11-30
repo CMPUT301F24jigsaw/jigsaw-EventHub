@@ -23,6 +23,7 @@ public class User implements Serializable {
     private List<String> WaitingList;
     private List<String> eventAcceptedByOrganizer;
     private List<String> registeredEvents;
+    private List<String> notifications;
 
     // Constructor for general users
     public User(String name, String email, String userID, int phone, Role role) {
@@ -123,5 +124,13 @@ public class User implements Serializable {
 
     public void setEventAcceptedByOrganizer(List<String> eventAcceptedByOrganizer) {
         this.eventAcceptedByOrganizer = eventAcceptedByOrganizer;
+    }
+
+    public List<String> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<String> notifications) {
+        this.notifications = notifications;
     }
 }

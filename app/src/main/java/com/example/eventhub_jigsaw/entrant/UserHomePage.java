@@ -33,13 +33,11 @@ public class UserHomePage extends AppCompatActivity {
             if (item.getItemId() == R.id.profile_user) {
                 fragment = new UserMyprofile();
             } else if (item.getItemId() == R.id.home_user) {
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                return true;
+                fragment = new UserEventPage();
             } else if (item.getItemId() == R.id.invites_user) {
                 fragment = new UserInvitePageActivity();  // Create this fragment
             } else if (item.getItemId() == R.id.notifications_user) {
-                fragment = new ProfilesFragment(); // Create this fragment
+                fragment = new NotificationActivity(); // Create this fragment
             } else if (item.getItemId() == R.id.scan_qr_user) {
                 fragment = new UserScanQR(); // Create this fragment
             }
