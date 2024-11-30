@@ -26,6 +26,8 @@ public class ProfilesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profiles_page, container, false);
 
+        // connect to database
+
         String[] usernames = {"ashwin"};
         String[] emails = {"ksndf"};
 

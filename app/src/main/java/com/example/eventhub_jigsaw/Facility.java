@@ -42,7 +42,11 @@ public class Facility implements Serializable {
     }
 
     public void setName(String name) {
-        this.facilityname = name;
+        if (name != "") {
+            this.facilityname = name;
+        } else {
+            throw new IllegalArgumentException("Name cannot be Empty");
+        }
     }
 
     public String getLocation() {
@@ -50,7 +54,11 @@ public class Facility implements Serializable {
     }
 
     public void setLocation(String location) {
-        this.facilitylocation = location;
+        if (location != "") {
+            this.facilitylocation = location;
+        } else {
+            throw new IllegalArgumentException("Location cannot be empty");
+        }
     }
 
     public int getCapacity() {
@@ -58,7 +66,11 @@ public class Facility implements Serializable {
     }
 
     public void setCapacity(int capacity) {
-        this.capacity = capacity;
+        if (capacity < 0) {
+            this.capacity = capacity;
+        } else {
+            throw new IllegalArgumentException("Capacity cannot be negative");
+        }
     }
 
     public List<String> getEventIDs() {
