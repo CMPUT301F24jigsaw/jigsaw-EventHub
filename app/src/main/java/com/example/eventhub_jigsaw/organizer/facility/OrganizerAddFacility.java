@@ -80,9 +80,10 @@ public class OrganizerAddFacility extends DialogFragment {
             try {
                 db.collection("facilities").add(newFacility)
                         .addOnSuccessListener(documentReference -> {
-                            String facilityId = documentReference.getId();
-                            newFacility.setId(facilityId);  // Set the facility ID once it's added to Firestore
+                            String facilityId = documentReference.getId();  // Get the Firestore-generated ID
+                            newFacility.setId(facilityId);  // Set the facility ID on the object
                             showToast("Facility added successfully!");
+
                             // Optionally, notify the listener
                             if (facilityAddedListener != null) {
                                 facilityAddedListener.onEventAdded();

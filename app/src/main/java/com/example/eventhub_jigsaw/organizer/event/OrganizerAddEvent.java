@@ -22,6 +22,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.eventhub_jigsaw.Event;
 import com.example.eventhub_jigsaw.Facility;
 import com.example.eventhub_jigsaw.R;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.zxing.BarcodeFormat;
@@ -38,10 +39,13 @@ public class OrganizerAddEvent extends DialogFragment {
 
     private FirebaseFirestore db;
     private EditText eventName, maxAttendees, dateTime, eventDescription;
-    Spinner facilityName;
+    Spinner facilityLocation ;
     private ImageView qrCodeImageView;
 
     private OnEventAddedListener eventAddedListener;// Listener for notifying when an event is added
+
+    // Facility list to hold facility data
+    private ArrayList<Facility> facilitiesList = new ArrayList<>();
 
     public void setOnEventAddedListener(OnEventAddedListener listener) {
         this.eventAddedListener = listener;
@@ -62,7 +66,7 @@ public class OrganizerAddEvent extends DialogFragment {
         dateTime = view.findViewById(R.id.dateTime);
         eventDescription = view.findViewById(R.id.eventDescription);
         qrCodeImageView = view.findViewById(R.id.eventQR);
-        facilityName = view.findViewById(R.id.eventLocation);
+        facilityLocation  = view.findViewById(R.id.eventLocation);
 
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -70,7 +74,7 @@ public class OrganizerAddEvent extends DialogFragment {
         db = FirebaseFirestore.getInstance();
 
         // Fetch and populate the Spinner with facilities from Firestore
-        fetchFacilities();
+        loadFacilities();
 
         // Handle back button
         ImageButton backButton = view.findViewById(R.id.backButton);
@@ -86,8 +90,9 @@ public class OrganizerAddEvent extends DialogFragment {
             String date = dateTime.getText().toString().trim();
             String description = eventDescription.getText().toString().trim();
             int maxAttendeesInt = Integer.parseInt(maxAttendees.getText().toString().trim());
-            String facilityname = facilityName.getSelectedItem().toString();
 
+            // Get selected facility name
+            Facility selectedFacility = (Facility) facilityLocation.getSelectedItem();
 
             // Create a new event object
             Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
@@ -105,46 +110,41 @@ public class OrganizerAddEvent extends DialogFragment {
                     .addOnFailureListener(e -> {
                         Toast.makeText(getContext(), "Failed to create event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
+            // Create Facility object (use the selected facility)
+            Facility newFacility = selectedFacility;  // Selected facility
+            // Populate the newFacility object based on the inputs, if required
     });
     }
 
-    // This method will fetch the facilities from Firestore and populate the Spinner
-    private void fetchFacilities() {
-        db.collection("facilities") // Fetch facilities collection
-                .get() // Get all the documents in the collection
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<String> facilityNames = new ArrayList<>(); // List to store facility names
-
-                        // Loop through the documents in the Firestore response
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Assuming each document has a field "facilityName" that contains the name of the facility
-                            String facilityName = document.getString("facilityName");
-
-                            // Check if facilityName is not null, then add it to the list
-                            if (facilityName != null) {
-                                facilityNames.add(facilityName);
-                            }
+    private void loadFacilities() {
+        db.collection("facilities").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    facilitiesList.clear();
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        Facility facility = document.toObject(Facility.class);
+                        if (facility != null) {
+                            facilitiesList.add(facility);
                         }
-
-                        // Check if facilities were fetched successfully
-                        if (!facilityNames.isEmpty()) {
-                            // Populate the Spinner with facility names
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                                    android.R.layout.simple_spinner_item, facilityNames);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            facilityName.setAdapter(adapter); // Set the adapter to the Spinner
-                        } else {
-                            // Show a message if no facilities are available
-                            Toast.makeText(getContext(), "No facilities available.", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        // Handle error when fetching facilities from Firestore
-                        Toast.makeText(getContext(), "Error fetching facilities: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
+                    // Update the spinner with the list of facility names
+                    updateFacilitySpinner();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to load facilities: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+    private void updateFacilitySpinner() {
+        // Create a list of facility names
+        ArrayList<String> facilityNames = new ArrayList<>();
+        for (Facility facility : facilitiesList) {
+            facilityNames.add(facility.getName());  // Assuming Facility class has a 'getName()' method
+        }
 
+        // Create an adapter for the spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, facilityNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        facilityLocation.setAdapter(adapter);
+    }
 
     private void generateAndSaveQrCode(String eventId) {
         String eventLink = "https://yourapp.example.com/event/" + eventId;
@@ -257,6 +257,7 @@ public class OrganizerAddEvent extends DialogFragment {
     private void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
+
 
     public interface OnEventAddedListener {
         void onEventAdded();

@@ -4,19 +4,27 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Facility implements Serializable {
-    private final String organizerID;
+public class Facility {
     private String id; // Unique identifier for the facility
     private String name; // Facility name
     private String location; // Facility location
     private int capacity; // Maximum capacity of the facility
     private List<String> eventIds; // List of event IDs hosted in this facility
+    private String organizerID; // Organizer ID
 
-    // Constructor with name, organizer ID, location (String), and capacity
+    // No-argument constructor required by Firestore
+    public Facility() {
+        // Firestore needs a no-argument constructor for deserialization
+    }
+
     public Facility(String name, String organizerID, String location, int maxAttendees) {
-        this.name = name;
-        this.organizerID = organizerID;
-        this.location = location;
+        if (organizerID == null || organizerID.trim().isEmpty()) {
+            throw new IllegalArgumentException("Organizer ID cannot be null or empty.");
+        }
+
+        this.organizerID = organizerID.trim();  // Initialize final field
+        this.name = name != null ? name.trim() : null;
+        this.location = location != null ? location.trim() : null;
         this.capacity = maxAttendees;
         this.eventIds = new ArrayList<>();
     }
@@ -64,10 +72,10 @@ public class Facility implements Serializable {
 
     // Add an event ID to the facility's event list
     public void addEvent(String eventId) {
-        if (eventId != null && !eventId.trim().isEmpty()) {
+        if (eventId != null && !eventId.trim().isEmpty() && !eventIds.contains(eventId.trim())) {
             eventIds.add(eventId.trim());
         } else {
-            throw new IllegalArgumentException("Event ID cannot be null or empty.");
+            throw new IllegalArgumentException("Event ID cannot be null, empty, or duplicate.");
         }
     }
 
@@ -93,13 +101,14 @@ public class Facility implements Serializable {
         return id != null && !id.trim().isEmpty() &&
                 name != null && !name.trim().isEmpty() &&
                 location != null && !location.trim().isEmpty() &&
-                capacity > 0;
+                capacity > 0 &&
+                organizerID != null && !organizerID.trim().isEmpty();
     }
 
     @Override
     public String toString() {
         return "Facility{" +
-                "id='" + id + '\'' +
+                "organizer_id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", location='" + location + '\'' +
                 ", capacity=" + capacity +
