@@ -15,6 +15,7 @@ public class Event implements Serializable {
     private List<String> sampledUsers;
     private List<String> registeredUsers;
     private List<String> declinedInvitationUser;
+    private String facilityId; // Add this field for facility ID
 
     public String getEventName() {
         return eventName;
@@ -110,5 +111,15 @@ public class Event implements Serializable {
     public void setDeclinedInvitationUser(List<String> declinedInvitationUser) {
         this.declinedInvitationUser = declinedInvitationUser;
     }
+
+    // Getter and Setter for facilityId
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
+    }
+
 }
 

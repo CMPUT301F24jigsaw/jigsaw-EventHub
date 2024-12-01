@@ -45,7 +45,7 @@ public class OrganizerAddEvent extends DialogFragment {
     private OnEventAddedListener eventAddedListener;// Listener for notifying when an event is added
 
     // Facility list to hold facility data
-    private ArrayList<Facility> facilitiesList = new ArrayList<>();
+    private ArrayList<Facility> facilityNames = new ArrayList<>();
 
     public void setOnEventAddedListener(OnEventAddedListener listener) {
         this.eventAddedListener = listener;
@@ -66,85 +66,84 @@ public class OrganizerAddEvent extends DialogFragment {
         dateTime = view.findViewById(R.id.dateTime);
         eventDescription = view.findViewById(R.id.eventDescription);
         qrCodeImageView = view.findViewById(R.id.eventQR);
-        facilityLocation  = view.findViewById(R.id.eventLocation);
+        facilityLocation = view.findViewById(R.id.eventLocation);
 
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Fetch and populate the Spinner with facilities from Firestore
         loadFacilities();
 
-        // Handle back button
         ImageButton backButton = view.findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> dismiss());
 
-        // Handle save button
         view.findViewById(R.id.saveEventButton).setOnClickListener(v -> {
-            if (!validateInput()) {
-                return; // Stop if validation fails
-            }
+            if (!validateInput()) return;
 
             String name = eventName.getText().toString().trim();
             String date = dateTime.getText().toString().trim();
             String description = eventDescription.getText().toString().trim();
             int maxAttendeesInt = Integer.parseInt(maxAttendees.getText().toString().trim());
 
-            // Get selected facility name
             Facility selectedFacility = (Facility) facilityLocation.getSelectedItem();
 
-            // Create a new event object
             Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
-            newEvent.setWaitingList(new ArrayList<>()); // Initialize waiting list
-            newEvent.setSampledUsers(new ArrayList<>()); // Initialize sampled users
+            newEvent.setFacilityId(selectedFacility.getId());
+            newEvent.setWaitingList(new ArrayList<>());
+            newEvent.setSampledUsers(new ArrayList<>());
             newEvent.setRegisteredUsers(new ArrayList<>());
             newEvent.setDeclinedInvitationUser(new ArrayList<>());
 
-            // Save to Firestore
             db.collection("events").add(newEvent)
-                    .addOnSuccessListener(documentReference -> {
-                        String eventId = documentReference.getId(); // Get unique ID
-                        generateAndSaveQrCode(eventId); // Generate QR code and save it
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to create event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-            // Create Facility object (use the selected facility)
-            Facility newFacility = selectedFacility;  // Selected facility
-            // Populate the newFacility object based on the inputs, if required
-    });
+                    .addOnSuccessListener(documentReference -> generateAndSaveQrCode(documentReference.getId()))
+                    .addOnFailureListener(e -> showToast("Failed to create event: " + e.getMessage()));
+        });
     }
 
     private void loadFacilities() {
         db.collection("facilities").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    facilitiesList.clear();
+                    List<String> facilityIds = new ArrayList<>();
+
+                    // Collect facility IDs
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        Facility facility = document.toObject(Facility.class);
-                        if (facility != null) {
-                            facilitiesList.add(facility);
-                        }
+                        facilityIds.add(document.getId());
                     }
-                    // Update the spinner with the list of facility names
-                    updateFacilitySpinner();
+
+                    // Retrieve facility names based on their IDs
+                    fetchFacilityNames(facilityIds);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Failed to load facilities: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-    private void updateFacilitySpinner() {
-        // Create a list of facility names
-        ArrayList<String> facilityNames = new ArrayList<>();
-        for (Facility facility : facilitiesList) {
-            facilityNames.add(facility.getName());  // Assuming Facility class has a 'getName()' method
-        }
 
-        // Create an adapter for the spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, facilityNames);
+    private void fetchFacilityNames(List<String> facilityIds) {
+        for (String facilityId : facilityIds) {
+            db.collection("facilities").document(facilityId).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String facilityName = documentSnapshot.getString("name");
+                            if (facilityName != null) {
+                                Facility facility = new Facility(facilityId, facilityName);
+                                facilityNames.add(facility);
+                            }
+                            if (facilityNames.size() == facilityIds.size()) {
+                                updateFacilitySpinner();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Error fetching facility details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
+    private void updateFacilitySpinner() {
+        ArrayAdapter<Facility> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, facilityNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         facilityLocation.setAdapter(adapter);
     }
+
 
     private void generateAndSaveQrCode(String eventId) {
         String eventLink = "https://yourapp.example.com/event/" + eventId;
