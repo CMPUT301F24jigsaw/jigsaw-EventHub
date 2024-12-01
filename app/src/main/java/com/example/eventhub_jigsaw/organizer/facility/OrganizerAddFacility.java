@@ -76,20 +76,26 @@ public class OrganizerAddFacility extends DialogFragment {
             // Create a new facility object
             Facility newFacility = new Facility(name, organizerID, facilityLocationStr, maxAttendeesInt);
 
-            // Add the facility to Firestore
-            db.collection("facilities").add(newFacility)
-                    .addOnSuccessListener(documentReference -> {
-                        String facilityId = documentReference.getId();
-                        newFacility.setId(facilityId);  // Set the facility ID once it's added to Firestore
-                        showToast("Facility added successfully!");
-                        // Optionally, notify the listener
-                        if (facilityAddedListener != null) {
-                            facilityAddedListener.onEventAdded();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        showToast("Failed to create facility: " + e.getMessage());
-                    });
+            // Add the facility to Firestore within a try-catch block
+            try {
+                db.collection("facilities").add(newFacility)
+                        .addOnSuccessListener(documentReference -> {
+                            String facilityId = documentReference.getId();
+                            newFacility.setId(facilityId);  // Set the facility ID once it's added to Firestore
+                            showToast("Facility added successfully!");
+                            // Optionally, notify the listener
+                            if (facilityAddedListener != null) {
+                                facilityAddedListener.onEventAdded();
+                            }
+                            dismiss();
+                        })
+                        .addOnFailureListener(e -> {
+                            showToast("Failed to create facility: " + e.getMessage());
+                        });
+            } catch (Exception e) {
+                // Handle any unexpected errors
+                showToast("An unexpected error occurred: " + e.getMessage());
+            }
         });
     }
 

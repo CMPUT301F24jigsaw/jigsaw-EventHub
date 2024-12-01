@@ -52,7 +52,11 @@ public class OrganizerHomePage extends AppCompatActivity {
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Ensure the transaction is a replacement
         fragmentTransaction.replace(R.id.flFragment_organizer, fragment);
+        fragmentTransaction.addToBackStack(null); // Optional: If you want the fragment to be added to the back stack
         fragmentTransaction.commit();
     }
+
 }

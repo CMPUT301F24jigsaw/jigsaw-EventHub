@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Facility implements Serializable {
-    private static final long serialVersionUID = 1L; // For serialization
-
     private final String organizerID;
     private String id; // Unique identifier for the facility
     private String name; // Facility name

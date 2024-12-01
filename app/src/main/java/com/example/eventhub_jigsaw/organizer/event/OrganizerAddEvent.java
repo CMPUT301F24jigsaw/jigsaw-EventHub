@@ -8,9 +8,11 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import com.example.eventhub_jigsaw.Event;
 import com.example.eventhub_jigsaw.Facility;
 import com.example.eventhub_jigsaw.R;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -28,12 +31,14 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class OrganizerAddEvent extends DialogFragment {
 
     private FirebaseFirestore db;
-    private EditText eventName, maxAttendees, dateTime, eventDescription, facilityName, facilityLocation;
+    private EditText eventName, maxAttendees, dateTime, eventDescription;
+    Spinner facilityName;
     private ImageView qrCodeImageView;
 
     private OnEventAddedListener eventAddedListener;// Listener for notifying when an event is added
@@ -57,13 +62,15 @@ public class OrganizerAddEvent extends DialogFragment {
         dateTime = view.findViewById(R.id.dateTime);
         eventDescription = view.findViewById(R.id.eventDescription);
         qrCodeImageView = view.findViewById(R.id.eventQR);
-        facilityName = view.findViewById(R.id.facilityName);
-        facilityLocation = view.findViewById(R.id.facilityLocation);
+        facilityName = view.findViewById(R.id.eventLocation);
 
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
+
+        // Fetch and populate the Spinner with facilities from Firestore
+        fetchFacilities();
 
         // Handle back button
         ImageButton backButton = view.findViewById(R.id.backButton);
@@ -79,8 +86,8 @@ public class OrganizerAddEvent extends DialogFragment {
             String date = dateTime.getText().toString().trim();
             String description = eventDescription.getText().toString().trim();
             int maxAttendeesInt = Integer.parseInt(maxAttendees.getText().toString().trim());
-            String facilityname = facilityName.getText().toString().trim();
-            String facilitylocation = facilityLocation.getText().toString().trim();
+            String facilityname = facilityName.getSelectedItem().toString();
+
 
             // Create a new event object
             Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
@@ -88,9 +95,6 @@ public class OrganizerAddEvent extends DialogFragment {
             newEvent.setSampledUsers(new ArrayList<>()); // Initialize sampled users
             newEvent.setRegisteredUsers(new ArrayList<>());
             newEvent.setDeclinedInvitationUser(new ArrayList<>());
-
-            //Create a new facility
-            Facility newFacility = new Facility(organizerID, facilityname, facilitylocation, maxAttendeesInt);
 
             // Save to Firestore
             db.collection("events").add(newEvent)
@@ -101,15 +105,46 @@ public class OrganizerAddEvent extends DialogFragment {
                     .addOnFailureListener(e -> {
                         Toast.makeText(getContext(), "Failed to create event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
-
-            db.collection("facility").add(newFacility)
-                    .addOnSuccessListener(documentReference -> {
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to create facility: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        });
+    });
     }
+
+    // This method will fetch the facilities from Firestore and populate the Spinner
+    private void fetchFacilities() {
+        db.collection("facilities") // Fetch facilities collection
+                .get() // Get all the documents in the collection
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> facilityNames = new ArrayList<>(); // List to store facility names
+
+                        // Loop through the documents in the Firestore response
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Assuming each document has a field "facilityName" that contains the name of the facility
+                            String facilityName = document.getString("facilityName");
+
+                            // Check if facilityName is not null, then add it to the list
+                            if (facilityName != null) {
+                                facilityNames.add(facilityName);
+                            }
+                        }
+
+                        // Check if facilities were fetched successfully
+                        if (!facilityNames.isEmpty()) {
+                            // Populate the Spinner with facility names
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                                    android.R.layout.simple_spinner_item, facilityNames);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            facilityName.setAdapter(adapter); // Set the adapter to the Spinner
+                        } else {
+                            // Show a message if no facilities are available
+                            Toast.makeText(getContext(), "No facilities available.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        // Handle error when fetching facilities from Firestore
+                        Toast.makeText(getContext(), "Error fetching facilities: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 
     private void generateAndSaveQrCode(String eventId) {
         String eventLink = "https://yourapp.example.com/event/" + eventId;

@@ -67,7 +67,7 @@
             android:id="@+id/generateQRCodeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit QR Code"
+            android:text="QR Code"
             android:layout_marginStart="90dp" />
     </LinearLayout>
     <!-- Event Name -->
@@ -103,7 +103,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Event Location"
+            android:text="Event Facility"
             android:paddingEnd="50dp"
             android:labelFor="@id/eventLocation" />
 
@@ -157,43 +157,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="DD/MM/YYYY" />
-    </LinearLayout>
-
-    <!-- Event Facility -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="42dp"
-            android:paddingEnd="60dp"
-            android:text="Event Facility" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/facilityName"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginBottom="20dp"
-                android:hint="Enter Facility Name" />
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/facilityLocation"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:hint="Enter Facility Location"/>
-
-
-        </LinearLayout>
-
-
-
     </LinearLayout>
 
     <!-- Event Description -->
