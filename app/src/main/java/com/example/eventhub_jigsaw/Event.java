@@ -15,6 +15,7 @@ public class Event implements Serializable {
     private List<String> sampledUsers;
     private List<String> registeredUsers;
     private List<String> declinedInvitationUser;
+    private boolean geolocation;
 
     public String getEventName() {
         return eventName;
@@ -109,6 +110,14 @@ public class Event implements Serializable {
 
     public void setDeclinedInvitationUser(List<String> declinedInvitationUser) {
         this.declinedInvitationUser = declinedInvitationUser;
+    }
+
+    public boolean isGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(boolean geolocation) {
+        this.geolocation = geolocation;
     }
 }
 

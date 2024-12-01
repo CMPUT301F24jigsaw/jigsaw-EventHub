@@ -1,6 +1,7 @@
 package com.example.eventhub_jigsaw;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -13,14 +14,19 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.eventhub_jigsaw.entrant.UserHomePage;
 import com.example.eventhub_jigsaw.organizer.OrganizerHomePage;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,6 +50,17 @@ public class UserSignUp extends AppCompatActivity {
     String userID; // Unique userID for the device
     private FirebaseFirestore db;
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+
+    private FusedLocationProviderClient fusedLocationClient;
+
+    double latitude;
+    double longitude;
+
+    public interface OnLocationReceivedListener {
+        void onLocationReceived(double latitude, double longitude);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +72,11 @@ public class UserSignUp extends AppCompatActivity {
         // Initialize image selection and upload components
         selectImage = new SelectImage(activityResultLauncher, selectedImageView);
         uploadImage = new UploadImage();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Check if the user already exists in Firestore
         checkUserExists(userID);
@@ -181,40 +203,47 @@ public class UserSignUp extends AppCompatActivity {
             return;
         }
 
-        int phone;
+        long phone;
         try {
-            phone = Integer.parseInt(phoneStr);
+            phone = Long.parseLong(phoneStr); // Parse phone number as long
         } catch (NumberFormatException e) {
             EditPhone.setError("Invalid phone number!");
             return;
         }
 
-        // Save image URL if uploaded
-        String imageUrl = null;
-        // Check if an image was selected
-        if (selectedImageUri != null) {
-            // If an image was selected, upload it
-            uploadImage.uploadImage(selectedImageUri, new UploadImage.OnUploadCompleteListener() {
-                @Override
-                public void onSuccess(String imageUrl) {
-                    // Image uploaded successfully, save the URL to Firestore or use it in the user object
-                    saveUserToFirestore(userID, name, email, phone, role, imageUrl);
-                }
+        getUserLocation(new OnLocationReceivedListener() {
+            @Override
+            public void onLocationReceived(double latitude, double longitude) {
+                // Handle image upload logic and user registration here
+                String imageUrl = null;
+                // Check if an image was selected
+                if (selectedImageUri != null) {
+                    // If an image was selected, upload it
+                    uploadImage.uploadImage(selectedImageUri, new UploadImage.OnUploadCompleteListener() {
+                        @Override
+                        public void onSuccess(String imageUrl) {
+                            // Image uploaded successfully, save the URL to Firestore or use it in the user object
+                            saveUserToFirestore(userID, name, email, phone, role, imageUrl, latitude, longitude);
+                        }
 
-                @Override
-                public void onFailure(String errorMessage) {
-                    // Handle failure in image upload
-                    Toast.makeText(UserSignUp.this, "Failed to upload image: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onFailure(String errorMessage) {
+                            // Handle failure in image upload
+                            Toast.makeText(UserSignUp.this, "Failed to upload image: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            // Proceed with null image URL if upload fails
+                            saveUserToFirestore(userID, name, email, phone, role, null, latitude, longitude);
+                        }
+                    });
+                } else {
+                    // No image selected, proceed with saving the user to Firestore without an image
+                    saveUserToFirestore(userID, name, email, phone, role, null, latitude, longitude);
                 }
-            });
-        } else {
-            // No image selected, proceed with saving the user to Firestore without an image
-            saveUserToFirestore(userID, name, email, phone, role, null); // Pass null for imageUrl if no image was selected
-        }
+            }
+        });
     }
 
 
-    private void saveUserToFirestore(String userID, String name, String email, int phone, String role, String imageUrl) {
+    private void saveUserToFirestore(String userID, String name, String email, long phone, String role, String imageUrl, double latitude, double longitude) {
         // Convert role from String to Role enum
         User.Role userRole;
         try {
@@ -231,6 +260,8 @@ public class UserSignUp extends AppCompatActivity {
         user.setEventAcceptedByOrganizer(new ArrayList<>());
         user.setRegisteredEvents(new ArrayList<>());
         user.setNotifications(new ArrayList<>());
+        user.setLatitude(latitude);
+        user.setLongitude(longitude);
 
         // Save the User object to Firestore
         db.collection("users").document(userID)
@@ -260,4 +291,40 @@ public class UserSignUp extends AppCompatActivity {
         EditPhone.setText("");
         SpinnerUserType.setSelection(0); // Reset Spinner to default
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("UserSignUp", "Location permission granted");
+            } else {
+                Toast.makeText(this, "Location permission not granted.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // Checks if the location permission is granted and fetches the location
+    private void getUserLocation(OnLocationReceivedListener listener) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Provide default values for latitude and longitude
+            listener.onLocationReceived(0.0, 0.0);  // Default values when location is not granted
+            return;
+        }
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
+                        listener.onLocationReceived(latitude, longitude); // pass the values as arguments
+                    } else {
+                        Toast.makeText(this, "Failed to retrieve location. Please ensure location is enabled.", Toast.LENGTH_SHORT).show();
+                        listener.onLocationReceived(0.0, 0.0);  // Default values if location is null
+                    }
+                });
+    }
+
+
+
 }
