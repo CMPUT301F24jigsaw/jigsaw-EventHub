@@ -1,7 +1,6 @@
 package com.example.eventhub_jigsaw.organizer;
 
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,62 +17,62 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class OrganizerMyProfileEdit extends DialogFragment {
 
     public interface OnProfileUpdateListener {
-        void onProfileUpdate(String newUsername, String newEmail);
+        void onProfileUpdate(String newName, String newEmail);
     }
 
     private FirebaseFirestore db;
-    private String userID;
+    private String organizerID;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.user_myprofile_edit, container, false);
+        View view = inflater.inflate(R.layout.organizer_myprofile_edit, container, false);
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Retrieve userID from arguments
+        // Retrieve organizerID from arguments
         if (getArguments() != null) {
-            userID = getArguments().getString("userID");
+            organizerID = getArguments().getString("organizerID");
         }
 
-        // Find input fields and button
-        TextView inputUsername = view.findViewById(R.id.edit_username_field);
-        TextView inputEmail = view.findViewById(R.id.edit_email_field);
-        Button saveButton = view.findViewById(R.id.save_button);
+        // Find views
+        TextView nameInput = view.findViewById(R.id.edit_organizer_name_field);
+        TextView emailInput = view.findViewById(R.id.edit_organizer_email_field);
+        Button saveButton = view.findViewById(R.id.organizer_save_button);
 
-        // Handle save button click
+        // Handle save button
         saveButton.setOnClickListener(v -> {
-            String newUsername = inputUsername.getText().toString();
-            String newEmail = inputEmail.getText().toString();
+            String newName = nameInput.getText().toString();
+            String newEmail = emailInput.getText().toString();
 
-            if (newUsername.isEmpty() || newEmail.isEmpty()) {
-                // Show error message if needed
+            if (newName.isEmpty() || newEmail.isEmpty()) {
+                // Optionally show an error message
                 return;
             }
 
-            updateFirestoreData(newUsername, newEmail);
+            updateFirestoreData(newName, newEmail);
         });
 
         return view;
     }
 
-    private void updateFirestoreData(String newUsername, String newEmail) {
-        if (userID == null || userID.isEmpty()) {
-            System.err.println("Error: userID is null or empty. Cannot update Firestore.");
+    private void updateFirestoreData(String newName, String newEmail) {
+        if (organizerID == null || organizerID.isEmpty()) {
+            System.err.println("Error: organizerID is null or empty. Cannot update Firestore.");
             return;
         }
 
-        db.collection("users").document(userID)
-                .update("name", newUsername, "email", newEmail)
+        db.collection("users").document(organizerID)
+                .update("name", newName, "email", newEmail)
                 .addOnSuccessListener(aVoid -> {
                     if (getTargetFragment() instanceof OnProfileUpdateListener) {
-                        ((OnProfileUpdateListener) getTargetFragment()).onProfileUpdate(newUsername, newEmail);
+                        ((OnProfileUpdateListener) getTargetFragment()).onProfileUpdate(newName, newEmail);
                     }
                     dismiss();
                 })
                 .addOnFailureListener(e -> {
-                    System.err.println("Error updating profile: " + e.getMessage());
+                    System.err.println("Error updating organizer profile: " + e.getMessage());
                 });
     }
 }

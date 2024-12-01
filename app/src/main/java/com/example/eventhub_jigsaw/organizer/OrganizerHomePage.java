@@ -35,13 +35,7 @@ public class OrganizerHomePage extends AppCompatActivity {
             if (item.getItemId() == R.id.profile_organizer) {
                 fragment = new OrganizerMyProfile(); // TEMPORARILY HARDCODED
             } else if (item.getItemId() == R.id.home_organizer) {
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (item.getItemId() == R.id.events_organizer) {
                 fragment = new OrganizerEventActivity();
-            } else if (item.getItemId() == R.id.notifications_organizer) {
-                fragment = new ProfilesFragment();
             } else if (item.getItemId() == R.id.facilities_organizer) {
                 fragment = new OrganizerFacilityActivity();
             }
