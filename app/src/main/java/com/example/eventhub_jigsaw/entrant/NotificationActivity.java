@@ -3,6 +3,7 @@ package com.example.eventhub_jigsaw.entrant;
 import static java.security.AccessController.getContext;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +55,9 @@ public class NotificationActivity extends Fragment {
      */
     private void fetchNotifications() {
         // Hardcoded userID for testing; replace this dynamically in production
-        String userID = "ee0bd9ac8ec9c47d";
+        String userID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+
 
         db.collection("users").document(userID).get()
                 .addOnSuccessListener(documentSnapshot -> {

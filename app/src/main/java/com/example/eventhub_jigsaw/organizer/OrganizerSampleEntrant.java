@@ -28,6 +28,7 @@ public class OrganizerSampleEntrant extends DialogFragment {
 
     private FirebaseFirestore db;
     private String eventId;
+    private String name;
 
     @Nullable
     @Override
@@ -64,6 +65,7 @@ public class OrganizerSampleEntrant extends DialogFragment {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         // Get max entries, waiting list, and declinedInvitationUser list
+                        name = documentSnapshot.getString("eventName");
                         Long maxEntries = documentSnapshot.getLong("maxAttendees");
                         List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
                         List<String> declinedInvitationUser = (List<String>) documentSnapshot.get("declinedInvitationUser");
@@ -97,7 +99,8 @@ public class OrganizerSampleEntrant extends DialogFragment {
                                     // Update each user's "eventAcceptedByOrganizer" list
                                     for (String userId : sampledUsers) {
                                         db.collection("users").document(userId)
-                                                .update("eventAcceptedByOrganizer", FieldValue.arrayUnion(eventId))
+                                                .update("eventAcceptedByOrganizer", FieldValue.arrayUnion(eventId),
+                                                        "notifications", FieldValue.arrayUnion("You have won the lottery! Accept or Decline your invitation for " + name))
                                                 .addOnSuccessListener(aVoid2 -> {
                                                     Log.d("OrganizerSampleEntrant", "User " + userId + " updated with event ID " + eventId);
                                                 })
@@ -105,6 +108,8 @@ public class OrganizerSampleEntrant extends DialogFragment {
                                                     Toast.makeText(requireContext(), "Failed to update user " + userId + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 });
                                     }
+
+
                                 })
                                 .addOnFailureListener(e -> {
                                     Toast.makeText(requireContext(), "Failed to update sampled users: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -117,6 +122,37 @@ public class OrganizerSampleEntrant extends DialogFragment {
                 .addOnFailureListener(e -> {
                     Toast.makeText(requireContext(), "Error fetching event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     dismiss();
+                });
+
+        db.collection("events").document(eventId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
+                        if (waitingList == null || waitingList.isEmpty()) {
+                            Toast.makeText(requireContext(), "No users in the waiting list", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // Loop through each userId in the waiting list
+                        for (String userId : waitingList) {
+                            db.collection("users").document(userId)
+                                    .update("notifications", FieldValue.arrayUnion("You lost the lottery! However, you are still on the waiting list for event: " + documentSnapshot.getString("eventName")))
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("WaitingListNotification", "Notification sent to user: " + userId);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("WaitingListNotification", "Failed to send notification to user: " + userId, e);
+                                    });
+                        }
+
+                        Toast.makeText(requireContext(), "Notifications sent to all users in the waiting list", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(requireContext(), "Event not found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Error fetching event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
