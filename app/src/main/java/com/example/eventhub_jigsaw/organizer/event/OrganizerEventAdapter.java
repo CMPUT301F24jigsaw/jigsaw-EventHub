@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.organizer.OrganizerCanceledUser;
+import com.example.eventhub_jigsaw.organizer.OrganizerSelectedUser;
 
 import java.util.List;
 

@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.organizer.OrganizerInvitedUsers;
 import com.example.eventhub_jigsaw.organizer.OrganizerViewWaitlist;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
