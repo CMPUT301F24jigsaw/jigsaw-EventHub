@@ -12,13 +12,13 @@
         android:padding="20dp"
         android:layout_weight="1"
         android:textSize="30sp"
-        android:text="Username" />
+        android:text="Facility Name" />
 
     <!-- Button aligned to the right -->
     <Button
-        android:id="@+id/button_sample_User"
+        android:id="@+id/button_more_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sample Users"
+        android:text="more info"
         android:layout_marginBottom="70dp" />
 </LinearLayout>

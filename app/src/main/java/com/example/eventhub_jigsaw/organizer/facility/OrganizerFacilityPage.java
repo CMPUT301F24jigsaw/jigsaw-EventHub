@@ -11,7 +11,7 @@ public class OrganizerFacilityPage {
     }
 
     // Getter for facility name
-    public String getEventName_organizer() {
+    public String getFacilityName_organizer() {
         return facilityName_organizer;
     }
 }

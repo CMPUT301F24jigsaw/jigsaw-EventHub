@@ -8,9 +8,11 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +22,9 @@ import androidx.fragment.app.DialogFragment;
 import com.example.eventhub_jigsaw.Event;
 import com.example.eventhub_jigsaw.Facility;
 import com.example.eventhub_jigsaw.R;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -28,15 +32,20 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class OrganizerAddEvent extends DialogFragment {
 
     private FirebaseFirestore db;
-    private EditText eventName, maxAttendees, dateTime, eventDescription, facilityName, facilityLocation;
+    private EditText eventName, maxAttendees, dateTime, eventDescription;
+    Spinner facilityLocation ;
     private ImageView qrCodeImageView;
 
     private OnEventAddedListener eventAddedListener;// Listener for notifying when an event is added
+
+    // Facility list to hold facility data
+    private ArrayList<Facility> facilityNames = new ArrayList<>();
 
     public void setOnEventAddedListener(OnEventAddedListener listener) {
         this.eventAddedListener = listener;
@@ -57,59 +66,84 @@ public class OrganizerAddEvent extends DialogFragment {
         dateTime = view.findViewById(R.id.dateTime);
         eventDescription = view.findViewById(R.id.eventDescription);
         qrCodeImageView = view.findViewById(R.id.eventQR);
-        facilityName = view.findViewById(R.id.facilityName);
-        facilityLocation = view.findViewById(R.id.facilityLocation);
+        facilityLocation = view.findViewById(R.id.eventLocation);
 
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Handle back button
+        loadFacilities();
+
         ImageButton backButton = view.findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> dismiss());
 
-        // Handle save button
         view.findViewById(R.id.saveEventButton).setOnClickListener(v -> {
-            if (!validateInput()) {
-                return; // Stop if validation fails
-            }
+            if (!validateInput()) return;
 
             String name = eventName.getText().toString().trim();
             String date = dateTime.getText().toString().trim();
             String description = eventDescription.getText().toString().trim();
             int maxAttendeesInt = Integer.parseInt(maxAttendees.getText().toString().trim());
-            String facilityname = facilityName.getText().toString().trim();
-            String facilitylocation = facilityLocation.getText().toString().trim();
 
-            // Create a new event object
+            Facility selectedFacility = (Facility) facilityLocation.getSelectedItem();
+
             Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
-            newEvent.setWaitingList(new ArrayList<>()); // Initialize waiting list
-            newEvent.setSampledUsers(new ArrayList<>()); // Initialize sampled users
+            newEvent.setFacilityId(selectedFacility.getFacilityID());
+            newEvent.setWaitingList(new ArrayList<>());
+            newEvent.setSampledUsers(new ArrayList<>());
             newEvent.setRegisteredUsers(new ArrayList<>());
             newEvent.setDeclinedInvitationUser(new ArrayList<>());
 
-            //Create a new facility
-            Facility newFacility = new Facility(organizerID, facilityname, facilitylocation, maxAttendeesInt);
-
-            // Save to Firestore
             db.collection("events").add(newEvent)
-                    .addOnSuccessListener(documentReference -> {
-                        String eventId = documentReference.getId(); // Get unique ID
-                        generateAndSaveQrCode(eventId); // Generate QR code and save it
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to create event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-
-            db.collection("facility").add(newFacility)
-                    .addOnSuccessListener(documentReference -> {
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to create facility: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                    .addOnSuccessListener(documentReference -> generateAndSaveQrCode(documentReference.getId()))
+                    .addOnFailureListener(e -> showToast("Failed to create event: " + e.getMessage()));
         });
     }
+
+    private void loadFacilities() {
+        db.collection("facilities").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<String> facilityIds = new ArrayList<>();
+
+                    // Collect facility IDs
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        facilityIds.add(document.getId());
+                    }
+
+                    // Retrieve facility names based on their IDs
+                    fetchFacilityNames(facilityIds);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to load facilities: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void fetchFacilityNames(List<String> facilityIds) {
+        for (String facilityId : facilityIds) {
+            db.collection("facilities").document(facilityId).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String facilityName = documentSnapshot.getString("name");
+                            if (facilityName != null) {
+                                Facility facility = new Facility(facilityId, facilityName);
+                                facilityNames.add(facility);
+                            }
+                            if (facilityNames.size() == facilityIds.size()) {
+                                updateFacilitySpinner();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Error fetching facility details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
+    private void updateFacilitySpinner() {
+        ArrayAdapter<Facility> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, facilityNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        facilityLocation.setAdapter(adapter);
+    }
+
 
     private void generateAndSaveQrCode(String eventId) {
         String eventLink = "https://yourapp.example.com/event/" + eventId;
@@ -222,6 +256,7 @@ public class OrganizerAddEvent extends DialogFragment {
     private void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
+
 
     public interface OnEventAddedListener {
         void onEventAdded();

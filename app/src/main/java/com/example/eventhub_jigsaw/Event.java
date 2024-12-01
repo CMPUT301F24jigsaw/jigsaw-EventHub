@@ -16,6 +16,7 @@ public class Event implements Serializable {
     private List<String> registeredUsers;
     private List<String> declinedInvitationUser;
     private boolean geolocation;
+    private String facilityId; // Add this field for facility ID
 
     public String getEventName() {
         return eventName;
@@ -119,5 +120,15 @@ public class Event implements Serializable {
     public void setGeolocation(boolean geolocation) {
         this.geolocation = geolocation;
     }
+
+    // Getter and Setter for facilityId
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
+    }
+
 }
 
