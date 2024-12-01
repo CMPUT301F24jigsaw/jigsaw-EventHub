@@ -87,7 +87,7 @@ public class OrganizerAddEvent extends DialogFragment {
             Facility selectedFacility = (Facility) facilityLocation.getSelectedItem();
 
             Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
-            newEvent.setFacilityId(selectedFacility.getId());
+            newEvent.setFacilityId(selectedFacility.getFacilityID());
             newEvent.setWaitingList(new ArrayList<>());
             newEvent.setSampledUsers(new ArrayList<>());
             newEvent.setRegisteredUsers(new ArrayList<>());

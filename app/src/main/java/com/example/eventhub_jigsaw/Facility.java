@@ -11,6 +11,7 @@ public class Facility {
     private int capacity; // Maximum capacity of the facility
     private List<String> eventIds; // List of event IDs hosted in this facility
     private String organizerID; // Organizer ID
+    private String facilityID;
 
     // No-argument constructor required by Firestore
     public Facility() {
@@ -107,12 +108,31 @@ public class Facility {
 
     @Override
     public String toString() {
-        return "Facility{" +
-                "organizer_id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", location='" + location + '\'' +
-                ", capacity=" + capacity +
-                ", eventIds=" + eventIds +
-                '}';
+        return name; // Return the facility name for display
+    }
+
+    public void setEventIds(List<String> eventIds) {
+        this.eventIds = eventIds;
+    }
+
+    public String getOrganizerID() {
+        return organizerID;
+    }
+
+    public void setOrganizerID(String organizerID) {
+        this.organizerID = organizerID;
+    }
+
+    public String getFacilityID() {
+        return facilityID;
+    }
+
+    public void setFacilityID(String facilityID) {
+        this.facilityID = facilityID;
+    }
+
+    public Facility(String facilityID, String name) {
+        this.facilityID = facilityID;
+        this.name = name;
     }
 }
