@@ -1,11 +1,15 @@
 package com.example.eventhub_jigsaw.entrant;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +20,12 @@ import androidx.fragment.app.Fragment;
 import com.example.eventhub_jigsaw.R;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class UserInviteInfo extends Fragment {
 
@@ -28,6 +38,8 @@ public class UserInviteInfo extends Fragment {
     private String userId;
     private String eventID;
     private String eventName;
+    private ImageView eventImage;
+    String imageURL;
 
     @Nullable
     @Override
@@ -41,6 +53,7 @@ public class UserInviteInfo extends Fragment {
         eventNameTextView = view.findViewById(R.id.eventnameInfo_user);
         eventDateTextView = view.findViewById(R.id.eventdate_user);
         eventDescriptionTextView = view.findViewById(R.id.eventdescription_user);
+        eventImage = view.findViewById(R.id.eventInfoImage_user);
 
         acceptButton = view.findViewById(R.id.AcceptButton);
         declineButton = view.findViewById(R.id.DeclineButton);
@@ -51,11 +64,25 @@ public class UserInviteInfo extends Fragment {
             String eventDescription = getArguments().getString("event_description");
             String eventDate = getArguments().getString("event_date");
             eventID = getArguments().getString("event_id");
+            imageURL = getArguments().getString("event_image_url");
 
             // Set the data to views
             eventNameTextView.setText(eventName);
             eventDateTextView.setText(eventDate);
             eventDescriptionTextView.setText(eventDescription);
+        }
+
+        if (eventID != null && !eventID.isEmpty()) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference().child("images/events/" + eventID);
+
+            storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                String downloadUrl = uri.toString();
+                loadImageWithoutGlide(eventImage, downloadUrl);
+            }).addOnFailureListener(e -> {
+                Log.e("FirebaseStorage", "Error fetching download URL", e);
+
+            });
         }
 
         // Handle Accept Button Click
@@ -120,5 +147,28 @@ public class UserInviteInfo extends Fragment {
         if (getParentFragmentManager() != null) {
             getParentFragmentManager().popBackStack();
         }
+    }
+
+    private void loadImageWithoutGlide(ImageView imageView, String imageUrl) {
+        new Thread(() -> {
+            try {
+                // Open a connection to the URL
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+
+                // Decode the input stream to a Bitmap
+                InputStream inputStream = connection.getInputStream();
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                // Set the Bitmap to the ImageView on the main thread
+                imageView.post(() -> imageView.setImageBitmap(bitmap));
+
+            } catch (Exception e) {
+                Log.e("LoadImage", "Error loading image", e);
+                // Set fallback image on error
+            }
+        }).start();
     }
 }

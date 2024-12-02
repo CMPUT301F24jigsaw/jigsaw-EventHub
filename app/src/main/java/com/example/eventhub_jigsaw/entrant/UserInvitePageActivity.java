@@ -90,11 +90,13 @@ public class UserInvitePageActivity extends Fragment {
                     String eventName = documentSnapshot.getString("eventName");
                     String eventDescription = documentSnapshot.getString("description");
                     String eventDate = documentSnapshot.getString("eventDate");
+                    String imageURL = documentSnapshot.getString("imageID");
 
-
+                    Event event = new Event(eventName, eventDate, eventDescription);
+                    event.setImageID(imageURL);
 
                     // Add the event to the list
-                    eventList.add(new Event(eventName, eventDate, eventDescription));
+                    eventList.add(event);
                     adapter.notifyDataSetChanged();
                 }
             }).addOnFailureListener(e -> {

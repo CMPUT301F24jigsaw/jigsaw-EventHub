@@ -74,9 +74,11 @@ public class UserWaitlistPage extends Fragment {
                             String name = documentSnapshot.getString("eventName");
                             String date = documentSnapshot.getString("eventDate");
                             String description = documentSnapshot.getString("description");
+                            String imageURL = documentSnapshot.getString("imageID");
 
                             Event event = new Event(name, date, description);
                             event.setEventID(eventId);
+                            event.setImageID(imageURL);
 
                             eventsList.add(event);
                             adapter.notifyDataSetChanged();

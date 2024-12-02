@@ -74,8 +74,13 @@ public class UserEventPage extends Fragment {
                             String name = documentSnapshot.getString("eventName");
                             String date = documentSnapshot.getString("eventDate");
                             String description = documentSnapshot.getString("description");
+                            String imageURL = documentSnapshot.getString("imageID");
 
-                            eventsList.add(new Event(name, date, description));
+                            Event event = new Event(name, date, description);
+
+                            event.setImageID(imageURL);
+
+                            eventsList.add(event);
                             adapter.notifyDataSetChanged();
                         }
                     });
