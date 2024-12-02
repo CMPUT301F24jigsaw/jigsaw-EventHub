@@ -74,4 +74,11 @@ dependencies {
 
     // location
     implementation ("com.google.android.gms:play-services-location:21.0.1")
+
+    // Testing dependencies
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("com.google.firebase:firebase-firestore:24.8.0")
+    testImplementation("org.mockito:mockito-core:5.4.0")
+    androidTestImplementation("org.mockito:mockito-android:5.4.0")
 }
