@@ -19,17 +19,30 @@ import com.example.eventhub_jigsaw.organizer.OrganizerSelectedUser;
 
 import java.util.List;
 
+/**
+ * OrganizerEventAdapter used for displaying events in a list format.
+ * Allows interaction with event details through buttons in the UI.
+ */
+
 public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAdapter.EventViewHolder> {
 
     private List<OrganizerEventPage> eventList;
     private FragmentManager fragmentManager;
 
-    // Constructor to pass event list and FragmentManager
+    /**
+     * Constructor for initializing the adapter with event data and fragment manager.
+     *
+     * @param eventList       List of events to be displayed.
+     * @param fragmentManager To handle dialog fragments.
+     */
     public OrganizerEventAdapter(List<OrganizerEventPage> eventList, FragmentManager fragmentManager) {
         this.eventList = eventList;
         this.fragmentManager = fragmentManager;
     }
 
+    /**
+     * Inflates the layout for each event item in the RecyclerView.
+     */
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -38,6 +51,12 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
         return new EventViewHolder(view);
     }
 
+    /**
+     * Binds event data to each view holder.
+     *
+     * @param holder
+     * @param position Position of the event in the list.
+     */
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         OrganizerEventPage event = eventList.get(position);

@@ -28,6 +28,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * WaitlistAdapter for displaying events in the user's waitlist.
+ * Allows the user to leave the waitlist for an event.
+ */
+
 public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.WaitlistViewHolder> {
 
     private final List<Event> events;
@@ -35,10 +40,22 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.Waitli
 
     String userID;
 
+    /**
+     * Constructor for initializing the adapter with a list of events.
+     *
+     * @param events List of events to display in the RecyclerView.
+     */
     public WaitlistAdapter(List<Event> events) {
         this.events = events;
     }
 
+    /**
+     * Called to create new ViewHolder instances for RecyclerView items.
+     *
+     * @param parent The parent view group.
+     * @param viewType The view type.
+     * @return
+     */
     @NonNull
     @Override
     public WaitlistViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -46,6 +63,12 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.Waitli
         return new WaitlistViewHolder(view);
     }
 
+    /**
+     * Binds event data to a ViewHolder item.
+     *
+     * @param holder The ViewHolder to bind data to.
+     * @param position The position of the item in the list.
+     */
     @Override
     public void onBindViewHolder(@NonNull WaitlistViewHolder holder, int position) {
         Event event = events.get(position);
@@ -101,6 +124,11 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.Waitli
         });
     }
 
+    /**
+     * Returns the total number of items in the RecyclerView.
+     *
+     * @return The number of events in the list.
+     */
     @Override
     public int getItemCount() {
         return events.size();
@@ -111,6 +139,11 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.Waitli
         Button leaveWaitlist;
         ImageView eventImage;
 
+        /**
+         * ViewHolder to bind event views for each item.
+         *
+         * @param itemView The view for the individual item.
+         */
         public WaitlistViewHolder(@NonNull View itemView) {
             super(itemView);
             eventNameTextView = itemView.findViewById(R.id.event_nam);

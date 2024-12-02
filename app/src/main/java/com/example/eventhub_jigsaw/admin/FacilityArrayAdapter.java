@@ -15,6 +15,11 @@ import com.example.eventhub_jigsaw.R;
 
 import java.util.ArrayList;
 
+/**
+ * FacilityArrayAdapter displays Facility objects in a ListView.
+ * Converts Facility objects into list items for user interaction.
+ */
+
 public class FacilityArrayAdapter extends ArrayAdapter<Facility> {
     private ArrayList<Facility> facilities;
     private Context context;

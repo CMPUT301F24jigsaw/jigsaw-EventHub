@@ -14,10 +14,16 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.eventhub_jigsaw.R;
 
+/**
+ * UserMainPage represents the main page for a user, allowing navigation to registered and waitlist events.
+ */
 public class UserMainPage extends Fragment {
 
     Button registeredEvents, waitlistEvents;
 
+    /**
+     * Called to inflate the fragment's view and set up the event navigation buttons.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,6 +46,9 @@ public class UserMainPage extends Fragment {
 
     }
 
+    /**
+     * Loads a specified fragment into the fragment container.
+     */
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

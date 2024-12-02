@@ -18,13 +18,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.List;
-
+/**
+ * OrganizerCanceledUser displays users who have declined an event invitation.
+ */
 public class OrganizerCanceledUser extends DialogFragment {
 
     private FirebaseFirestore db;
     private TextView cancledUsersTextView;
     private String eventId;
 
+    /**
+     * Inflates the dialog layout and initializes Firebase Firestore and event details.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,6 +55,9 @@ public class OrganizerCanceledUser extends DialogFragment {
         return view;
     }
 
+    /**
+     * Fetches the event ID from the database based on event name and organizer ID.
+     */
     private void fetchEventId(String eventName, String organizerId) {
         db.collection("events")
                 .whereEqualTo("eventName", eventName)
@@ -74,6 +82,9 @@ public class OrganizerCanceledUser extends DialogFragment {
                 });
     }
 
+    /**
+     * Fetches and displays the list of users who declined the event invitation.
+     */
     private void fetchcancledUsers() {
         if (eventId == null) {
             Toast.makeText(requireContext(), "Event ID not available", Toast.LENGTH_SHORT).show();

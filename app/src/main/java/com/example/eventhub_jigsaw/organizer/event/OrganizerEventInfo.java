@@ -24,6 +24,11 @@ import com.example.eventhub_jigsaw.organizer.OrganizerViewWaitlist;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+/**
+ * OrganizerEventInfo displays detailed information about a specific event.
+ * Shows QR code and allows navigation to waitlist and editing screens.
+ */
+
 public class OrganizerEventInfo extends DialogFragment {
 
     private static final String TAG = "OrganizerEventInfo";
@@ -98,6 +103,12 @@ public class OrganizerEventInfo extends DialogFragment {
         return view;
     }
 
+    /**
+     * Fetches event details from DB based on the event name and organizer ID.
+     *
+     * @param eventName   Name of the event.
+     * @param organizerId ID of the event's organizer.
+     */
     private void fetchEventDetails(String eventName, String organizerId) {
         if (eventName == null || organizerId == null) {
             Toast.makeText(getContext(), "Event name or organizer ID is missing", Toast.LENGTH_SHORT).show();
@@ -144,6 +155,12 @@ public class OrganizerEventInfo extends DialogFragment {
     }
 
 
+    /**
+     * Decodes a Base64 string into a Bitmap.
+     *
+     * @param base64 Base64-encoded image string.
+     * @return
+     */
     private Bitmap decodeBase64ToBitmap(String base64) {
         byte[] decodedBytes = Base64.decode(base64, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);

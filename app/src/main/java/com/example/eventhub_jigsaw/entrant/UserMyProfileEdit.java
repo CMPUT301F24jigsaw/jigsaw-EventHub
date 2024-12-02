@@ -15,8 +15,16 @@ import androidx.fragment.app.DialogFragment;
 import com.example.eventhub_jigsaw.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * UserMyProfileEdit is used for editing user's profile information.
+ * Allows the user to update their username and email.
+ */
+
 public class UserMyProfileEdit extends DialogFragment {
 
+    /**
+     * Interface to notify the parent fragment/activity when the profile is updated.
+     */
     public interface OnProfileUpdateListener {
         void onProfileUpdate(String newUsername, String newEmail);
     }
@@ -24,6 +32,14 @@ public class UserMyProfileEdit extends DialogFragment {
     private FirebaseFirestore db;
     private String userID;
 
+    /**
+     * Called to create and return the view hierarchy associated with the fragment.
+     *
+     * @param inflater For inflate views.
+     * @param container The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState Contains previous state data.
+     * @return The inflated view.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,6 +74,12 @@ public class UserMyProfileEdit extends DialogFragment {
         return view;
     }
 
+    /**
+     * Updates the user's profile data in Firestore.
+     *
+     * @param newUsername The updated username.
+     * @param newEmail The updated email.
+     */
     private void updateFirestoreData(String newUsername, String newEmail) {
         if (userID == null || userID.isEmpty()) {
             System.err.println("Error: userID is null or empty. Cannot update Firestore.");

@@ -43,6 +43,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * OrganizerAddEvent used for adding a new event. It allows users to input event details, upload an image, generate a QR code,
+ * and save the event to DB.
+ */
+
 public class OrganizerAddEvent extends DialogFragment {
 
     private FirebaseFirestore db;
@@ -64,12 +69,26 @@ public class OrganizerAddEvent extends DialogFragment {
         this.eventAddedListener = listener;
     }
 
+    /**
+     * Called to create the view hierarchy associated with the fragment.
+     *
+     * @param inflater  For inflate views in the fragment.
+     * @param container If non-null, the parent view that the fragment's UI should attach to.
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.organizer_add_event, container, false);
     }
 
+    /**
+     * Called after the fragment's view is created. Sets up input fields, spinners, and event listeners.
+     *
+     * @param view The fragment's root view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -177,6 +196,9 @@ public class OrganizerAddEvent extends DialogFragment {
                 selectedImageUri = selectImage.getSelectedImageUri();
             }
     );
+    /**
+     * Loads facility names from Firestore and populates the spinner.
+     */
     private void loadFacilities() {
         db.collection("facilities").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -223,6 +245,11 @@ public class OrganizerAddEvent extends DialogFragment {
     }
 
 
+    /**
+     * Generates a QR code for the event and saves it to DB.
+     *
+     * @param eventId The ID of the newly created event.
+     */
     private void generateAndSaveQrCode(String eventId) {
         String eventLink = "https://yourapp.example.com/event/" + eventId;
 
@@ -259,6 +286,11 @@ public class OrganizerAddEvent extends DialogFragment {
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
+    /**
+     * Validates user input for creating a new event.
+     *
+     * @return True if input is valid, false otherwise.
+     */
     private boolean validateInput() {
         String name = eventName.getText().toString().trim();
         String date = dateTime.getText().toString().trim();
@@ -332,6 +364,9 @@ public class OrganizerAddEvent extends DialogFragment {
     }
 
 
+    /**
+     * Interface for notifying when an event is added.
+     */
     public interface OnEventAddedListener {
         void onEventAdded();
     }

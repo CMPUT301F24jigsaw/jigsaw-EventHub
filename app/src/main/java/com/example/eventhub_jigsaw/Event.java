@@ -23,12 +23,13 @@ public class Event implements Serializable {
     private String facilityId;// Add this field for facility ID
     private String imageID;
     private boolean geolocation;
-//    private String facilityId; // Add this field for facility ID
     /** The image resource ID for the event */
     private String eventImageUrl; // The image resource Id for the event
     private int waitingListLimit;
     private String eventID;
     private Bitmap eventImageBitmap;
+
+    // Getter and setter methods for attributes
 
     public Bitmap getEventImageBitmap() {
         return eventImageBitmap;

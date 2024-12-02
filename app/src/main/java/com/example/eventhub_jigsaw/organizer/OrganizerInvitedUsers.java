@@ -18,12 +18,24 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * OrganizerInvitedUsers is a dialog fragment that shows a list of users invited to an event
+ * and provides the option to remove them.
+ */
+
 public class OrganizerInvitedUsers extends DialogFragment {
 
     private TextView invitedUsersTextView;
     private FirebaseFirestore db;
     private String eventID;
 
+    /**
+     * Inflates the layout and initializes the dialog's views.
+     * @param inflater layout inflater.
+     * @param container view container.
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,6 +66,11 @@ public class OrganizerInvitedUsers extends DialogFragment {
         return view;
     }
 
+    /**
+     * Fetches the list of invited users for a given event ID.
+     *
+     * @param eventID the ID of the event.
+     */
     private void fetchInvitedUsers(String eventID) {
         db.collection("events")
                 .document(eventID)

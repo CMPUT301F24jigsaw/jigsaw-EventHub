@@ -35,6 +35,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * UserSignUp handles the user sign-up process including user registration, image upload, and role-based navigation.
+ */
+
 public class UserSignUp extends AppCompatActivity {
 
     TextView TextName, TextEmail, TextPhone;
@@ -57,6 +61,9 @@ public class UserSignUp extends AppCompatActivity {
     double latitude;
     double longitude;
 
+    /**
+     * Interface for receiving location information.
+     */
     public interface OnLocationReceivedListener {
         void onLocationReceived(double latitude, double longitude);
     }
@@ -82,6 +89,10 @@ public class UserSignUp extends AppCompatActivity {
         checkUserExists(userID);
     }
 
+    /**
+     * Checks if the user exists in Firestore and navigates to the respective home page based on the role.
+     * @param userID The unique ID of the user.
+     */
     private void checkUserExists(String userID) {
         DocumentReference docRef = db.collection("users").document(userID);
 

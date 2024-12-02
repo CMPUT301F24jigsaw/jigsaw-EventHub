@@ -28,6 +28,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * OrganizerEditEvent for editing an event's poster. Allows the organizer to change and upload a new event image.
+ */
+
 public class OrganizerEditEvent extends DialogFragment {
 
     private FirebaseFirestore db;
@@ -39,12 +43,26 @@ public class OrganizerEditEvent extends DialogFragment {
     private UploadImage uploadImage;
     String eventName, eventId;
 
+    /**
+     * Called to create the view hierarchy associated with the fragment.
+     *
+     * @param inflater  For inflate views in the fragment.
+     * @param container If non-null, the parent view that the fragment's UI should attach to.
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.organizer_edit_poster, container, false);
     }
 
+    /**
+     * Called after the fragment's view is created. Initializes UI elements and sets event listeners for updating an event.
+     *
+     * @param view The fragment's root view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -103,7 +121,11 @@ public class OrganizerEditEvent extends DialogFragment {
             }
     );
 
-    // Helper method to display a toast message
+    /**
+     * Displays a toast message.
+     *
+     * @param message The message to display.
+     */
     private void showToast(String message) {
         if (getContext() != null) { // Check if the context is available
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();

@@ -6,6 +6,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Represents a user in the event hub.
+ * Can be an Entrant or an Organizer.
+ */
+
 public class User implements Serializable {
 
     public enum Role {
@@ -29,7 +35,15 @@ public class User implements Serializable {
     private Boolean isAdmin;
 
 
-    // Constructor for general users
+    /**
+     * Constructor to initialize the user with basic details.
+     *
+     * @param name Name of the user
+     * @param email Email address of the user
+     * @param userID Unique identifier for the user
+     * @param phone Phone number of the user
+     * @param role Role (ENTRANT or ORGANIZER)
+     */
     public User(String name, String email, String userID, long phone, Role role) {
         this.name = name;
         this.email = email;
@@ -41,7 +55,8 @@ public class User implements Serializable {
         this.WaitingList = new ArrayList<>();
     }
 
-    // Getters and setters
+    // Getters and setters for user attributes
+
     public String getName() {
         return name;
     }

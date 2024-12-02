@@ -18,10 +18,18 @@ import com.example.eventhub_jigsaw.R;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+/**
+ * UserScanQR used for scanning QR codes to open event details.
+ * Validates QR codes to check if they contain event URLs.
+ */
+
 public class UserScanQR extends Fragment {
 
     private Button btnScan;
 
+    /**
+     * Processes the scanned QR data and opens event details if valid.
+     */
     private final ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null) {
             // Handle scanned QR code
@@ -50,6 +58,14 @@ public class UserScanQR extends Fragment {
         }
     });
 
+    /**
+     * Called when the fragment's view is created.
+     *
+     * @param inflater For inflate views.
+     * @param container The parent view the fragment is attached to.
+     * @param savedInstanceState
+     * @return The inflated view.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -65,6 +81,9 @@ public class UserScanQR extends Fragment {
         btnScan.setOnClickListener(v -> scanCode());
     }
 
+    /**
+     * Starts the QR code scanning process.
+     */
     private void scanCode() {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Volume up to flash on");

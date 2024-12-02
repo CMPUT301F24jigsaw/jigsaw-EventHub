@@ -30,6 +30,10 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * OrganizerMyProfile displays the organizer's profile and allows them to edit their information.
+ */
+
 public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEdit.OnProfileUpdateListener {
     private static final String TAG = "OrganizerMyProfile";
     private TextView organizerNameField;
@@ -39,6 +43,13 @@ public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEd
     private StorageReference storageReference;
     private String organizerID;
 
+    /**
+     * Inflates the layout and initializes the profile fields.
+     * @param inflater layout inflater.
+     * @param container view container.
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

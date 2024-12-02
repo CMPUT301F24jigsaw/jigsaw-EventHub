@@ -12,14 +12,28 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.UUID;
 
+/**
+ * UploadImage handles the uploading of images to DB Storage.
+ */
+
 public class UploadImage {
 
     private StorageReference storageReference;
 
+    /**
+     * Constructor to initialize the UploadImage class with DB reference.
+     */
     public UploadImage() {
         storageReference = FirebaseStorage.getInstance().getReference(); // Initialize Firebase Storage
     }
 
+
+    /**
+     * Uploads a user's image to DB Storage.
+     * @param fileUri The URI of the image.
+     * @param listener For the upload completion.
+     * @param deviceId The unique ID of the device.
+     */
     public void uploadImage(Uri fileUri, OnUploadCompleteListener listener, String deviceId) {
         if (fileUri == null) {
             listener.onFailure("No file selected.");
@@ -44,6 +58,12 @@ public class UploadImage {
                 });
     }
 
+    /**
+     * Uploads an event image to DB Storage.
+     * @param fileUri The URI of the image.
+     * @param listener For the upload completion.
+     * @param eventId The unique ID of the event.
+     */
     public void uploadImageEvents(Uri fileUri, OnUploadCompleteListener listener, String eventId) {
         if (fileUri == null) {
             listener.onFailure("No file selected.");
@@ -71,6 +91,9 @@ public class UploadImage {
     }
 
 
+    /**
+     * Interface for upload completion listener.
+     */
     public interface OnUploadCompleteListener {
         void onSuccess(String imageUrl);
         void onFailure(String errorMessage);

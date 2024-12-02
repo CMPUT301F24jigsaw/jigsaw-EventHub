@@ -19,6 +19,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * OrganizerViewWaitlist displays the waitlist for an event.
+ */
+
 public class OrganizerViewWaitlist extends DialogFragment {
 
     private RecyclerView recyclerView;
@@ -27,6 +31,14 @@ public class OrganizerViewWaitlist extends DialogFragment {
     private String eventId; // Store eventId
     private boolean geolocation;
 
+    /**
+     * Initializes the fragment's view, sets up the RecyclerView and fetches the waitlist users.
+     *
+     * @param inflater            For inflate the view.
+     * @param container           Holds the fragment.
+     * @param savedInstanceState The saved state from the previous instance of the fragment.
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,6 +73,9 @@ public class OrganizerViewWaitlist extends DialogFragment {
         return view;
     }
 
+    /**
+     * Fetches the users on the waitlist for the given event ID.
+     */
     private void fetchWaitlistUsers() {
         if (eventId == null) {
             Log.e("OrganizerViewWaitlist", "Event ID is null.");
@@ -92,6 +107,11 @@ public class OrganizerViewWaitlist extends DialogFragment {
         }).addOnFailureListener(e -> Log.e("OrganizerViewWaitlist", "Error fetching event: " + e.getMessage()));
     }
 
+    /**
+     * Fetches and processes user details from Firestore.
+     *
+     * @param userId The ID of the user.
+     */
     private void fetchUserDetails(String userId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(userId).get().addOnSuccessListener(userSnapshot -> {

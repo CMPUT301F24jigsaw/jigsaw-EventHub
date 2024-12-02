@@ -30,7 +30,9 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 
-
+/**
+ * UserMyprofile displays the user's profile, including their username, email, and profile image.
+ */
 public class UserMyprofile extends Fragment implements com.example.eventhub_jigsaw.entrant.UserMyProfileEdit.OnProfileUpdateListener {
     private static final String TAG = "UserMyprofile";
     private TextView Text_username;
@@ -40,6 +42,9 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
     private FirebaseFirestore db;
     private String userID;
 
+    /**
+     * Called to inflate the fragment's view and initialize the profile UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,7 +78,9 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
         return view;
     }
 
-    // Fetch user data from Firestore
+    /**
+     * Fetches the user's data from Firestore and updates the profile UI.
+     */
     private void fetchUserData() {
         db.collection("users").document(userID)
                 .get()

@@ -37,6 +37,13 @@ import java.util.ArrayList;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+/**
+ * FacilitiesFragment manages a list of facilities
+ * Allows administrators to view, add, or remove facilities using DB.
+ *
+ * Outstanding Issues:
+ * - No confirmation dialog for removing a facility.
+ */
 
 public class FacilitiesFragment extends Fragment {
 

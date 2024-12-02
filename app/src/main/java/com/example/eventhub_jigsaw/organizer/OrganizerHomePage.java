@@ -16,10 +16,19 @@ import com.example.eventhub_jigsaw.entrant.UserScanQR;
 import com.example.eventhub_jigsaw.organizer.event.OrganizerEventActivity;
 import com.example.eventhub_jigsaw.organizer.facility.OrganizerFacilityActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+/**
+ * OrganizerHomePage is the main activity for the organizer's interface.
+ * Handles the bottom navigation to switch between various fragments.
+ */
 
 public class OrganizerHomePage extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
 
+    /**
+     * Initializes the activity and sets up the bottom navigation listener.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +58,11 @@ public class OrganizerHomePage extends AppCompatActivity {
 
     }
 
+    /**
+     * Replaces the current fragment with the given fragment.
+     *
+     * @param fragment
+     */
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

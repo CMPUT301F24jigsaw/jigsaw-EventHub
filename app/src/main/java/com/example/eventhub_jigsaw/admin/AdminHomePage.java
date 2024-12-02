@@ -12,10 +12,10 @@ import com.example.eventhub_jigsaw.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
- * This class represents the Admin Home page, which extends
- * It manages the bottom navigation functionality, allowing the user to switch between
- * different fragments like Profiles, Events, and Facilities.
+ * AdminHomePage is the main activity for the admin interface.
+ * It manages the bottom navigation functionality, allowing the user to switch between different fragments like Profiles, Events, and Facilities.
  */
+
 public class AdminHomePage extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView; // enables Fragment switching

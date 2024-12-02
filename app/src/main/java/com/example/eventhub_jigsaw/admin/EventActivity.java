@@ -29,6 +29,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * EventActivity is a Fragment that manages the display and working of events.
+ * It fetches event data from DB, and provides an interface for removing events.
+ */
+
 public class EventActivity extends Fragment {
 
     private ArrayList<Event> eventList; // Declare eventList as a class variable

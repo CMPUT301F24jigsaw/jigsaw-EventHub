@@ -22,6 +22,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ProfilesFragment displays a list of user profiles.
+ * Supports searching profiles by username and allows administrators to
+ * navigate to the DeleteProfile fragment to modify or delete users.
+ *
+ * Outstanding Issues:
+ * - Filtering logic is repetitive and can be optimized.
+ */
+
 public class ProfilesFragment extends Fragment {
 
     private ArrayList<Profiles> dataList;
