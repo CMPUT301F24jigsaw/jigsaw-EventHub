@@ -14,6 +14,12 @@ import com.example.eventhub_jigsaw.R;
 
 import java.util.ArrayList;
 
+/**
+ * ProfileArrayAdapter displays Profiles objects in a ListView.
+ * Converts Profiles objects into list items for display purposes.
+ */
+
+
 public class ProfileArrayAdapter extends ArrayAdapter<Profiles> {
 
     public ProfileArrayAdapter(Context context, ArrayList<Profiles> cities) {

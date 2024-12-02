@@ -20,6 +20,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * UserWaitlistPage displays the list of events the user is on the waitlist for.
+ * Fetches event details from DB and displays them in a RecyclerView.
+ */
+
 public class UserWaitlistPage extends Fragment {
 
     private FirebaseFirestore db;
@@ -29,6 +34,14 @@ public class UserWaitlistPage extends Fragment {
     private WaitlistAdapter adapter;
     private List<Event> eventsList = new ArrayList<>();
 
+    /**
+     * Called when the fragment's view is created.
+     *
+     * @param inflater For inflate views.
+     * @param container The fragment's UI.
+     * @param savedInstanceState
+     * @return The inflated view.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,6 +62,9 @@ public class UserWaitlistPage extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches the user's registered events from Firestore.
+     */
     private void fetchRegisteredEvents() {
         db.collection("users").document(userId).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -66,6 +82,11 @@ public class UserWaitlistPage extends Fragment {
                 .addOnFailureListener(e -> showNoEventsMessage());
     }
 
+    /**
+     * Fetches the event details from DB and updates the RecyclerView.
+     *
+     * @param eventIds List of event IDs.
+     */
     private void fetchEventDetails(List<String> eventIds) {
         for (String eventId : eventIds) {
             db.collection("events").document(eventId).get()
@@ -87,6 +108,9 @@ public class UserWaitlistPage extends Fragment {
         }
     }
 
+    /**
+     * Displays a message when there are no waitlisted events.
+     */
     private void showNoEventsMessage() {
         noEventsText.setVisibility(View.VISIBLE);
         eventsRecyclerView.setVisibility(View.GONE);

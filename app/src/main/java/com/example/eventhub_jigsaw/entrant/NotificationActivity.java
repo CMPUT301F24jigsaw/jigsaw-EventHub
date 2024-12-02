@@ -24,6 +24,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * NotificationActivity handles the display and clearing of user notifications.
+ * Interacts with DB to fetch and update notification preferences.
+ */
+
 public class NotificationActivity extends Fragment {
 
     private List<String> notificationList;
@@ -32,6 +37,14 @@ public class NotificationActivity extends Fragment {
     private String userID;
     private boolean notificationsEnabled;
 
+    /**
+     * Initializes the fragment view and sets up notification fetching and clear functionality.
+     *
+     * @param inflater           For inflating views.
+     * @param container          Parent view group.
+     * @param savedInstanceState Saved instance state.
+     * @return The fragment's root view.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,18 +82,9 @@ public class NotificationActivity extends Fragment {
         return view;
     }
 
-
-
-    //private void updateNotificationPreference() {
-    //   db.collection("users").document(userID)
-    //            .update("organizerNotification", notificationsEnabled)
-    //            .addOnSuccessListener(aVoid -> {
-    //                Toast.makeText(requireContext(), notificationsEnabled ? "Notifications Enabled" : "Notifications Disabled and Cleared", Toast.LENGTH_SHORT).show();
-    //            })
-    //            .addOnFailureListener(e -> {
-    //                Toast.makeText(requireContext(), "Failed to update preference", Toast.LENGTH_SHORT).show();
-    //            });
-    //}
+    /**
+     * Fetches notifications for the current user from DB.
+     */
 
     private void fetchNotifications() {
         db.collection("users").document(userID).get()
@@ -108,15 +112,4 @@ public class NotificationActivity extends Fragment {
     }
 
 
-    private void clearNotifications() {
-        db.collection("users").document(userID)
-                .update("notifications", new ArrayList<>())
-                .addOnSuccessListener(aVoid -> {
-                    notificationList.clear();
-                    adapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to clear notifications", Toast.LENGTH_SHORT).show();
-                });
-    }
 }

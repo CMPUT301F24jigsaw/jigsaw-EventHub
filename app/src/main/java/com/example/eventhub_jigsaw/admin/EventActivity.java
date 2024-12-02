@@ -5,8 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,132 +14,92 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventhub_jigsaw.Event;
-import com.example.eventhub_jigsaw.Facility;
 import com.example.eventhub_jigsaw.R;
-import com.example.eventhub_jigsaw.entrant.UserInvitePageAdapter;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * EventActivity is a Fragment that manages the display and working of events.
+ * It fetches event data from DB, and provides an interface for removing events.
+ */
+
 public class EventActivity extends Fragment {
 
-    private ArrayList<Event> eventList; // Declare eventList as a class variable
-    private UserInvitePageAdapter adapter;
-    private int lastClickedPosition = -1;
-
-    // Database
-    FirebaseFirestore db;
-    CollectionReference eventsRef;
+    private FirebaseFirestore db;
+    private RecyclerView eventsRecyclerView;
+    private TextView noEventsText;
+    private EventAdapter adapter;
+    private final List<Event> eventsList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.events_page, container, false);
 
-        // Set up RecyclerView
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewEvents);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-
+        // Initialize Firebase Firestore
         db = FirebaseFirestore.getInstance();
-        eventsRef = db.collection("events");
-        eventList = new ArrayList<>();
 
-        // Set up the adapter with the sample data
-        EventAdapter adapter = new EventAdapter(eventList);
-        recyclerView.setAdapter(adapter);
+        // Initialize RecyclerView and TextView
+        eventsRecyclerView = view.findViewById(R.id.recyclerViewEvents);
+        noEventsText = view.findViewById(R.id.no_events_text);
 
-        eventsRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                for (DocumentSnapshot document : task.getResult()) {
-                    String id = document.getId(); // This is the document ID
-                    Event event = document.toObject(Event.class);
+        // Pass FragmentManager to EventAdapter
+        adapter = new EventAdapter(eventsList, getChildFragmentManager());
+        eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        eventsRecyclerView.setAdapter(adapter);
 
-                    if (event != null) {
-                        event.setId(id); // Add the ID to your Facility object if necessary
-                        Log.d("Firestore", "Event ID: " + id + ", Event Name: " + event.getEventName());
-                    }
-                }
-            } else {
-                Log.e("Firestore", "Failed to fetch documents", task.getException());
-            }
-        });
-
-        // create snapshot listener to update database live
-        eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if (querySnapshots != null) {
-                    eventList.clear();
-                    for (QueryDocumentSnapshot doc: querySnapshots) {
-                        try {
-                            String eventID = doc.getString("eventID");
-                            String eventName = doc.getString("eventName");
-                            String eventDate = doc.getString("eventDate");
-                            String organizerId = doc.getString("organizerID");
-                            String description = doc.getString("description");
-                            int maxAttendees = doc.get("maxAttendees", int.class);
-                            Log.d("Firestore", String.format("Event(%s, %s, %s) fetched", eventName, eventDate, organizerId));
-                            eventList.add(new Event(eventID, eventName, eventDate, organizerId, maxAttendees, description));
-                        } catch (Exception e) {
-                            Log.e("Firestore", "Error processing document: " + doc.getId(), e);
-                        }
-                    }
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.d("Firestore", "No facilities found");
-                }
-            }
-        });
-
-        Button removeEventButton = view.findViewById(R.id.bottomButton);
-        removeEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lastClickedPosition != -1) {
-                    Event event = eventList.remove(lastClickedPosition);
-                    removeEvent(event);
-                }
-            }
-        });
+        // Fetch events from Firestore
+        fetchAllEvents();
 
         return view;
     }
 
-    private void removeEvent(Event event) {
-        if (eventList.isEmpty()) {
-            Toast.makeText(getContext(), "No events to remove.", Toast.LENGTH_SHORT).show();
-            return; // Exit the method if there are no events
-        }
+    private void fetchAllEvents() {
+        db.collection("events").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    Log.d("EventActivity", "Fetched " + queryDocumentSnapshots.size() + " events.");
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        eventsList.clear();
+                        for (var document : queryDocumentSnapshots) {
+                            try {
+                                String id = document.getId();
+                                String name = document.getString("eventName");
+                                String date = document.getString("eventDate");
+                                String description = document.getString("description");
+                                String imageURL = document.getString("imageID");
+                                Long maxAttendeesLong = document.getLong("maxAttendees");
+                                int maxAttendees = maxAttendeesLong != null ? maxAttendeesLong.intValue() : 0;
 
-        lastClickedPosition = -1; // reset last clicked position
+                                Event event = new Event(id, name, date, null, maxAttendees, description);
+                                event.setImageID(imageURL);
+                                eventsList.add(event);
+                                Log.d("EventActivity", "Added event: " + name);
+                            } catch (Exception e) {
+                                Log.e("EventActivity", "Error processing event document", e);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                        showEvents();
+                    } else {
+                        Log.d("EventActivity", "No events found.");
+                        showNoEventsMessage();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EventActivity", "Error fetching events from Firestore", e);
+                    showNoEventsMessage();
+                });
+    }
 
-        eventList.remove(event); // Clear the event list
-        adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+    private void showNoEventsMessage() {
+        noEventsText.setVisibility(View.VISIBLE);
+        eventsRecyclerView.setVisibility(View.GONE);
+    }
 
-        // remove permanently from database
-        eventsRef.document(event.getId()).delete().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.d("Firestore", "Document deleted successfully");
-            } else {
-                Log.e("Firestore", "Failed to delete document", task.getException());
-            }
-        });
-
-
-        // Optionally, show a message or an empty state
-        Toast.makeText(getContext(), "Event removed successfully!", Toast.LENGTH_SHORT).show();
+    private void showEvents() {
+        noEventsText.setVisibility(View.GONE);
+        eventsRecyclerView.setVisibility(View.VISIBLE);
     }
 }

@@ -23,6 +23,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
+/**
+ * EventDetailsActivity handles displaying detailed information about an event,
+ * including its name, description, geolocation, QR code, and allows users to join the waitlist.
+ */
+
 public class EventDetailsActivity extends DialogFragment {
 
     private TextView eventNameTextView, eventDescriptionTextView, geolocation;
@@ -34,12 +39,24 @@ public class EventDetailsActivity extends DialogFragment {
     private String userId;
     private String name;
 
+    /**
+     * Inflates the view for the event details fragment.
+     * @param inflater For inflate the view.
+     * @param container ViewGroup container.
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.qr_scan_event_details, container, false);
     }
 
+    /**
+     * Initializes the UI elements and sets up data fetching and button click listeners.
+     * @param view The root view of the fragment.
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -79,6 +96,10 @@ public class EventDetailsActivity extends DialogFragment {
         });
     }
 
+    /**
+     * Fetches the event details from DB and updates the UI.
+     * @param eventId The ID of the event
+     */
     private void fetchEventDetails(String eventId) {
         db.collection("events").document(eventId)
                 .get()
@@ -113,11 +134,19 @@ public class EventDetailsActivity extends DialogFragment {
                 });
     }
 
+    /**
+     * Decodes a Base64 string into a Bitmap.
+     * @param base64 The Base64 string showing the QR code image.
+     * @return The decoded Bitmap object.
+     */
     private Bitmap decodeBase64ToBitmap(String base64) {
         byte[] decodedBytes = Base64.decode(base64, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
+    /**
+     * Joins the user to the event's waitlist if it's not full.
+     */
     private void joinWaitlist() {
         if (eventId == null || userId == null) {
             Toast.makeText(requireContext(), "Event or user information missing", Toast.LENGTH_SHORT).show();
@@ -171,6 +200,9 @@ public class EventDetailsActivity extends DialogFragment {
     }
 
 
+    /**
+     * Adjusts the dialog size on start.
+     */
     @Override
     public void onStart() {
         super.onStart();

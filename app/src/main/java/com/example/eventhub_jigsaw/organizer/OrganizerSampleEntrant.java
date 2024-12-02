@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * OrganizerSampleEntrant samples entrants from a waiting list for an event.
+ */
+
 public class OrganizerSampleEntrant extends DialogFragment {
 
     private TextView sampledUsersTextView;
@@ -30,12 +34,18 @@ public class OrganizerSampleEntrant extends DialogFragment {
     private String eventId;
     private String name;
 
+    /**
+     * Inflates the layout for sampling and displaying users.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.organizer_sample_user, container, false);
     }
 
+    /**
+     * Fetches users from the waiting list and selects a random sample.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

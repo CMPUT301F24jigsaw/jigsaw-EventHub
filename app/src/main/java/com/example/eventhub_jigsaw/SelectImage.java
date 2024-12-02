@@ -14,6 +14,10 @@ import androidx.activity.result.ActivityResultLauncher;
 
 import com.bumptech.glide.Glide;
 
+/**
+ * SelectImage handles the image selection process by launching the gallery and handling the result of the selected image.
+ */
+
 public class SelectImage {
 
     private final ActivityResultLauncher<Intent> activityResultLauncher;
@@ -21,20 +25,30 @@ public class SelectImage {
     private final ImageView imageView;
     private Button uploadButton; // Optional: Button for uploading image, but not mandatory
 
+    /**
+     * Constructor to initialize the SelectImage class.
+     * @param activityResultLauncher The launcher for the gallery activity result.
+     * @param imageView
+     */
     public SelectImage(ActivityResultLauncher<Intent> activityResultLauncher, ImageView imageView) {
         this.activityResultLauncher = activityResultLauncher;
         this.imageView = imageView;
         this.uploadButton = null;  // Removed dependency on the upload button being provided
     }
 
-    // Function to open the gallery and select an image
+    /**
+     * The gallery intent to allow the user to select an image.
+     */
     public void selectImage() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");  // Filter to show only images
         activityResultLauncher.launch(intent); // Launch the gallery activity
     }
 
-    // The result of the image selection is handled here
+    /**
+     * Handles the result from the image selection activity.
+     * @return
+     */
     public ActivityResultCallback<ActivityResult> getActivityResultCallback() {
         return new ActivityResultCallback<ActivityResult>() {
             @Override
@@ -53,6 +67,10 @@ public class SelectImage {
         };
     }
 
+    /**
+     * Returns the URI of the selected image.
+     * @return
+     */
     public Uri getSelectedImageUri() {
         return selectedImageUri;
     }

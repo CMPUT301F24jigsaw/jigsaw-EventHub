@@ -21,6 +21,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * UserInvitePageActivity displays a list of events that the user has been accepted into by an organizer.
+ * It fetches the user's accepted events from DB and populates them into a RecyclerView.
+ */
+
 public class UserInvitePageActivity extends Fragment {
 
     private static final String TAG = "UserInvitePageActivity";
@@ -31,6 +36,9 @@ public class UserInvitePageActivity extends Fragment {
     private FirebaseFirestore db;
     private String userId; // User ID for querying the database
 
+    /**
+     * Called to inflate the fragment's view and set up the RecyclerView and DB data.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,6 +65,10 @@ public class UserInvitePageActivity extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches the list of events accepted by the user.
+     * Retrieves user ID from DB and then queries for accepted events.
+     */
     private void fetchAcceptedEvents() {
         // Ensure userId is not null
         if (userId == null || userId.isEmpty()) {
@@ -83,6 +95,9 @@ public class UserInvitePageActivity extends Fragment {
         });
     }
 
+    /**
+     * Fetches event details from Firestore using event IDs and adds them to the event list.
+     */
     private void fetchEventDetails(List<String> eventIds) {
         for (String eventId : eventIds) {
             db.collection("events").document(eventId).get().addOnSuccessListener(documentSnapshot -> {

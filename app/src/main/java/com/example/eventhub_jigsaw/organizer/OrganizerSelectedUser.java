@@ -19,12 +19,24 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.List;
 
+/**
+ * OrganizerSelectedUser displays the list of users who are registered for an event.
+ */
+
 public class OrganizerSelectedUser extends DialogFragment {
 
     private FirebaseFirestore db;
     private TextView registeredUsersTextView;
     private String eventId;
 
+    /**
+     * Initializes the fragment's view and gets the event ID based on event name and organizer ID.
+     *
+     * @param inflater            For inflate the view.
+     * @param container          Holds the fragment.
+     * @param savedInstanceState The saved state from the previous instance of the fragment.
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,6 +62,12 @@ public class OrganizerSelectedUser extends DialogFragment {
         return view;
     }
 
+    /**
+     * Fetches the event ID from DB based on event name and organizer ID.
+     *
+     * @param eventName The name of the event.
+     * @param organizerId The event organizer ID.
+     */
     private void fetchEventId(String eventName, String organizerId) {
         db.collection("events")
                 .whereEqualTo("eventName", eventName)
@@ -74,6 +92,9 @@ public class OrganizerSelectedUser extends DialogFragment {
                 });
     }
 
+    /**
+     * Fetches the registered users for the event and displays their names.
+     */
     private void fetchRegisteredUsers() {
         if (eventId == null) {
             Toast.makeText(requireContext(), "Event ID not available", Toast.LENGTH_SHORT).show();

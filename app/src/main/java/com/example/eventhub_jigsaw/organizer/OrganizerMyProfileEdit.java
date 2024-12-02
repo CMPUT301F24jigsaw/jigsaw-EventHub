@@ -16,7 +16,9 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.eventhub_jigsaw.R;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+/**
+ * OrganizerMyProfileEdit edits the organizer's profile details.
+ */
 public class OrganizerMyProfileEdit extends DialogFragment {
 
     public interface OnProfileUpdateListener {
@@ -26,6 +28,9 @@ public class OrganizerMyProfileEdit extends DialogFragment {
     private FirebaseFirestore db;
     private String organizerID;
 
+    /**
+     * Inflates the layout and sets up profile editing features.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,6 +73,7 @@ public class OrganizerMyProfileEdit extends DialogFragment {
             String newEmail = emailInput.getText().toString();
             String phoneText  = phoneInput.getText().toString();
             if (newName.isEmpty() || newEmail.isEmpty() || phoneText.isEmpty()) {
+                // Optionally show an error message
                 return;
             }
             try {
@@ -98,7 +104,10 @@ public class OrganizerMyProfileEdit extends DialogFragment {
                     System.err.println("Error removing profile photo: " + e.getMessage());
                 });
     }
-    
+
+    /**
+     * Updates the organizer's profile information in Firestore.
+     */
     private void updateFirestoreData(String newName, String newEmail, long newPhone) {
         if (organizerID == null || organizerID.isEmpty()) {
             System.err.println("Error: organizerID is null or empty. Cannot update Firestore.");

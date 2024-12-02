@@ -15,6 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventhub_jigsaw.R;
 
 import java.util.List;
+/**
+ * NotificationAdapter displays notifications in a ListView.
+ * Binds notification data to list items and uses ViewHolder pattern for performance.
+ */
 
 public class NotificationAdapter extends BaseAdapter {
 

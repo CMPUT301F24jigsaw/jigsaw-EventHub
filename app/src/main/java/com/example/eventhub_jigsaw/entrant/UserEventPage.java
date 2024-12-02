@@ -20,6 +20,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * UserEventPage displays a user's registered events in a RecyclerView.
+ */
+
 public class UserEventPage extends Fragment {
 
     private FirebaseFirestore db;
@@ -29,6 +33,9 @@ public class UserEventPage extends Fragment {
     private EventsAdapter adapter;
     private List<Event> eventsList = new ArrayList<>();
 
+    /**
+     * Inflates the layout for the fragment, sets up RecyclerView and event fetching.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,6 +56,9 @@ public class UserEventPage extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches the events that the user is registered for.
+     */
     private void fetchRegisteredEvents() {
         db.collection("users").document(userId).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -66,6 +76,9 @@ public class UserEventPage extends Fragment {
                 .addOnFailureListener(e -> showNoEventsMessage());
     }
 
+    /**
+     * Fetches event details using the event IDs.
+     */
     private void fetchEventDetails(List<String> eventIds) {
         for (String eventId : eventIds) {
             db.collection("events").document(eventId).get()
@@ -87,6 +100,9 @@ public class UserEventPage extends Fragment {
         }
     }
 
+    /**
+     * Displays a message indicating that no events are available.
+     */
     private void showNoEventsMessage() {
         noEventsText.setVisibility(View.VISIBLE);
         eventsRecyclerView.setVisibility(View.GONE);

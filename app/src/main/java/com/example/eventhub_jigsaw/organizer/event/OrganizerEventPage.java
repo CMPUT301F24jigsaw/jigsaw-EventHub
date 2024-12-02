@@ -4,13 +4,21 @@ import android.graphics.Bitmap;
 
 import java.io.Serializable;
 
-// This is a model class representing a single event
+/**
+ * OrganizerEventPage represents an event.
+ * Stores the event name and image.
+ */
 public class OrganizerEventPage implements Serializable {
 
     private String eventName_organizer;
     private Bitmap eventImageBitmap_organizer;
 
-    // Constructor with Bitmap for event image
+    /**
+     * Constructor for creating an OrganizerEventPage instance.
+     *
+     * @param eventName_organizer         Name of the event.
+     * @param eventImageBitmap_organizer  Representing the event.
+     */
     public OrganizerEventPage(String eventName_organizer, Bitmap eventImageBitmap_organizer) {
         this.eventName_organizer = eventName_organizer;
         this.eventImageBitmap_organizer = eventImageBitmap_organizer;

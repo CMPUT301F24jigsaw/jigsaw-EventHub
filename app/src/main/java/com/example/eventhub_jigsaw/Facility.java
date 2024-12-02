@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adjusts the dialog size on start.
+ */
+
 public class Facility {
     private String id; // Unique identifier for the facility
     private String name; // Facility name
@@ -13,11 +17,21 @@ public class Facility {
     private String organizerID; // Organizer ID
     private String facilityID;
 
-    // No-argument constructor required by Firestore
+    /**
+     * No-argument constructor required by Firestore for deserialization.
+     */
+
     public Facility() {
         // Firestore needs a no-argument constructor for deserialization
     }
 
+    /**
+     * Creates a new Facility object with the provided name, location, capacity, and organizer ID.
+     * @param name The name of the facility.
+     * @param organizerID The ID of the organizer.
+     * @param location The location of the facility.
+     * @param maxAttendees The maximum number of attendees the facility can hold.
+     */
     public Facility(String name, String organizerID, String location, int maxAttendees) {
         if (organizerID == null || organizerID.trim().isEmpty()) {
             throw new IllegalArgumentException("Organizer ID cannot be null or empty.");
@@ -30,7 +44,8 @@ public class Facility {
         this.eventIds = new ArrayList<>();
     }
 
-    // Getters and Setters
+    // Getters and Setters for attributes
+
     public String getId() {
         return id;
     }
@@ -105,7 +120,11 @@ public class Facility {
         return eventIds.contains(eventId.trim());
     }
 
-    // Validate facility fields
+    /**
+     * Validates the required fields for the facility.
+     * @return True if the facility fields are valid.
+     */
+
     public boolean checkFields() {
         return id != null && !id.trim().isEmpty() &&
                 name != null && !name.trim().isEmpty() &&

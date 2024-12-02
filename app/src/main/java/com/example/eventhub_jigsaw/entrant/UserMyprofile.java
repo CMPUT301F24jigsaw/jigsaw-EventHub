@@ -30,7 +30,9 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 
-
+/**
+ * UserMyprofile displays the user's profile, including their username, email, and profile image.
+ */
 public class UserMyprofile extends Fragment implements com.example.eventhub_jigsaw.entrant.UserMyProfileEdit.OnProfileUpdateListener {
     private static final String TAG = "UserMyprofile";
     private TextView Text_username;
@@ -43,6 +45,9 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
     private String email;
     private long phone;
 
+    /**
+     * Called to inflate the fragment's view and initialize the profile UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,40 +84,38 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
         return view;
     }
 
-        private void fetchUserData() {
-            db.collection("users").document(userID)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                username = document.getString("name");
-                                email = document.getString("email");
-                                phone = document.getLong("phone");  // Assuming phone is stored as a long
-                                String profilePicturePath = document.getString("profileImageUrl");
-
-                                // Ensure Fragment is still attached
-                                if (isAdded()) {
-                                    Text_username.setText(username);
-                                    Text_email.setText(email);
-                                }
-
-                                if (profilePicturePath != null && !profilePicturePath.isEmpty()) {
-                                    fetchProfileImage(profilePicturePath);
-                                }
-
-                            } else {
-                                Log.d(TAG, "No such document");
-                                if (isAdded()) {
-                                    Text_username.setText("User not found");
-                                    Text_email.setText("Email not found");
-                                }
+    // Fetch user data from Firestore
+    private void fetchUserData() {
+        db.collection("users").document(userID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String username = document.getString("name");
+                            String email = document.getString("email");
+                            String profilePicturePath = document.getString("profileImageUrl");
+                            // Ensure Fragment is still attached
+                            if (isAdded()) {
+                                Text_username.setText(username);
+                                Text_email.setText(email);
+                            }
+                            // Load the profile image using Glide
+                            if (profilePicturePath != null && !profilePicturePath.isEmpty()) {
+                                fetchProfileImage(profilePicturePath);
                             }
                         } else {
-                            Log.e(TAG, "Failed to fetch document", task.getException());
+                            Log.d(TAG, "No such document");
+                            if (isAdded()) {
+                                Text_username.setText("User not found");
+                                Text_email.setText("Email not found");
+                            }
                         }
-                    });
-        }
+                    } else {
+                        Log.e(TAG, "Failed to fetch document", task.getException());
+                    }
+                });
+    }
 
     private void fetchProfileImage(String profilePicturePath) {
         // Prepend the "images/users/" path to the provided file name

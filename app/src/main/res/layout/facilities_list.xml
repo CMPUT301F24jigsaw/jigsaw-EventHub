@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -17,13 +18,26 @@
         android:textAlignment="center"
         android:textSize="25sp" />
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/SearchBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:queryHint="Search"
+        app:layout_constraintBottom_toTopOf="@+id/facility_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!-- List of Facilities -->
     <ListView
         android:id="@+id/facility_list"
-        android:layout_width="match_parent"
-        android:layout_height="550dp"
-        android:layout_marginTop="20dp"
-        tools:layout_editor_absoluteX="0dp" />
+        android:layout_width="407dp"
+        android:layout_height="606dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/remove_facility_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"></ListView>
 
     <!-- Remove Facility Button -->
     <Button

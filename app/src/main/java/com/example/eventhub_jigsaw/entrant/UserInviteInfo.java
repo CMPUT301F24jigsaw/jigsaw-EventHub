@@ -27,6 +27,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * UserInviteInfo handles displaying the details of an event invitation and provides options to accept or decline it.
+ */
+
 public class UserInviteInfo extends Fragment {
 
     private TextView eventNameTextView;
@@ -41,6 +45,9 @@ public class UserInviteInfo extends Fragment {
     private ImageView eventImage;
     String imageURL;
 
+    /**
+     * Initializes the fragment and sets up UI elements.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -102,6 +109,10 @@ public class UserInviteInfo extends Fragment {
     }
 
 
+    /**
+     * Accepts the event and updates DB with the new status.
+     * @param eventID The ID of the event being accepted.
+     */
     private void acceptEvent(String eventID) {
         // Add eventID to user's registeredEvents list
         db.collection("users").document(userId)
@@ -120,6 +131,10 @@ public class UserInviteInfo extends Fragment {
                 .addOnFailureListener(e -> showError("Failed to accept the event."));
     }
 
+    /**
+     * Declines the event and updates DB with the new status.
+     * @param eventID The ID of the event being accepted.
+     */
     private void declineEvent(String eventID) {
         // Remove eventID from user's eventAcceptedByOrganizer list
         db.collection("users").document(userId)
@@ -137,12 +152,19 @@ public class UserInviteInfo extends Fragment {
                 .addOnFailureListener(e -> showError("Failed to decline the event."));
     }
 
+    /**
+     * Shows an error message to the user.
+     * @param message The error message to be displayed.
+     */
     private void showError(String message) {
         if (getContext() != null) {
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * Dismisses the current fragment.
+     */
     private void dismissFragment() {
         if (getParentFragmentManager() != null) {
             getParentFragmentManager().popBackStack();

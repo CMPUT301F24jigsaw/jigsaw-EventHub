@@ -15,6 +15,12 @@ import com.example.eventhub_jigsaw.R;
 
 import java.util.ArrayList;
 
+/**
+ * FacilityArrayAdapter displays Facility objects in a ListView.
+ * Converts Facility objects into list items for user interaction.
+ */
+import android.util.DisplayMetrics;
+
 public class FacilityArrayAdapter extends ArrayAdapter<Facility> {
     private ArrayList<Facility> facilities;
     private Context context;
@@ -41,8 +47,22 @@ public class FacilityArrayAdapter extends ArrayAdapter<Facility> {
         TextView facilityLocation = view.findViewById(R.id.location_text);
         TextView facilityCapacity = view.findViewById(R.id.capacity_text);
 
+        // Get screen width
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+
+        int screenWidth = displayMetrics.widthPixels;
+
+        // Calculate 30% of screen width
+        int maxWidth = (int) (screenWidth * 0.4);
+        int capacityWidth = (int) (screenWidth * 0.2);
+
+        // Set maxWidth programmatically
+        facilityName.setWidth(maxWidth);
+        facilityLocation.setWidth(capacityWidth);
+
+        // Set data
         facilityName.setText(facility.getName() != null ? facility.getName() : "N/A");
-        facilityLocation.setText(facility.getLocation() );
+        facilityLocation.setText(facility.getLocation());
         facilityCapacity.setText(String.valueOf(facility.getCapacity()));
 
         return view;

@@ -15,9 +15,16 @@ import com.example.eventhub_jigsaw.entrant.UserMyprofile;
 import com.example.eventhub_jigsaw.admin.ProfilesFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * UserHomePage represents the user's homepage with a bottom navigation view to navigate between pages.
+ */
+
 public class UserHomePage extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
 
+    /**
+     * Initializes the activity and sets up the bottom navigation to switch between fragments.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +57,10 @@ public class UserHomePage extends AppCompatActivity {
         });
     }
 
+    /**
+     * Loads the selected fragment into the container.
+     * @param fragment The fragment to be loaded.
+     */
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

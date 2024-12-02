@@ -24,14 +24,31 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * EventsAdapter displays events in a RecyclerView.
+ * This adapter binds event data to the RecyclerView's list items.
+ */
+
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
     private final List<Event> events;
 
+    /**
+     * Constructor to initialize the adapter with list of events.
+     *
+     * @param events The list of events to be displayed.
+     */
     public EventsAdapter(List<Event> events) {
         this.events = events;
     }
 
+    /**
+     * Creates a new ViewHolder for an item in the RecyclerView.
+     *
+     * @param parent    The new view will be inserted in parent ViewGroup
+     * @param viewType  The type
+     * @return A new EventViewHolder instance.
+     */
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -39,6 +56,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         return new EventViewHolder(view);
     }
 
+    /**
+     * Binds event data to the ViewHolder's UI elements.
+     *
+     * @param holder   Holds the UI elements.
+     * @param position The position of the item within the data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = events.get(position);
@@ -63,15 +86,28 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         }
     }
 
+    /**
+     * Returns the total number of events.
+     *
+     * @return The number of events in the list.
+     */
     @Override
     public int getItemCount() {
         return events.size();
     }
 
+    /**
+     * ViewHolder class for holding UI elements for each event.
+     */
     static class EventViewHolder extends RecyclerView.ViewHolder {
         TextView eventNameTextView, eventDateTextView, eventDescriptionTextView;
         ImageView eventImage;
 
+        /**
+         * Constructor to initialize UI elements for an event.
+         *
+         * @param itemView The view representing a single event.
+         */
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             eventNameTextView = itemView.findViewById(R.id.event_name);

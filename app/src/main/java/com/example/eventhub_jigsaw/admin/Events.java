@@ -1,5 +1,10 @@
 package com.example.eventhub_jigsaw.admin;
 
+/**
+ * Events is a data model class representing an event.
+ * It includes the event's name and associated image resource.
+ */
+
 public class Events {
     private String eventName;
     private int eventImage;

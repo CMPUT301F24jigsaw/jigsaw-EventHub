@@ -32,6 +32,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * OrganizerEventActivity used for displaying and managing events organized by a user.
+ * Provides functionalities to view event details, add new events, and get event data from DB.
+ */
+
 public class OrganizerEventActivity extends Fragment {
 
     private List<OrganizerEventPage> eventList;
@@ -40,6 +45,9 @@ public class OrganizerEventActivity extends Fragment {
     private StorageReference storageReference;
     private ImageView organizerEventImage;
 
+    /**
+     * Creates and inflates the fragment's view with event listing.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,6 +77,9 @@ public class OrganizerEventActivity extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches events organized by the current user from Firestore and displays them in a RecyclerView.
+     */
     private void fetchEventsByOrganizer() {
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -122,6 +133,12 @@ public class OrganizerEventActivity extends Fragment {
                 });
     }
 
+    /**
+     * Checks if the fetched events match the expected size and updates the RecyclerView adapter.
+     *
+     * @param tempEventList List of fetched events.
+     * @param expectedSize  Number of events expected.
+     */
     private void checkAndUpdateAdapter(List<OrganizerEventPage> tempEventList, int expectedSize) {
         // Update the adapter only after all events have been processed
         if (tempEventList.size() == expectedSize) {

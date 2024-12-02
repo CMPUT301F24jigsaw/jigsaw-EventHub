@@ -29,6 +29,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * UserInvitePageAdapter for displaying a list of events in a RecyclerView.
+ * Handles binding event data to the view and enabling interaction for more details.
+ */
 public class UserInvitePageAdapter extends RecyclerView.Adapter<UserInvitePageAdapter.EventViewHolder> {
 
     private List<Event> eventList;
@@ -37,11 +41,17 @@ public class UserInvitePageAdapter extends RecyclerView.Adapter<UserInvitePageAd
     private String eventDate;
     private FirebaseFirestore db;
 
+    /**
+     * Constructor for the adapter to initialize event list and FragmentManager for navigation.
+     */
     public UserInvitePageAdapter(List<Event> eventList, FragmentManager fragmentManager) {
         this.eventList = eventList;
         this.fragmentManager = fragmentManager;
     }
 
+    /**
+     * Creates and returns a new EventViewHolder for a single event in the RecyclerView.
+     */
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -49,6 +59,9 @@ public class UserInvitePageAdapter extends RecyclerView.Adapter<UserInvitePageAd
         return new EventViewHolder(view);
     }
 
+    /**
+     * Binds event data to the view holder and sets a listener for the "More Info" button.
+     */
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
@@ -128,6 +141,9 @@ public class UserInvitePageAdapter extends RecyclerView.Adapter<UserInvitePageAd
         });
     }
 
+    /**
+     * Returns the number of items in the event list.
+     */
     @Override
     public int getItemCount() {
         return eventList.size();

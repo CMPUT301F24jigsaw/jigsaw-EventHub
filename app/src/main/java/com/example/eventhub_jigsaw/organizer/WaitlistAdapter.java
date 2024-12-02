@@ -22,6 +22,10 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * WaitlistAdapter displays users in the waitlist within a RecyclerView.
+ */
+
 public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHolder> {
 
     private List<User> userList;
@@ -29,6 +33,13 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
     private Context context;
     private ExecutorService executor;
 
+    /**
+     * Initializes the adapter with a given context, user list, and geolocation option.
+     *
+     * @param context
+     * @param userList The list of users to display.
+     * @param geolocation Checking if geolocation is enabled
+     */
     public WaitlistAdapter(Context context, List<User> userList, boolean geolocation) {
         this.context = context;
         this.userList = userList;
@@ -36,6 +47,13 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         this.executor = Executors.newFixedThreadPool(3); // Limit geolocation threads to 3
     }
 
+    /**
+     * Creates a new ViewHolder for displaying a user in the waitlist.
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -44,6 +62,12 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         return new ViewHolder(view);
     }
 
+    /**
+     * Binds user data to the view for a specific item.
+     *
+     * @param holder To bind data to.
+     * @param position The position of the user.
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = userList.get(position);
@@ -66,11 +90,21 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         }
     }
 
+    /**
+     * Returns the total number of users in the list.
+     *
+     * @return The number of users.
+     */
     @Override
     public int getItemCount() {
         return userList.size();
     }
 
+    /**
+     * Cleans up the executor when the RecyclerView is detached.
+     *
+     * @param recyclerView The RecyclerView that was detached.
+     */
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
@@ -87,6 +121,13 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         }
     }
 
+    /**
+     * Retrieves the address from a user's geolocation coordinates.
+     *
+     * @param latitude The latitude of the user's location.
+     * @param longitude The longitude of the user's location.
+     * @param listener To handle the retrieved address.
+     */
     private void getAddressFromLocation(double latitude, double longitude, OnAddressRetrievedListener listener) {
         executor.submit(() -> {
             Geocoder geocoder = new Geocoder(context, Locale.getDefault());
