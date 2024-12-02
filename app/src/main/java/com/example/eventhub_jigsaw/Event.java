@@ -21,7 +21,7 @@ public class Event implements Serializable {
     private String facilityId;// Add this field for facility ID
     private String imageID;
     private boolean geolocation;
-    private String facilityId; // Add this field for facility ID
+//    private String facilityId; // Add this field for facility ID
     /** The image resource ID for the event */
     private String eventImageUrl; // The image resource Id for the event
 
