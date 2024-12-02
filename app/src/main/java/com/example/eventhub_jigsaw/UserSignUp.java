@@ -262,6 +262,7 @@ public class UserSignUp extends AppCompatActivity {
         user.setNotifications(new ArrayList<>());
         user.setLatitude(latitude);
         user.setLongitude(longitude);
+        user.setAdmin(false);
 
         // Save the User object to Firestore
         db.collection("users").document(userID)

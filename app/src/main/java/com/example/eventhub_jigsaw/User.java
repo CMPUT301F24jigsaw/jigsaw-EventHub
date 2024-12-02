@@ -26,6 +26,7 @@ public class User implements Serializable {
     private List<String> notifications;
     private double latitude;
     private double longitude;
+    private Boolean isAdmin;
 
 
     // Constructor for general users
@@ -151,5 +152,13 @@ public class User implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
     }
 }
