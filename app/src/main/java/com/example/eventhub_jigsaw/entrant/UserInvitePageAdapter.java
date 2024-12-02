@@ -1,6 +1,5 @@
 package com.example.eventhub_jigsaw.entrant;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,14 +48,6 @@ public class UserInvitePageAdapter extends RecyclerView.Adapter<UserInvitePageAd
         eventDescription = event.getDescription();
         eventDate = event.getEventDate();
 
-        // Set the event image using Bitmap
-        Bitmap eventImageBitmap = event.getEventImageBitmap();
-        if (eventImageBitmap != null) {
-            holder.eventImage.setImageBitmap(eventImageBitmap);
-        } else {
-            // Set a placeholder image if Bitmap is null
-            holder.eventImage.setImageResource(R.drawable.event_image_placeholder); // Replace with your placeholder resource ID
-        }
         android.util.Log.e("UserInvitePageAdapter", "Event Details:");
         android.util.Log.e("UserInvitePageAdapter", "Name: " + event.getEventName());
         android.util.Log.e("UserInvitePageAdapter", "Description: " + event.getDescription());

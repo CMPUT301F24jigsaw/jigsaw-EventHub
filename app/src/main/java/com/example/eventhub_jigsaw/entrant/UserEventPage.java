@@ -1,6 +1,5 @@
 package com.example.eventhub_jigsaw.entrant;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -75,8 +74,8 @@ public class UserEventPage extends Fragment {
                             String name = documentSnapshot.getString("eventName");
                             String date = documentSnapshot.getString("eventDate");
                             String description = documentSnapshot.getString("description");
-                            String image = documentSnapshot.getString("eventImage");
-                            eventsList.add(new Event(name, null, date, description));
+
+                            eventsList.add(new Event(name, date, description));
                             adapter.notifyDataSetChanged();
                         }
                     });
