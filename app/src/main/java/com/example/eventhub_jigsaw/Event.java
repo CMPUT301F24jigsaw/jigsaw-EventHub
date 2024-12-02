@@ -157,6 +157,8 @@ public class Event implements Serializable {
         this.description = description;
     }
 
+    public Event (){};
+
     public List<String> getWaitingList() {
         return waitingList;
     }
