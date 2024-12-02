@@ -8,52 +8,34 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.eventhub_jigsaw.Facility;
 import com.example.eventhub_jigsaw.R;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.Toast;
-
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 /**
- * FacilitiesFragment manages a list of facilities
- * Allows administrators to view, add, or remove facilities using DB.
- *
- * Outstanding Issues:
- * - No confirmation dialog for removing a facility.
+ * FacilitiesFragment manages a list of facilities.
  */
-
 public class FacilitiesFragment extends Fragment {
 
     private FacilityArrayAdapter facilityArrayAdapter;
     private ArrayList<Facility> facilityDataList;
     private ListView facilityList;
     private Button removeFacilityButton;
-    int lastClickedPosition = -1;
+    private int lastClickedPosition = -1;
 
-    // Database
+    // Firebase Firestore references
     FirebaseFirestore db;
     CollectionReference facilitiesRef;
 
@@ -66,71 +48,98 @@ public class FacilitiesFragment extends Fragment {
         facilitiesRef = db.collection("facilities");
 
         facilityList = view.findViewById(R.id.facility_list);
+        removeFacilityButton = view.findViewById(R.id.remove_facility_btn);
+
         facilityDataList = new ArrayList<>();
         facilityArrayAdapter = new FacilityArrayAdapter(requireContext(), facilityDataList);
         facilityList.setAdapter(facilityArrayAdapter);
 
-        removeFacilityButton = view.findViewById(R.id.remove_facility_btn);
+        loadFacilities();
 
-        // create snapshot listener to update database live
-        facilitiesRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if (querySnapshots != null) {
-                    facilityDataList.clear();
-                    for (QueryDocumentSnapshot doc: querySnapshots) {
-                        try {
-                            String organizerId = doc.getString("organizerID");
-                            String name = doc.getString("name");
-                            String location = doc.getString("location");
-                            int capacity = doc.get("capacity", int.class);
-                            Log.d("Firestore", String.format("Facility(%s, %s) fetched", name, location));
-                            facilityDataList.add(new Facility(name, organizerId, location, capacity));
-                        } catch (Exception e) {
-                            Log.e("Firestore", "Error processing document: " + doc.getId(), e);
-                        }
-                    }
-                    facilityArrayAdapter.notifyDataSetChanged();
-                } else {
-                    Log.d("Firestore", "No facilities found");
-                }
-            }
+        facilityList.setOnItemClickListener((adapterView, view1, position, id) -> {
+            lastClickedPosition = position;
+            Log.d("FacilitiesFragment", "Item clicked at position: " + position);
         });
 
-        // add listener for listview items
-        facilityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                lastClickedPosition = i; // record item position
+        removeFacilityButton.setOnClickListener(v -> {
+            if (lastClickedPosition != -1) {
+                Facility facility = facilityDataList.get(lastClickedPosition);
+                confirmDelete(facility);
+            } else {
+                Toast.makeText(getContext(), "Please select a facility to delete", Toast.LENGTH_SHORT).show();
+                Log.d("FacilitiesFragment", "No item selected for removal.");
             }
         });
-
-        removeFacilityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lastClickedPosition != -1) {
-                    Facility facility = facilityDataList.remove(lastClickedPosition);
-                    deleteFacility(facility);
-                }
-            }
-        });
-
 
         return view;
     }
 
-    private void deleteFacility(Facility facility) {
-        // reset lastClickedPosition
-        lastClickedPosition = -1;
-        // remove city from local list
-        facilityDataList.remove(facility);
-        facilityArrayAdapter.notifyDataSetChanged();
+    private void loadFacilities() {
+        facilitiesRef.addSnapshotListener((querySnapshots, error) -> {
+            if (error != null) {
+                Log.e("Firestore", "Error fetching facilities", error);
+                return;
+            }
+            if (querySnapshots != null) {
+                facilityDataList.clear();
+                for (QueryDocumentSnapshot doc : querySnapshots) {
+                    try {
+                        String organizerId = doc.getString("organizerID");
+                        String name = doc.getString("name");
+                        String location = doc.getString("location");
+                        int capacity = doc.contains("capacity") ? doc.get("capacity", int.class) : 0;
 
-        // Remove city from Firestore collection with city name as the document Id
-        facilitiesRef.document(facility.getFacilityID()).delete();
+                        facilityDataList.add(new Facility(name, doc.getId(), location, capacity));
+                        Log.d("Firestore", "Facility added: " + name);
+                    } catch (Exception e) {
+                        Log.e("Firestore", "Error processing document: " + doc.getId(), e);
+                    }
+                }
+                facilityArrayAdapter.notifyDataSetChanged();
+            } else {
+                Log.d("Firestore", "No facilities found");
+            }
+        });
+    }
+
+    private void confirmDelete(Facility facility) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Delete Facility")
+                .setMessage("Are you sure you want to delete this facility?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteFacility(facility))
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void deleteFacility(Facility facility) {
+        String facilityName = facility.getName();
+        String facilityLocation = facility.getLocation();
+        int facilityCapacity = facility.getCapacity();
+
+        facilitiesRef
+                .whereEqualTo("name", facilityName)
+                .whereEqualTo("location", facilityLocation)
+                .whereEqualTo("capacity", facilityCapacity)
+                .get()
+                .addOnSuccessListener(DocumentSnapshots -> {
+                    if (!DocumentSnapshots.isEmpty()) {
+                        for (DocumentSnapshot document : DocumentSnapshots.getDocuments()) {
+                            document.getReference().delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("FacilitiesFragment", "Facility deleted successfully: " + facilityName);
+                                        facilityDataList.remove(facility);
+                                        facilityArrayAdapter.notifyDataSetChanged();
+                                    })
+                                    .addOnFailureListener(e -> Log.e("FacilitiesFragment", "Failed to delete facility: " + e.getMessage()));
+                        }
+                    } else {
+                        Log.e("FacilitiesFragment", "No matching facility found for deletion.");
+                        Toast.makeText(getContext(), "No matching facility found.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FacilitiesFragment", "Error querying facilities: " + e.getMessage());
+                    Toast.makeText(getContext(), "Error deleting facility: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }
