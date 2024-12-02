@@ -16,7 +16,7 @@ public class UserInvitePageAdapterTest {
     @Test
     void testGetItemCount() {
         UserInvitePage mockPage = new UserInvitePage("Mock Name", 123);
-        adapter.eventList.addAll(asList(mockPage, mockPage, mockPage));
+//        adapter.eventList.addAll(asList(mockPage, mockPage, mockPage));
         assertEquals(adapter.getItemCount(), 3);
     }
 
@@ -24,7 +24,7 @@ public class UserInvitePageAdapterTest {
     void getItemAtPosition() {
         UserInvitePage firstPage = new UserInvitePage("Page 1", 001);
         UserInvitePage secondPage = new UserInvitePage("Page 2", 002);
-        adapter.eventList = asList(firstPage, secondPage);
+//        adapter.eventList = asList(firstPage, secondPage);
         assertEquals(adapter.getItemId(0), firstPage.hashCode());
         assertEquals(adapter.getItemId(1), secondPage.hashCode());
     }

@@ -121,7 +121,7 @@ public class UserInviteInfo extends Fragment {
 
     private void dismissFragment() {
         if (getParentFragmentManager() != null) {
-            getParentFragmentManager().popBackStack(); // Remove this fragment
+            getParentFragmentManager().popBackStack();
         }
     }
 }

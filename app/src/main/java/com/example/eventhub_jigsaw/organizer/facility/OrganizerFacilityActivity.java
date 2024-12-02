@@ -2,6 +2,7 @@ package com.example.eventhub_jigsaw.organizer.facility;
 
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventhub_jigsaw.Facility;
 import com.example.eventhub_jigsaw.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,7 +25,8 @@ import java.util.List;
 
 public class OrganizerFacilityActivity extends Fragment {
 
-    private List<OrganizerFacilityPage> facilityList;
+    private static final String TAG = "OrganizerFacilityActivity";
+    private List<Facility> facilityList;
     private OrganizerFacilityAdapter adapter;
 
     @Nullable
@@ -39,15 +42,15 @@ public class OrganizerFacilityActivity extends Fragment {
         adapter = new OrganizerFacilityAdapter(facilityList, getChildFragmentManager());
         recyclerView.setAdapter(adapter);
 
-        // Fetch initial facilities
+        // Fetch facilities
         fetchFacilitiesByOrganizer();
 
         // Add facility button logic
         FloatingActionButton addFacilityButton = view.findViewById(R.id.addFacility);
         addFacilityButton.setOnClickListener(v -> {
             OrganizerAddFacility addFacilityDialog = new OrganizerAddFacility();
-            addFacilityDialog.setOnEventAddedListener(this::fetchFacilitiesByOrganizer); // Refresh events after adding
-            addFacilityDialog.show(getChildFragmentManager(), "AddEventDialog");
+            addFacilityDialog.setOnEventAddedListener(this::fetchFacilitiesByOrganizer); // Refresh facilities after adding
+            addFacilityDialog.show(getChildFragmentManager(), "AddFacilityDialog");
         });
 
         return view;
@@ -61,6 +64,7 @@ public class OrganizerFacilityActivity extends Fragment {
                 .whereEqualTo("organizerID", organizerID)
                 .addSnapshotListener((querySnapshot, error) -> {
                     if (error != null) {
+                        Log.e(TAG, "Error fetching facilities: " + error.getMessage(), error);
                         Toast.makeText(getContext(), "Error fetching facilities: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -68,9 +72,25 @@ public class OrganizerFacilityActivity extends Fragment {
                     if (querySnapshot != null) {
                         facilityList.clear();
                         for (QueryDocumentSnapshot document : querySnapshot) {
-                            String facilityName = document.getString("facilityName");
+                            try {
+                                String facilityName = document.getString("name");
+                                String facilityID = document.getId();
+                                Long capacityLong = document.getLong("capacity");
+                                int facilityCapacity = capacityLong != null ? capacityLong.intValue() : 0;
+                                String facilityLocation = document.getString("location");
 
-                            facilityList.add(new OrganizerFacilityPage(facilityName));
+                                Facility facility = new Facility(facilityID, facilityName);
+                                facility.setLocation(facilityLocation);
+                                facility.setCapacity(facilityCapacity);
+
+                                if (facility.getName() != null && facility.getLocation() != null) {
+                                    facilityList.add(facility);
+                                } else {
+                                    Log.w(TAG, "Invalid facility data: " + document.getId());
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error parsing facility data: " + document.getId(), e);
+                            }
                         }
                         adapter.notifyDataSetChanged();
                     }

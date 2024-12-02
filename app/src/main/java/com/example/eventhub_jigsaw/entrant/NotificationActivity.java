@@ -3,6 +3,7 @@ package com.example.eventhub_jigsaw.entrant;
 import static java.security.AccessController.getContext;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +26,11 @@ import java.util.List;
 
 public class NotificationActivity extends Fragment {
 
-    private List<String> notificationList; // List of notifications
+    private List<String> notificationList;
     private NotificationAdapter adapter;
-    private FirebaseFirestore db; // Firestore instance
+    private FirebaseFirestore db;
+    private String userID;
+    private boolean notificationsEnabled;
 
     @Nullable
     @Override
@@ -36,49 +39,84 @@ public class NotificationActivity extends Fragment {
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
-
-        // Initialize notification list and adapter
         notificationList = new ArrayList<>();
+
+        // Initialize ListView and adapter
         ListView listView = view.findViewById(R.id.Notifications);
         adapter = new NotificationAdapter(requireContext(), notificationList);
         listView.setAdapter(adapter);
 
-        // Fetch notifications from Firestore
+        // Get reference to the clear button
+        Button clearButton = view.findViewById(R.id.clearButton);
+
+        // Fetch notifications and current preference
+        userID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         fetchNotifications();
 
+        // Handle button click
+        clearButton.setOnClickListener(v -> {
+            db.collection("users").document(userID)
+                    .update("organizerNotification", false)
+                    .addOnSuccessListener(aVoid -> {
+                        // Optional: Provide feedback or logging on success
+                        Log.d("Firestore", "Notifications disabled successfully.");
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle errors
+                        Log.e("Firestore", "Error disabling notifications", e);
+                    });
+        });
         return view;
     }
 
-    /**
-     * Fetch notifications from Firestore for the current user.
-     */
-    private void fetchNotifications() {
-        // Hardcoded userID for testing; replace this dynamically in production
-        String userID = "ee0bd9ac8ec9c47d";
 
+
+    //private void updateNotificationPreference() {
+    //   db.collection("users").document(userID)
+    //            .update("organizerNotification", notificationsEnabled)
+    //            .addOnSuccessListener(aVoid -> {
+    //                Toast.makeText(requireContext(), notificationsEnabled ? "Notifications Enabled" : "Notifications Disabled and Cleared", Toast.LENGTH_SHORT).show();
+    //            })
+    //            .addOnFailureListener(e -> {
+    //                Toast.makeText(requireContext(), "Failed to update preference", Toast.LENGTH_SHORT).show();
+    //            });
+    //}
+
+    private void fetchNotifications() {
         db.collection("users").document(userID).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        Log.d("NotificationActivity", "Document data: " + documentSnapshot.getData());
-
-                        List<String> notifications = (List<String>) documentSnapshot.get("notifications");
-                        if (notifications != null) {
-                            notificationList.clear();
-                            notificationList.addAll(notifications);
-                            adapter.notifyDataSetChanged();
-                            Log.d("NotificationActivity", "Notifications loaded successfully.");
+                        // Check if 'organizerNotification' is true
+                        Boolean organizerNotification = documentSnapshot.getBoolean("organizerNotification");
+                        if (organizerNotification != null && organizerNotification) {
+                            // Fetch notifications if 'organizerNotification' is true
+                            List<String> notifications = (List<String>) documentSnapshot.get("notifications");
+                            if (notifications != null) {
+                                notificationList.clear();
+                                notificationList.addAll(notifications);
+                                adapter.notifyDataSetChanged();
+                            }
                         } else {
-                            Toast.makeText(requireContext(), "No notifications found", Toast.LENGTH_SHORT).show();
+                            // Optional: Handle the case when 'organizerNotification' is false
+                            Toast.makeText(requireContext(), "Notifications are disabled", Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                        Toast.makeText(requireContext(), "User document not found", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("NotificationActivity", "Error fetching notifications", e);
-                    Toast.makeText(requireContext(), "Failed to load notifications", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to fetch notifications", Toast.LENGTH_SHORT).show();
                 });
     }
 
-}
 
+    private void clearNotifications() {
+        db.collection("users").document(userID)
+                .update("notifications", new ArrayList<>())
+                .addOnSuccessListener(aVoid -> {
+                    notificationList.clear();
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Failed to clear notifications", Toast.LENGTH_SHORT).show();
+                });
+    }
+}

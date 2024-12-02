@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventhub_jigsaw.R;
 import com.example.eventhub_jigsaw.User;
-import com.example.eventhub_jigsaw.organizer.WaitlistAdapter;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ public class OrganizerViewWaitlist extends DialogFragment {
     private WaitlistAdapter adapter;
     private List<User> userList = new ArrayList<>();
     private String eventId; // Store eventId
+    private boolean geolocation;
 
     @Nullable
     @Override
@@ -34,17 +34,19 @@ public class OrganizerViewWaitlist extends DialogFragment {
 
         recyclerView = view.findViewById(R.id.recyclerViewWaitlist);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new WaitlistAdapter(userList);
-        recyclerView.setAdapter(adapter);
+
+        // Initialize adapter but don't set it until users are fetched
+        adapter = new WaitlistAdapter(getContext(), userList, false);
 
         // Retrieve the eventId passed in arguments
         if (getArguments() != null) {
             eventId = getArguments().getString("event_id");
             fetchWaitlistUsers();
         } else {
-            // If no eventId is provided, dismiss the dialog or show an error
+            Log.e("OrganizerViewWaitlist", "Event ID not provided. Closing dialog.");
             dismiss();
         }
+        recyclerView.setAdapter(adapter);
 
         view.findViewById(R.id.button_sample_User).setOnClickListener(v -> {
             OrganizerSampleEntrant sampleEntrant = new OrganizerSampleEntrant();
@@ -54,9 +56,7 @@ public class OrganizerViewWaitlist extends DialogFragment {
             sampleEntrant.show(getParentFragmentManager(), "sampleEntrant");
         });
 
-        view.findViewById(R.id.button_close).setOnClickListener(V -> {
-            dismiss();
-        });
+        view.findViewById(R.id.button_close).setOnClickListener(v -> dismiss());
 
         return view;
     }
@@ -64,37 +64,24 @@ public class OrganizerViewWaitlist extends DialogFragment {
     private void fetchWaitlistUsers() {
         if (eventId == null) {
             Log.e("OrganizerViewWaitlist", "Event ID is null.");
-            return; // Exit if eventId is not set
+            return;
         }
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         db.collection("events").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
+                Boolean geoEnabled = documentSnapshot.getBoolean("geolocation");
+                geolocation = geoEnabled != null && geoEnabled;
+
+                // Update the adapter's geolocation setting
+                adapter = new WaitlistAdapter(getContext(), userList, geolocation);
+                recyclerView.setAdapter(adapter);
 
                 if (waitingList != null && !waitingList.isEmpty()) {
-                    Log.e("OrganizerViewWaitlist", "Waiting List: " + waitingList);
-
+                    Log.d("OrganizerViewWaitlist", "Waiting List: " + waitingList);
                     for (String userId : waitingList) {
-                        db.collection("users").document(userId).get().addOnSuccessListener(userSnapshot -> {
-                            if (userSnapshot.exists()) {
-                                Log.e("OrganizerViewWaitlist", "User found: " + userId);
-
-                                User user = new User(
-                                        userSnapshot.getString("name"),
-                                        userSnapshot.getString("email"),
-                                        userSnapshot.getString("userID"),
-                                        userSnapshot.getLong("phone").intValue(),
-                                        User.Role.valueOf(userSnapshot.getString("role"))
-                                );
-
-                                userList.add(user);
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                Log.e("OrganizerViewWaitlist", "User document not found: " + userId);
-                            }
-                        }).addOnFailureListener(e -> Log.e("OrganizerViewWaitlist", "Error fetching user: " + e.getMessage()));
+                        fetchUserDetails(userId);
                     }
                 } else {
                     Log.e("OrganizerViewWaitlist", "Waiting list is empty or null.");
@@ -105,6 +92,36 @@ public class OrganizerViewWaitlist extends DialogFragment {
         }).addOnFailureListener(e -> Log.e("OrganizerViewWaitlist", "Error fetching event: " + e.getMessage()));
     }
 
+    private void fetchUserDetails(String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(userId).get().addOnSuccessListener(userSnapshot -> {
+            if (userSnapshot.exists()) {
+                Log.d("OrganizerViewWaitlist", "User found: " + userId);
+
+                User user = new User(
+                        userSnapshot.getString("name"),
+                        userSnapshot.getString("email"),
+                        userSnapshot.getString("userID"),
+                        userSnapshot.getLong("phone").longValue(),
+                        User.Role.valueOf(userSnapshot.getString("role"))
+                );
+
+                if (geolocation) {
+                    user.setLongitude(userSnapshot.getDouble("longitude"));
+                    user.setLatitude(userSnapshot.getDouble("latitude"));
+                }
+
+                userList.add(user);
+
+                // Notify adapter only once after fetching all users
+
+                adapter.notifyDataSetChanged();
+            } else {
+                Log.e("OrganizerViewWaitlist", "User document not found: " + userId);
+            }
+        }).addOnFailureListener(e -> Log.e("OrganizerViewWaitlist", "Error fetching user: " + e.getMessage()));
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -112,7 +129,4 @@ public class OrganizerViewWaitlist extends DialogFragment {
             getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
     }
-
-
-
 }

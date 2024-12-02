@@ -4,8 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents an event in the EventHub app, containing an event name and image.
+ */
 public class Event implements Serializable {
-    private String eventName;
+    private String eventName; // Name of event
     private List<User> attendees;
     private String organizerID;
     private String eventDate;
@@ -17,7 +20,15 @@ public class Event implements Serializable {
     private List<String> declinedInvitationUser;
     private String facilityId;// Add this field for facility ID
     private String imageID;
+    private boolean geolocation;
+    private String facilityId; // Add this field for facility ID
+    /** The image resource ID for the event */
+    private String eventImageUrl; // The image resource Id for the event
 
+    /**
+     * Gets the name of the event.
+     * @return The event name.
+     */
     public String getEventName() {
         return eventName;
     }
@@ -82,6 +93,29 @@ public class Event implements Serializable {
         this.description = description;
     }
 
+    public String getId() {
+        return this.eventImageUrl;
+    }
+
+    public void setId(String newId) {
+        if (newId != "") {
+            eventImageUrl = newId;
+        }
+    }
+
+    /**
+     * Constructs a new Events instance with the specified event name and image id
+     *
+     * @param eventName The name of the event.
+     * @param eventDate The date of the event.
+     * @param description The details regarding the event.
+     * @param eventImage The image resource ID associated with the event.
+     */
+
+    public Event() {
+
+    }
+
     public Event(String eventName, String eventDate, String organizerID, int maxAttendees, String description) {
         this.eventName = eventName;
         this.eventDate = eventDate;
@@ -121,6 +155,14 @@ public class Event implements Serializable {
         this.declinedInvitationUser = declinedInvitationUser;
     }
 
+    public boolean isGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(boolean geolocation) {
+        this.geolocation = geolocation;
+    }
+
     // Getter and Setter for facilityId
     public String getFacilityId() {
         return facilityId;
@@ -130,5 +172,14 @@ public class Event implements Serializable {
         this.facilityId = facilityId;
     }
 
+    /**
+     * Gets the image resource ID for the event.
+     *
+     * @return The image resource ID associated with the event.
+     */
+    public int getEventImage() {
+        // to be implemented
+        return 1;
+    }
 }
 
