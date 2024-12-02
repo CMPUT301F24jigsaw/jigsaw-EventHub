@@ -24,6 +24,7 @@ public class Event implements Serializable {
 //    private String facilityId; // Add this field for facility ID
     /** The image resource ID for the event */
     private String eventImageUrl; // The image resource Id for the event
+    private int waitingListLimit;
 
     /**
      * Gets the name of the event.
@@ -180,6 +181,14 @@ public class Event implements Serializable {
     public int getEventImage() {
         // to be implemented
         return 1;
+    }
+
+    public int getWaitingListLimit() {
+        return waitingListLimit;
+    }
+
+    public void setWaitingListLimit(int waitingListLimit) {
+        this.waitingListLimit = waitingListLimit;
     }
 }
 

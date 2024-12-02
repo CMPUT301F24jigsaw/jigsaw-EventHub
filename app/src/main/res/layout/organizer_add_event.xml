@@ -136,6 +136,29 @@
             android:inputType="number" />
     </LinearLayout>
 
+    <!-- Max Attendees -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Limit Waitlist"
+            android:paddingEnd="46dp"
+            android:labelFor="@id/limit_waitlist" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/limit_waitlist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Optional Entry"
+            android:inputType="number" />
+    </LinearLayout>
+
     <!-- Date and Time -->
     <LinearLayout
         android:layout_width="match_parent"
