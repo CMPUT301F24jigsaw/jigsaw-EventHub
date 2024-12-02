@@ -92,8 +92,9 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            String username = document.getString("name");
-                            String email = document.getString("email");
+                            username = document.getString("name");
+                            email = document.getString("email");
+                            phone = document.getLong("phone");
                             String profilePicturePath = document.getString("profileImageUrl");
                             // Ensure Fragment is still attached
                             if (isAdded()) {

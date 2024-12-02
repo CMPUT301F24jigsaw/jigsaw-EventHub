@@ -95,6 +95,13 @@ public class OrganizerEventInfo extends DialogFragment {
                 editEventDialog.show(getParentFragmentManager(), "EditEventDialog");
             });
 
+            view.findViewById(R.id.button_invited_users).setOnClickListener(v -> {
+                OrganizerInvitedUsers invitedUsers = new OrganizerInvitedUsers();
+                Bundle bundle = new Bundle();
+                bundle.putString("event_id", eventID);
+                invitedUsers.setArguments(bundle);
+                invitedUsers.show(getParentFragmentManager(), "invitedUsers");
+            });
 
         }
 
