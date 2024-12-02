@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class EventDetailsActivity extends DialogFragment {
 
-    private TextView eventNameTextView, eventDescriptionTextView;
+    private TextView eventNameTextView, eventDescriptionTextView, geolocation;
     private ImageView eventQrImageView;
     private Button buttonJoinWaitlist;
 
@@ -47,6 +47,7 @@ public class EventDetailsActivity extends DialogFragment {
         eventDescriptionTextView = view.findViewById(R.id.eventDescriptionTextView);
         eventQrImageView = view.findViewById(R.id.eventQrImageView);
         buttonJoinWaitlist = view.findViewById(R.id.buttonJoinWaitlist);
+        geolocation = view.findViewById(R.id.textview_geolocation);
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
@@ -84,9 +85,16 @@ public class EventDetailsActivity extends DialogFragment {
                         name = documentSnapshot.getString("eventName");
                         String description = documentSnapshot.getString("description");
                         String qrCodeBase64 = documentSnapshot.getString("qrCode");
+                        Boolean geo = documentSnapshot.getBoolean("geolocation");
 
                         eventNameTextView.setText(name);
                         eventDescriptionTextView.setText(description);
+
+                        if (geo){
+                            geolocation.setText("User Geolocation Required");
+                        } else {
+                            geolocation.setText("User Geolocation Not Required");
+                        }
 
                         if (qrCodeBase64 != null) {
                             Bitmap qrCodeBitmap = decodeBase64ToBitmap(qrCodeBase64);

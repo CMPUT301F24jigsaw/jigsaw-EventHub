@@ -4,4 +4,8 @@
         <item>Entrant</item>
         <item>Organizer</item>
     </string-array>
+    <string-array name="geolocation_spinner">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
 </resources>

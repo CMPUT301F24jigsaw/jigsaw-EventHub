@@ -180,6 +180,27 @@
             android:hint="Add a description" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Geolocation"
+            android:paddingEnd="50dp"
+            android:labelFor="@id/eventGeoLocation" />
+
+        <Spinner
+            android:id="@+id/eventGeoLocation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:entries="@array/geolocation_spinner"/>
+    </LinearLayout>
+
     <!-- Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -200,6 +221,7 @@
 <!--            android:text="Delete Event"-->
 <!--            android:layout_marginStart="16dp" />-->
     </LinearLayout>
+
 
     <!-- Edit Image & QR Code buttons -->
 

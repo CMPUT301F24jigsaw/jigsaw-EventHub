@@ -39,7 +39,7 @@ public class OrganizerAddEvent extends DialogFragment {
 
     private FirebaseFirestore db;
     private EditText eventName, maxAttendees, dateTime, eventDescription;
-    Spinner facilityLocation ;
+    Spinner facilityLocation, userGeolocation ;
     private ImageView qrCodeImageView;
 
     private OnEventAddedListener eventAddedListener;// Listener for notifying when an event is added
@@ -67,6 +67,7 @@ public class OrganizerAddEvent extends DialogFragment {
         eventDescription = view.findViewById(R.id.eventDescription);
         qrCodeImageView = view.findViewById(R.id.eventQR);
         facilityLocation = view.findViewById(R.id.eventLocation);
+        userGeolocation = view.findViewById(R.id.eventGeoLocation);
 
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         db = FirebaseFirestore.getInstance();
@@ -85,6 +86,7 @@ public class OrganizerAddEvent extends DialogFragment {
             int maxAttendeesInt = Integer.parseInt(maxAttendees.getText().toString().trim());
 
             Facility selectedFacility = (Facility) facilityLocation.getSelectedItem();
+            boolean geolocation = userGeolocation.getSelectedItem().toString().equalsIgnoreCase("Yes");
 
             Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
             newEvent.setFacilityId(selectedFacility.getFacilityID());
@@ -92,6 +94,7 @@ public class OrganizerAddEvent extends DialogFragment {
             newEvent.setSampledUsers(new ArrayList<>());
             newEvent.setRegisteredUsers(new ArrayList<>());
             newEvent.setDeclinedInvitationUser(new ArrayList<>());
+            newEvent.setGeolocation(geolocation);
 
             db.collection("events").add(newEvent)
                     .addOnSuccessListener(documentReference -> generateAndSaveQrCode(documentReference.getId()))
