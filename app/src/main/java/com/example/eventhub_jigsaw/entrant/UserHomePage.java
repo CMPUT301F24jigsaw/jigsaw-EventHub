@@ -26,14 +26,14 @@ public class UserHomePage extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavView_user);
 
         // Set the default fragment to display
-        loadFragment(new UserEventPage());
+        loadFragment(new UserMainPage());
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             if (item.getItemId() == R.id.profile_user) {
                 fragment = new UserMyprofile();
             } else if (item.getItemId() == R.id.home_user) {
-                fragment = new UserEventPage();
+                fragment = new UserMainPage();
             } else if (item.getItemId() == R.id.invites_user) {
                 fragment = new UserInvitePageActivity();  // Create this fragment
             } else if (item.getItemId() == R.id.notifications_user) {
