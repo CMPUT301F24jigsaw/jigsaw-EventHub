@@ -22,14 +22,21 @@ import java.util.List;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private ArrayList<Event> eventList;
+    private OnEventClickListener listener;
+
+    public interface OnEventClickListener{
+        void onEventClick(Event event);
+    }
 
     /**
      * Constructor for the EventAdapter.
      *
      * @param eventList The list of events to display in the RecyclerView.
      */
-    public EventAdapter(ArrayList<Event> eventList) {
+    public EventAdapter(ArrayList<Event> eventList, OnEventClickListener listener) {
+
         this.eventList = eventList;
+        this.listener = listener;
     }
     /**
      * Called when RecyclerView needs a new {@link EventViewHolder} to represent an item.
@@ -56,7 +63,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         Event event = eventList.get(position);
         holder.eventName.setText(event.getEventName());
 //        holder.eventImage.setImageResource(event.getEventImage());
+
+        // Handle click events
+        holder.itemView.setOnClickListener(v -> listener.onEventClick(event));  // Correctly invoking the listener
     }
+
+
 
     /**
      * Update getItemCount method
@@ -66,6 +78,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public int getItemCount() {
         return eventList.size();
     }
+
 
     public void clearEvents() {
         eventList.clear(); // Remove all event items
@@ -90,5 +103,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             viewIcon = itemView.findViewById(R.id.ViewIcon);
             eventName = itemView.findViewById(R.id.eventName);
         }
+
+
     }
 }

@@ -96,6 +96,7 @@ public class OrganizerAddEvent extends DialogFragment {
             db.collection("events").add(newEvent)
                     .addOnSuccessListener(documentReference -> {
                         String eventId = documentReference.getId(); // Get unique ID
+                        newEvent.setId(eventId);
                         generateAndSaveQrCode(eventId); // Generate QR code and save it
                     })
                     .addOnFailureListener(e -> {

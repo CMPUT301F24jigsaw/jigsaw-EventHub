@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,9 +56,29 @@ public class EventActivity extends Fragment {
         eventsRef = db.collection("events");
         eventList = new ArrayList<>();
 
+
         // Set up the adapter with the sample data
-        EventAdapter adapter = new EventAdapter(eventList);
+        EventAdapter adapter = new EventAdapter(eventList, event -> {
+            // This block will be executed when an event item is clicked
+            DeleteEventDialog deleteEventFragment = new DeleteEventDialog();
+
+            Bundle args = new Bundle();
+            args.putSerializable("event", event);
+
+            // Set the arguments to the fragment
+            deleteEventFragment.setArguments(args);
+
+            // Navigate to the DeleteEventDialog fragment
+            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.flFragment, deleteEventFragment);
+            transaction.addToBackStack(null); // Allow back navigation
+            transaction.commit();
+
+        });
+
         recyclerView.setAdapter(adapter);
+
+
 
         eventsRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
@@ -66,13 +88,17 @@ public class EventActivity extends Fragment {
 
                     if (event != null) {
                         event.setId(id); // Add the ID to your Facility object if necessary
+                        event.setFacilityId(id);  // Add the ID to your Facility object if necessary
                         Log.d("Firestore", "Event ID: " + id + ", Event Name: " + event.getEventName());
                     }
                 }
+                adapter.notifyDataSetChanged(); // Notify the adapter after adding events
             } else {
                 Log.e("Firestore", "Failed to fetch documents", task.getException());
             }
         });
+
+
 
         // create snapshot listener to update database live
         eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -117,6 +143,7 @@ public class EventActivity extends Fragment {
 
         return view;
     }
+
 
     private void removeEvent(Event event) {
         if (eventList.isEmpty()) {

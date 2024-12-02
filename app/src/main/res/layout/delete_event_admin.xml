@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/event_name_text"
+            android:layout_width="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_height="97dp"
+            android:text="Event Name"
+            android:textAlignment="center"
+            android:textSize="48sp">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="50dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/event_image_remove"
+            android:layout_width="163dp"
+            android:layout_height="150dp"
+            app:srcCompat="@drawable/event_image_placeholder" />
+
+        <Button
+            android:id="@+id/delete_event_image_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="40dp"
+            android:text="Delete Image" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="50dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/event_qrcode_remove"
+            android:layout_width="163dp"
+            android:layout_height="150dp"
+            app:srcCompat="@drawable/event_image_placeholder" />
+
+        <Button
+            android:id="@+id/delete_event_qrcode_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="40dp"
+            android:text="Delete QRCode" />
+
+    </LinearLayout>
+
+
+    <!-- LinearLayout for save button at bottom of dialog -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="100dp">
+
+        <Button
+            android:id="@+id/save_event_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="Save">
+
+        </Button>
+
+        <Button
+            android:id="@+id/delete_event_admin"
+            android:layout_width="150dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="wrap_content"
+            android:text="Delete Event">
+
+        </Button>
+
+    </LinearLayout>
+
+
+</LinearLayout>

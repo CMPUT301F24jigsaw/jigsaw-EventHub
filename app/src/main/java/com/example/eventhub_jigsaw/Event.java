@@ -21,7 +21,9 @@ public class Event implements Serializable {
     private boolean geolocation;
     private String facilityId; // Add this field for facility ID
     /** The image resource ID for the event */
-    private String eventImageUrl; // The image resource Id for the event
+    private String eventImageUrl; // The image url for the event
+    private String eventID;
+
 
     /**
      * Gets the name of the event.
@@ -84,14 +86,18 @@ public class Event implements Serializable {
     }
 
     public String getId() {
-        return this.eventImageUrl;
+        return this.eventID;
     }
 
     public void setId(String newId) {
         if (newId != "") {
-            eventImageUrl = newId;
+            eventID = newId;
         }
     }
+
+    public String getEventImageUrl(){ return eventImageUrl;}
+
+    public void setEventImageUrl(String eventImageUrl){this.eventImageUrl = eventImageUrl;}
 
     /**
      * Constructs a new Events instance with the specified event name and image id
