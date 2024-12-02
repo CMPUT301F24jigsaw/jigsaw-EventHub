@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class OrganizerMyProfileEdit extends DialogFragment {
 
     public interface OnProfileUpdateListener {
-        void onProfileUpdate(String newName, String newEmail);
+        void onProfileUpdate(String newName, String newEmail, long newPhone);
     }
 
     private FirebaseFirestore db;
@@ -44,20 +45,26 @@ public class OrganizerMyProfileEdit extends DialogFragment {
         // Find views
         TextView nameInput = view.findViewById(R.id.edit_organizer_name_field);
         TextView emailInput = view.findViewById(R.id.edit_organizer_email_field);
+        TextView phoneInput = view.findViewById(R.id.edit_organizer_phone_field);
         Button saveButton = view.findViewById(R.id.organizer_save_button);
 
         // Handle save button
         saveButton.setOnClickListener(v -> {
             String newName = nameInput.getText().toString();
             String newEmail = emailInput.getText().toString();
-
-            if (newName.isEmpty() || newEmail.isEmpty()) {
+            String phoneText  = phoneInput.getText().toString();
+            if (newName.isEmpty() || newEmail.isEmpty() || phoneText.isEmpty()) {
                 // Optionally show an error message
                 return;
             }
-
-            updateFirestoreData(newName, newEmail);
+            try {
+                long newPhone = Long.parseLong(phoneText);
+                updateFirestoreData(newName, newEmail, newPhone);
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Invalid phone number.", Toast.LENGTH_SHORT).show();
+            }
         });
+
 
         return view;
     }
@@ -65,17 +72,17 @@ public class OrganizerMyProfileEdit extends DialogFragment {
     /**
      * Updates the organizer's profile information in Firestore.
      */
-    private void updateFirestoreData(String newName, String newEmail) {
+    private void updateFirestoreData(String newName, String newEmail, long newPhone) {
         if (organizerID == null || organizerID.isEmpty()) {
             System.err.println("Error: organizerID is null or empty. Cannot update Firestore.");
             return;
         }
 
         db.collection("users").document(organizerID)
-                .update("name", newName, "email", newEmail)
+                .update("name", newName, "email", newEmail, "phone", newPhone)
                 .addOnSuccessListener(aVoid -> {
                     if (getTargetFragment() instanceof OnProfileUpdateListener) {
-                        ((OnProfileUpdateListener) getTargetFragment()).onProfileUpdate(newName, newEmail);
+                        ((OnProfileUpdateListener) getTargetFragment()).onProfileUpdate(newName, newEmail, newPhone);
                     }
                     dismiss();
                 })

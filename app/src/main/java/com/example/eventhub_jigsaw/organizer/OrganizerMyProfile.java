@@ -147,7 +147,7 @@ public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEd
 
 
     @Override
-    public void onProfileUpdate(String newName, String newEmail) {
+    public void onProfileUpdate(String newName, String newEmail, long newPhone) {
         organizerNameField.setText(newName);
         organizerEmailField.setText(newEmail);
     }

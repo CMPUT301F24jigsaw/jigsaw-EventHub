@@ -143,7 +143,7 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
     }
 
     @Override
-    public void onProfileUpdate(String newUsername, String newEmail) {
+    public void onProfileUpdate(String newUsername, String newEmail, long newPhone) {
         Text_username.setText(newUsername);
         Text_email.setText(newEmail);
     }

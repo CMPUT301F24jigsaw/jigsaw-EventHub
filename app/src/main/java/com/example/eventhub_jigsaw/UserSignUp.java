@@ -205,28 +205,26 @@ public class UserSignUp extends AppCompatActivity {
             EditEmail.setError("Email is required!");
             return;
         }
-        if (TextUtils.isEmpty(phoneStr)) {
-            EditPhone.setError("Phone number is required!");
-            return;
-        }
         if (TextUtils.isEmpty(role)) {
             Toast.makeText(this, "Please select a role!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        long phone;
-        try {
-            phone = Long.parseLong(phoneStr); // Parse phone number as long
-        } catch (NumberFormatException e) {
-            EditPhone.setError("Invalid phone number!");
-            return;
+        Long phone = null;
+        if (!TextUtils.isEmpty(phoneStr)) {
+            try {
+                phone = Long.parseLong(phoneStr); // Parse phone number as long if provided
+            } catch (NumberFormatException e) {
+                EditPhone.setError("Invalid phone number!");
+                return;
+            }
         }
 
+
+        Long finalPhone = phone;
         getUserLocation(new OnLocationReceivedListener() {
             @Override
             public void onLocationReceived(double latitude, double longitude) {
-                // Handle image upload logic and user registration here
-                String imageUrl = null;
                 // Check if an image was selected
                 if (selectedImageUri != null) {
                     // If an image was selected, upload it
@@ -234,7 +232,7 @@ public class UserSignUp extends AppCompatActivity {
                         @Override
                         public void onSuccess(String imageUrl) {
                             // Image uploaded successfully, save the URL to Firestore or use it in the user object
-                            saveUserToFirestore(userID, name, email, phone, role, imageUrl, latitude, longitude);
+                            saveUserToFirestore(userID, name, email, finalPhone, role, imageUrl, latitude, longitude);
                         }
 
                         @Override
@@ -242,19 +240,19 @@ public class UserSignUp extends AppCompatActivity {
                             // Handle failure in image upload
                             Toast.makeText(UserSignUp.this, "Failed to upload image: " + errorMessage, Toast.LENGTH_SHORT).show();
                             // Proceed with null image URL if upload fails
-                            saveUserToFirestore(userID, name, email, phone, role, null, latitude, longitude);
+                            saveUserToFirestore(userID, name, email, finalPhone, role, null, latitude, longitude);
                         }
                     }, userID);
                 } else {
                     // No image selected, proceed with saving the user to Firestore without an image
-                    saveUserToFirestore(userID, name, email, phone, role, null, latitude, longitude);
+                    saveUserToFirestore(userID, name, email, finalPhone, role, null, latitude, longitude);
                 }
             }
         });
     }
 
 
-    private void saveUserToFirestore(String userID, String name, String email, long phone, String role, String imageUrl, double latitude, double longitude) {
+    private void saveUserToFirestore(String userID, String name, String email, @Nullable Long phone, String role, String imageUrl, double latitude, double longitude) {
         // Convert role from String to Role enum
         User.Role userRole;
         try {
@@ -264,8 +262,11 @@ public class UserSignUp extends AppCompatActivity {
             return;
         }
 
+        // Ensure phone has a valid value or assign default if null
+        Long phoneNumber = phone != null ? phone : 0L; // Use 0L as a placeholder for null
+
         // Create User object and ensure WaitingList is explicitly set
-        User user = new User(name, email, userID, phone, userRole);
+        User user = new User(name, email, userID, phoneNumber, userRole);
         user.setProfileImageUrl(imageUrl);  // Set the image URL
         user.setWaitingList(new ArrayList<>()); // Explicitly set an empty list
         user.setEventAcceptedByOrganizer(new ArrayList<>());
