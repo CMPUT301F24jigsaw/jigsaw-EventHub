@@ -64,7 +64,7 @@ public class OrganizerSampleEntrant extends DialogFragment {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Get max entries, waiting list, and declinedInvitationUser list
+                        // Get event details
                         name = documentSnapshot.getString("eventName");
                         Long maxEntries = documentSnapshot.getLong("maxAttendees");
                         List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
@@ -88,6 +88,10 @@ public class OrganizerSampleEntrant extends DialogFragment {
                         Collections.shuffle(waitingList);
                         List<String> sampledUsers = waitingList.subList(0, sampleSize);
 
+                        // Filter users who didn't win
+                        List<String> remainingUsers = new ArrayList<>(waitingList);
+                        remainingUsers.removeAll(sampledUsers);
+
                         // Update Firestore with sampled users and remove from waitingList
                         db.collection("events").document(eventId)
                                 .update("sampledUsers", sampledUsers,
@@ -96,10 +100,11 @@ public class OrganizerSampleEntrant extends DialogFragment {
                                     sampledUsersTextView.setText(String.join("\n", sampledUsers));
                                     Toast.makeText(requireContext(), "Sampled users updated", Toast.LENGTH_SHORT).show();
 
-                                    // Update each user's "eventAcceptedByOrganizer" list
+                                    // Notify sampled users
                                     for (String userId : sampledUsers) {
                                         db.collection("users").document(userId)
                                                 .update("eventAcceptedByOrganizer", FieldValue.arrayUnion(eventId),
+                                                        "waitingList", FieldValue.arrayRemove(eventId),
                                                         "notifications", FieldValue.arrayUnion("You have won the lottery! Accept or Decline your invitation for " + name))
                                                 .addOnSuccessListener(aVoid2 -> {
                                                     Log.d("OrganizerSampleEntrant", "User " + userId + " updated with event ID " + eventId);
@@ -109,7 +114,17 @@ public class OrganizerSampleEntrant extends DialogFragment {
                                                 });
                                     }
 
-
+                                    // Notify remaining users
+                                    for (String userId : remainingUsers) {
+                                        db.collection("users").document(userId)
+                                                .update("notifications", FieldValue.arrayUnion("You lost the lottery! However, you are still on the waiting list for event: " + name))
+                                                .addOnSuccessListener(aVoid3 -> {
+                                                    Log.d("WaitingListNotification", "Notification sent to user: " + userId);
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Log.e("WaitingListNotification", "Failed to send notification to user: " + userId, e);
+                                                });
+                                    }
                                 })
                                 .addOnFailureListener(e -> {
                                     Toast.makeText(requireContext(), "Failed to update sampled users: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -123,38 +138,8 @@ public class OrganizerSampleEntrant extends DialogFragment {
                     Toast.makeText(requireContext(), "Error fetching event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     dismiss();
                 });
-
-        db.collection("events").document(eventId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
-                        if (waitingList == null || waitingList.isEmpty()) {
-                            Toast.makeText(requireContext(), "No users in the waiting list", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        // Loop through each userId in the waiting list
-                        for (String userId : waitingList) {
-                            db.collection("users").document(userId)
-                                    .update("notifications", FieldValue.arrayUnion("You lost the lottery! However, you are still on the waiting list for event: " + documentSnapshot.getString("eventName")))
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.d("WaitingListNotification", "Notification sent to user: " + userId);
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Log.e("WaitingListNotification", "Failed to send notification to user: " + userId, e);
-                                    });
-                        }
-
-                        Toast.makeText(requireContext(), "Notifications sent to all users in the waiting list", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(requireContext(), "Event not found", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Error fetching event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
     }
+
 
 }
 

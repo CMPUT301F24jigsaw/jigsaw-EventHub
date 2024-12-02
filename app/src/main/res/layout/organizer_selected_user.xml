@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Selected Users Text-->
     <TextView
         android:id="@+id/selected_users_textview"
         android:layout_width="match_parent"

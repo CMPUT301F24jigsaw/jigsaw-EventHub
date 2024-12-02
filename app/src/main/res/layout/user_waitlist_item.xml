@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp"
-    >
+    android:padding="8dp">
 
     <!-- Image View -->
     <ImageView
@@ -18,7 +17,7 @@
 
     <!-- Event Name Text -->
     <TextView
-        android:id="@+id/event_name"
+        android:id="@+id/event_nam"
         android:layout_width="396dp"
         android:layout_height="wrap_content"
         android:alpha="0.7"
@@ -31,7 +30,7 @@
 
     <!-- Event Date Text -->
     <TextView
-        android:id="@+id/event_date"
+        android:id="@+id/event_dat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -40,18 +39,10 @@
 
     <!-- Event Description Text -->
     <TextView
-        android:id="@+id/event_description"
+        android:id="@+id/event_descriptio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="18sp"
         android:layout_marginTop="4dp" />
 </LinearLayout>
-
-
-
-
-
-
-
-

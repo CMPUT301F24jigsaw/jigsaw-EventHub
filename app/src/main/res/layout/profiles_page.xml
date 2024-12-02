@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <!-- Search Bar -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/SearchBar"
         android:layout_width="match_parent"

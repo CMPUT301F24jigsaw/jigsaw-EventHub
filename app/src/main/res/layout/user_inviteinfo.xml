@@ -65,11 +65,15 @@
         android:layout_height="58dp"
         android:layout_margin="16dp"
         android:layout_marginBottom="40dp"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
         android:text="ACCEPT"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.063"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginRight="5dp"
+        android:textSize="12sp"/>
 
     <!-- Decline Button -->
     <Button
@@ -77,12 +81,15 @@
         android:layout_width="159dp"
         android:layout_height="58dp"
         android:layout_margin="16dp"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
         android:layout_marginBottom="16dp"
         android:text="DECLINE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.936"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="12sp"/>
 
     <!-- Fragment Container (if used for fragments within this page) -->
     <FrameLayout

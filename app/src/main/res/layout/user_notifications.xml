@@ -5,12 +5,15 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Clear Notifications Button -->
+    <!-- Opt out Notifications Button -->
     <Button
         android:id="@+id/clearButton"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Opt out of receiving notifications"
+        android:textSize="11sp"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp" />
 

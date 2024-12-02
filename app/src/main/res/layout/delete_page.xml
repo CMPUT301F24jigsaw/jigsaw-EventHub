@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -15,18 +16,38 @@
         android:scaleType="centerCrop"
         android:layout_marginBottom="24dp" />
 
-    <!-- Username Text -->
+    <!-- Username Label -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Username"
+        android:textColor="@android:color/black"
+        android:textSize="24sp" />
+
+    <!-- Username Input Text -->
     <TextView
         android:id="@+id/username_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Username"
-        android:textSize="24sp"
-        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textColor="@android:color/darker_gray"
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium" />
 
-    <!-- Email Text -->
+    <!-- Email Label -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Email"
+        android:textColor="@android:color/black"
+        android:textSize="24sp" />
+
+    <!-- Email Input Text -->
     <TextView
         android:id="@+id/email_text"
         android:layout_width="wrap_content"
@@ -43,6 +64,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delete Profile"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"

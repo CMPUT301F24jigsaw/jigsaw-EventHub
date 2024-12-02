@@ -1,61 +1,79 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:layout_marginBottom="8dp">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:ignore="NewApi">
 
-    <ImageView
-        android:id="@+id/eventImage_organizer"
+    <!-- FrameLayout for the Image -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_gallery"
-        app:srcCompat="?android:attr/autofilledHighlight"
-        tools:ignore="NewApi" />
+        android:layout_height="200dp"
+        android:layout_marginBottom="8dp">
 
-    <TextView
-        android:id="@+id/eventName_organizer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:background="@android:color/black"
-        android:padding="8dp"
-        android:text="Event #1"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:alpha="0.7" />
+        <ImageView
+            android:id="@+id/eventImage_organizer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_gallery"
+            app:srcCompat="?android:attr/autofilledHighlight" />
 
-    <Button
-        android:id="@+id/MoreInfo_organizer"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:text="More Info" />
+        <TextView
+            android:id="@+id/eventName_organizer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:background="@android:color/black"
+            android:padding="8dp"
+            android:text="Event #1"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:alpha="0.7" />
+    </FrameLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_selected_user"
-        android:text="Registered Users"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="70dp">
+    <!-- Buttons in a Horizontal Line -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="7dp">
 
-    </Button>
+        <!-- Cancelled Users Button -->
+        <Button
+            android:id="@+id/button_cancelled_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:text="Cancelled Users" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_cancelled_user"
-        android:text="Canceled Users"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="130dp">
+        <!-- Selected Users Button -->
+        <Button
+            android:id="@+id/button_selected_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:text="Enrolled Users" />
 
-    </Button>
+        <!-- More Info Button -->
+        <Button
+            android:id="@+id/MoreInfo_organizer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:text="More Info" />
+    </LinearLayout>
 
-
-
-
-</FrameLayout>
-
+</LinearLayout>

@@ -3,6 +3,7 @@
     android:layout_height="200dp"
     android:layout_marginBottom="8dp">
 
+    <!-- Image View -->
     <ImageView
         android:id="@+id/eventImage_user"
         android:layout_width="match_parent"
@@ -10,6 +11,7 @@
         android:scaleType="centerCrop"
         android:src="@android:drawable/ic_menu_gallery" />
 
+    <!-- Event Name Text -->
     <TextView
         android:id="@+id/eventName_user"
         android:layout_width="wrap_content"
@@ -22,14 +24,16 @@
         android:textSize="20sp"
         android:alpha="0.7" />
 
+    <!-- More Info Button -->
     <Button
         android:id="@+id/MoreInfo_user"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
         android:text="More Info" />
-
 
 
 </FrameLayout>

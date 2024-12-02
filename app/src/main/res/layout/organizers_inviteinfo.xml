@@ -11,7 +11,7 @@
         android:id="@+id/eventnameInfo_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Event Name"
+        android:text="EVENT NAME"
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -28,33 +28,47 @@
         android:contentDescription="QR Code Image"
         android:scaleType="fitCenter" />
 
-    <!-- Close Button (Optional) -->
+    <!-- Buttons -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <!-- Close Button -->
         <Button
             android:id="@+id/closeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Close"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:textSize="10sp"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"
+            android:layout_marginRight="5dp"/>
 
+        <!-- Waitlist Button -->
         <Button
             android:id="@+id/button_ViewWaitlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Waitlist"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:textSize="10sp"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"
+            android:layout_marginRight="5dp">
 
         </Button>
 
+        <!-- Chosen Users Button -->
         <Button
             android:id="@+id/button_invited_users"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Invited Users"
-            android:layout_marginTop="16dp">
+            android:text="Chosen Users"
+            android:textSize="10sp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black">
 
         </Button>
 

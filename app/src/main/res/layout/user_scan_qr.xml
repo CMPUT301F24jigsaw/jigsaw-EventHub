@@ -5,11 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
+    <!-- Text View -->
+    <TextView
+        android:id="@+id/tv_instruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/btn_scan"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:textSize="20sp"
+        android:text="Scan the QR Code to join an event!" />
+
+    <!-- Scan Button -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
         android:text="Scan"
         android:layout_centerInParent="true"
-        android:id="@+id/btn_scan"
-        />
+        android:id="@+id/btn_scan" />
 </RelativeLayout>

@@ -21,6 +21,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.List;
+
 public class EventDetailsActivity extends DialogFragment {
 
     private TextView eventNameTextView, eventDescriptionTextView, geolocation;
@@ -122,28 +124,52 @@ public class EventDetailsActivity extends DialogFragment {
             return;
         }
 
-        // Update event waitlist
+        // Reference the event document
         DocumentReference eventRef = db.collection("events").document(eventId);
-        eventRef.update("waitingList", FieldValue.arrayUnion(userId))
-                .addOnSuccessListener(aVoid -> {
-                    // Update user waitlist
-                    DocumentReference userRef = db.collection("users").document(userId);
-                    userRef.update("waitingList", FieldValue.arrayUnion(eventId),
-                                    "notifications", FieldValue.arrayUnion("You have joined the waiting list for " + name))
-                            .addOnSuccessListener(aVoid2 -> {
-                                Toast.makeText(requireContext(), "Added to waitlist!", Toast.LENGTH_SHORT).show();
-                                dismiss(); // Close the dialog
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(requireContext(), "Failed to update user waitlist: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                buttonJoinWaitlist.setEnabled(true); // Re-enable button
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to update event waitlist: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Get the current waiting list and the limit
+                List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
+                Long waitingListLimit = documentSnapshot.getLong("waitingListLimit"); // May be null or 0
+
+                // Check if the waiting list limit is reached
+                if (waitingListLimit != null && waitingListLimit > 0 && waitingList != null && waitingList.size() >= waitingListLimit) {
+                    Toast.makeText(requireContext(), "Waiting list is full. You cannot join at this time.", Toast.LENGTH_SHORT).show();
                     buttonJoinWaitlist.setEnabled(true); // Re-enable button
-                });
+                    return;
+                }
+
+                // Add user to the waiting list
+                eventRef.update("waitingList", FieldValue.arrayUnion(userId))
+                        .addOnSuccessListener(aVoid -> {
+                            // Update user waitlist
+                            DocumentReference userRef = db.collection("users").document(userId);
+                            userRef.update("waitingList", FieldValue.arrayUnion(eventId),
+                                            "notifications", FieldValue.arrayUnion("You have joined the waiting list for " + name))
+                                    .addOnSuccessListener(aVoid2 -> {
+                                        Toast.makeText(requireContext(), "Added to waitlist!", Toast.LENGTH_SHORT).show();
+                                        dismiss(); // Close the dialog
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(requireContext(), "Failed to update user waitlist: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        buttonJoinWaitlist.setEnabled(true); // Re-enable button
+                                    });
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(requireContext(), "Failed to update event waitlist: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            buttonJoinWaitlist.setEnabled(true); // Re-enable button
+                        });
+            } else {
+                Toast.makeText(requireContext(), "Event not found", Toast.LENGTH_SHORT).show();
+                buttonJoinWaitlist.setEnabled(true); // Re-enable button
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(requireContext(), "Failed to fetch event details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            buttonJoinWaitlist.setEnabled(true); // Re-enable button
+        });
     }
+
 
     @Override
     public void onStart() {

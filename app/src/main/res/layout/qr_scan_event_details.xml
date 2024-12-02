@@ -7,30 +7,39 @@
     android:padding="16dp"
     android:gravity="center">
 
+    <!-- Event Name Text -->
     <TextView
         android:id="@+id/eventNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Event Name"
+        android:text="EVENT NAME"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:gravity="center"/>
 
+    <!-- Event Description Text -->
     <TextView
         android:id="@+id/eventDescriptionTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Event Description"
         android:textSize="16sp"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:gravity="center"/>
+
+    <!-- Geolocation Text -->
     <TextView
         android:id="@+id/textview_geolocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="">
+        android:text="Geolocation"
+        android:gravity="center"
+        android:layout_marginBottom="18dp">
 
     </TextView>
 
+    <!-- QR Code Image -->
     <ImageView
         android:id="@+id/eventQrImageView"
         android:layout_width="200dp"
@@ -39,11 +48,15 @@
         android:contentDescription="QR Code Image"
         android:scaleType="fitCenter" />
 
+    <!-- Join Waitlist Button -->
     <Button
         android:id="@+id/buttonJoinWaitlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Join Waitlist">
+        android:layout_marginTop="20dp"
+        android:text="JOIN WAITLIST"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black">
 
     </Button>
 </LinearLayout>

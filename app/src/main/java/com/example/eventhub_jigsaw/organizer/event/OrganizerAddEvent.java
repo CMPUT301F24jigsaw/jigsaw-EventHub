@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
 public class OrganizerAddEvent extends DialogFragment {
 
     private FirebaseFirestore db;
-    private EditText eventName, maxAttendees, dateTime, eventDescription;
+    private EditText eventName, maxAttendees, dateTime, eventDescription, waitList;
     Spinner facilityLocation, userGeolocation ;
     private ImageView qrCodeImageView;
     private ImageView selectedImageView;
@@ -86,6 +86,7 @@ public class OrganizerAddEvent extends DialogFragment {
         selectImage = new SelectImage(activityResultLauncher, selectedImageView); // Initialize SelectImage helper
         uploadImage = new UploadImage(); // Initialize UploadImage helper
         userGeolocation = view.findViewById(R.id.eventGeoLocation);
+        waitList = view.findViewById(R.id.limit_waitlist);
 
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         db = FirebaseFirestore.getInstance();
@@ -117,6 +118,19 @@ public class OrganizerAddEvent extends DialogFragment {
             newEvent.setDeclinedInvitationUser(new ArrayList<>());
             newEvent.setImageID(null);
             newEvent.setGeolocation(geolocation);
+
+            String waitingListLimitStr = waitList.getText().toString().trim();
+            if (!TextUtils.isEmpty(waitingListLimitStr)) {
+                try {
+                    int waitingListLimitInt = Integer.parseInt(waitingListLimitStr);
+                    if (waitingListLimitInt > 0) {
+                        newEvent.setWaitingListLimit(waitingListLimitInt);
+                    }
+                } catch (NumberFormatException e) {
+                    showToast("Waiting list limit must be a valid number.");
+                    return;
+                }
+            }
 
             // Add the event to the Firestore collection
             db.collection("events").add(newEvent)
