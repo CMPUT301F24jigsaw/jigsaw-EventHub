@@ -1,5 +1,7 @@
 package com.example.eventhub_jigsaw;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,24 @@ public class Event implements Serializable {
     /** The image resource ID for the event */
     private String eventImageUrl; // The image resource Id for the event
     private int waitingListLimit;
+    private String eventID;
+    private Bitmap eventImageBitmap;
 
+    public Bitmap getEventImageBitmap() {
+        return eventImageBitmap;
+    }
+
+    public void setEventImageBitmap(Bitmap eventImageBitmap) {
+        this.eventImageBitmap = eventImageBitmap;
+    }
+
+    public String getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
     /**
      * Gets the name of the event.
      * @return The event name.
@@ -113,17 +132,22 @@ public class Event implements Serializable {
      * @param eventImage The image resource ID associated with the event.
      */
 
-    public Event() {
-
-    }
-
-    public Event(String eventName, String eventDate, String organizerID, int maxAttendees, String description) {
+    // Constructors
+    public Event(String eventID, String eventName, String eventDate, String organizerID, int maxAttendees, String description) {
+        this.eventID = eventID;
         this.eventName = eventName;
         this.eventDate = eventDate;
         this.organizerID = organizerID;
         this.maxAttendees = maxAttendees;
         this.description = description;
         this.waitingList = new ArrayList<>();
+    }
+
+    public Event(String eventName, Bitmap eventImageBitmap, String eventDate, String description) {
+        this.eventName = eventName;
+        this.eventImageBitmap = eventImageBitmap;
+        this.eventDate = eventDate;
+        this.description = description;
     }
 
     public List<String> getWaitingList() {
@@ -140,12 +164,6 @@ public class Event implements Serializable {
 
     public void setSampledUsers(List<String> sampledUsers) {
         this.sampledUsers = sampledUsers;
-    }
-
-    public Event(String eventName, String eventDate, String description) {
-        this.eventName = eventName;
-        this.eventDate = eventDate;
-        this.description = description;
     }
 
     public List<String> getDeclinedInvitationUser() {

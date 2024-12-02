@@ -75,7 +75,7 @@ public class UserWaitlistPage extends Fragment {
                             String date = documentSnapshot.getString("eventDate");
                             String description = documentSnapshot.getString("description");
 
-                            eventsList.add(new Event(name, date, description));
+                            eventsList.add(new Event(name, null, date, description));
                             adapter.notifyDataSetChanged();
                         }
                     });

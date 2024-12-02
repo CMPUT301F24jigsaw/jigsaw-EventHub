@@ -82,8 +82,10 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
             canceledUser.setArguments(bundle);
             canceledUser.show(fragmentManager, "event_canceled_user");
         });
-    }
 
+
+    }
+    
     @Override
     public int getItemCount() {
         // Return the total number of events

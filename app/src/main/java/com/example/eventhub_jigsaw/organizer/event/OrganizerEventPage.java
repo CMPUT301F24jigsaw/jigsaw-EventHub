@@ -2,8 +2,10 @@ package com.example.eventhub_jigsaw.organizer.event;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 // This is a model class representing a single event
-public class OrganizerEventPage {
+public class OrganizerEventPage implements Serializable {
 
     private String eventName_organizer;
     private Bitmap eventImageBitmap_organizer;

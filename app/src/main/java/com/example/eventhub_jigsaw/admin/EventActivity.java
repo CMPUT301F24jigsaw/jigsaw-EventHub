@@ -86,13 +86,14 @@ public class EventActivity extends Fragment {
                     eventList.clear();
                     for (QueryDocumentSnapshot doc: querySnapshots) {
                         try {
+                            String eventID = doc.getString("eventID");
                             String eventName = doc.getString("eventName");
                             String eventDate = doc.getString("eventDate");
                             String organizerId = doc.getString("organizerID");
                             String description = doc.getString("description");
                             int maxAttendees = doc.get("maxAttendees", int.class);
                             Log.d("Firestore", String.format("Event(%s, %s, %s) fetched", eventName, eventDate, organizerId));
-                            eventList.add(new Event(eventName, eventDate, organizerId, maxAttendees, description));
+                            eventList.add(new Event(eventID, eventName, eventDate, organizerId, maxAttendees, description));
                         } catch (Exception e) {
                             Log.e("Firestore", "Error processing document: " + doc.getId(), e);
                         }

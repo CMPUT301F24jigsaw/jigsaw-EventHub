@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Image View -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="135dp"
@@ -30,6 +31,7 @@
             android:scaleType="centerCrop" />
     </LinearLayout>
 
+    <!-- Upload an Image and QR code Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,14 +43,18 @@
             android:id="@+id/editImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Image" />
+            android:text="Upload an Image"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"/>
 
         <Button
             android:id="@+id/generateQRCodeButton"
-            android:layout_width="wrap_content"
+            android:layout_width="100sp"
             android:layout_height="wrap_content"
             android:text="QR Code"
-            android:layout_marginStart="90dp" />
+            android:layout_marginStart="90dp"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"/>
     </LinearLayout>
 
     <!-- Event Name -->
@@ -117,6 +123,29 @@
             android:inputType="number" />
     </LinearLayout>
 
+    <!-- Max Attendees -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Limit Waitlist"
+            android:paddingEnd="46dp"
+            android:labelFor="@id/limit_waitlist" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/limit_waitlist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Optional Entry"
+            android:inputType="number" />
+    </LinearLayout>
+
     <!-- Date and Time -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -160,6 +189,7 @@
             android:hint="Add a description" />
     </LinearLayout>
 
+    <!-- Geolocation -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -181,7 +211,7 @@
             android:entries="@array/geolocation_spinner"/>
     </LinearLayout>
 
-    <!-- Buttons -->
+    <!-- Save Event Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -192,18 +222,13 @@
             android:id="@+id/saveEventButton"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="Save Event" />
+            android:text="Save Event"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"/>
 
-        <!--        <Button-->
-<!--            android:id="@+id/deleteEventButton"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Delete Event"-->
-<!--            android:layout_marginStart="16dp" />-->
+
     </LinearLayout>
 
-
-    <!-- Edit Image & QR Code buttons -->
 
 
 </LinearLayout>

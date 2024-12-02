@@ -1,5 +1,7 @@
 package com.example.eventhub_jigsaw.entrant;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -16,8 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventhub_jigsaw.Event;
 import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.organizer.event.OrganizerEventPage;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +33,7 @@ public class UserInvitePageActivity extends Fragment {
 
     private List<Event> eventList; // List to store events
     private UserInvitePageAdapter adapter;
-
+    private StorageReference storageReference;
     private FirebaseFirestore db;
     private String userId; // User ID for querying the database
 
@@ -84,23 +90,61 @@ public class UserInvitePageActivity extends Fragment {
     }
 
     private void fetchEventDetails(List<String> eventIds) {
+        List<Event> tempEventList = new ArrayList<>();
+        List<Runnable> imageFetchTasks = new ArrayList<>();
+
         for (String eventId : eventIds) {
             db.collection("events").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     String eventName = documentSnapshot.getString("eventName");
                     String eventDescription = documentSnapshot.getString("description");
                     String eventDate = documentSnapshot.getString("eventDate");
+                    String imageID = documentSnapshot.getString("imageID");
 
+                    // Prepare the image fetch task
+                    String imagePath = "images/events/" + imageID; // Adjust path as needed
+                    StorageReference imageRef = storageReference.child(imagePath);
 
-
-                    // Add the event to the list
-                    eventList.add(new Event(eventName, eventDate, eventDescription));
-                    adapter.notifyDataSetChanged();
+                    imageFetchTasks.add(() -> {
+                        try {
+                            File localFile = File.createTempFile("event_image", "jpg");
+                            imageRef.getFile(localFile)
+                                    .addOnSuccessListener(taskSnapshot -> {
+                                        Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                        synchronized (tempEventList) {
+                                            tempEventList.add(new Event(eventName, bitmap, eventDescription, eventDate));
+                                        }
+                                        checkAndUpdateAdapter(tempEventList, eventIds.size());
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        synchronized (tempEventList) {
+                                            tempEventList.add(new Event(eventName, null, eventDescription, eventDate));
+                                        }
+                                        checkAndUpdateAdapter(tempEventList, eventIds.size());
+                                    });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
             }).addOnFailureListener(e -> {
                 Toast.makeText(getContext(), "Error fetching event details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Error fetching event details for event ID: " + eventId, e);
+                Log.e(TAG, "Error fetching event details", e);
             });
+        }
+
+        // Execute image fetch tasks sequentially
+        for (Runnable task : imageFetchTasks) {
+            task.run();
+        }
+    }
+
+    private void checkAndUpdateAdapter(List<Event> tempEventList, int expectedSize) {
+        // Update the adapter only after all events have been processed
+        if (tempEventList.size() == expectedSize) {
+            eventList.clear();
+            eventList.addAll(tempEventList);
+            requireActivity().runOnUiThread(adapter::notifyDataSetChanged);
         }
     }
 }

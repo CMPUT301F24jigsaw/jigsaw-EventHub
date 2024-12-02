@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Image View -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="135dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/eventImage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="Event Image"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_camera" />
+
+    </LinearLayout>
+
+    <!-- Upload an Image and QR code Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        >
+        <Button
+            android:id="@+id/editImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload an Image"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"/>
+
+
+    </LinearLayout>
+
+
+    <!-- Save Event Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/saveEventButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Save Event"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

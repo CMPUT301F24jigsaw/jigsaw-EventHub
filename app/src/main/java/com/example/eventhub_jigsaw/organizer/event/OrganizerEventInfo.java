@@ -31,7 +31,6 @@ public class OrganizerEventInfo extends DialogFragment {
     private ImageView eventQrImage;
     private TextView eventNameTextView;
     private String eventID;
-    private Button closeButton;
 
     private FirebaseFirestore db;
 
@@ -77,15 +76,20 @@ public class OrganizerEventInfo extends DialogFragment {
                 waitlistDialog.show(getParentFragmentManager(), "WaitlistDialog");
             });
 
-            view.findViewById(R.id.closeButton).setOnClickListener(v -> dismiss());
+            view.findViewById(R.id.edit_button).setOnClickListener(v -> {
+                // Open the EditEventDialogFragment
+                OrganizerEditEvent editEventDialog = new OrganizerEditEvent();
 
-            view.findViewById(R.id.button_invited_users).setOnClickListener(v -> {
-                OrganizerInvitedUsers invitedUsers = new OrganizerInvitedUsers();
-                Bundle bundle = new Bundle();
-                bundle.putString("event_id", eventID);
-                invitedUsers.setArguments(bundle);
-                invitedUsers.show(getParentFragmentManager(), "invitedUsers");
+                // Pass the required event details as arguments
+                Bundle editArgs = new Bundle();
+                editArgs.putString("event_id", eventID); // Pass the event ID
+                editArgs.putString("event_name", eventNameTextView.getText().toString()); // Pass the event name
+                editEventDialog.setArguments(editArgs);
+
+                // Show the dialog
+                editEventDialog.show(getParentFragmentManager(), "EditEventDialog");
             });
+
 
         }
 
@@ -105,9 +109,15 @@ public class OrganizerEventInfo extends DialogFragment {
         db.collection("events")
                 .whereEqualTo("eventName", eventName)
                 .whereEqualTo("organizerID", organizerId)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (!querySnapshot.isEmpty()) {
+                .limit(1) // Make sure to limit the result to only one event
+                .addSnapshotListener((querySnapshot, e) -> {
+                    if (e != null) {
+                        Toast.makeText(getContext(), "Error fetching event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        dismiss();
+                        return;
+                    }
+
+                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
                         // Assuming only one result is returned
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             // Retrieve event details
@@ -130,12 +140,9 @@ public class OrganizerEventInfo extends DialogFragment {
                         Toast.makeText(getContext(), "Event not found", Toast.LENGTH_SHORT).show();
                         dismiss();
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Error fetching event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    dismiss();
                 });
     }
+
 
     private Bitmap decodeBase64ToBitmap(String base64) {
         byte[] decodedBytes = Base64.decode(base64, Base64.DEFAULT);

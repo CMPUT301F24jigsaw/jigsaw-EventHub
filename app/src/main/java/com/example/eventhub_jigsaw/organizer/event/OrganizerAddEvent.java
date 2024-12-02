@@ -80,7 +80,6 @@ public class OrganizerAddEvent extends DialogFragment {
         eventDescription = view.findViewById(R.id.eventDescription);
         qrCodeImageView = view.findViewById(R.id.eventQR);
         facilityLocation = view.findViewById(R.id.eventLocation);
-        selectedImageView = view.findViewById(R.id.eventImage);
         buttonUploadImage = view.findViewById(R.id.editImageButton);
         selectedImageView = view.findViewById(R.id.eventImage);
         selectImage = new SelectImage(activityResultLauncher, selectedImageView); // Initialize SelectImage helper
@@ -110,7 +109,7 @@ public class OrganizerAddEvent extends DialogFragment {
             Facility selectedFacility = (Facility) facilityLocation.getSelectedItem();
             boolean geolocation = userGeolocation.getSelectedItem().toString().equalsIgnoreCase("Yes");
 
-            Event newEvent = new Event(name, date, organizerID, maxAttendeesInt, description);
+            Event newEvent = new Event(null, name, date, organizerID, maxAttendeesInt, description);
             newEvent.setFacilityId(selectedFacility.getFacilityID());
             newEvent.setWaitingList(new ArrayList<>());
             newEvent.setSampledUsers(new ArrayList<>());
@@ -137,6 +136,7 @@ public class OrganizerAddEvent extends DialogFragment {
                     .addOnSuccessListener(documentReference -> {
                         // Get the event ID from Firestore and generate the QR code
                         String eventId = documentReference.getId();
+                        newEvent.setId(eventId);
                         generateAndSaveQrCode(eventId);
 
                         // Upload the image if an image is selected
@@ -277,10 +277,6 @@ public class OrganizerAddEvent extends DialogFragment {
             showToast("Event description is required.");
             return false;
         }
-        if (description.length() < 10 || description.length() > 500) {
-            showToast("Description must be between 10 and 500 characters.");
-            return false;
-        }
         if (!isValidDate(date)) {
             showToast("Invalid date format. Use dd/mm/yyyy.");
             return false;
@@ -291,8 +287,8 @@ public class OrganizerAddEvent extends DialogFragment {
         }
         try {
             int maxAttendeesInt = Integer.parseInt(maxAttendeesStr);
-            if (maxAttendeesInt <= 0 || maxAttendeesInt > 1000) {
-                showToast("Max attendees must be a positive number between 1 and 1000.");
+            if (maxAttendeesInt <= 0) {
+                showToast("Max attendees must be a positive number.");
                 return false;
             }
         } catch (NumberFormatException e) {
