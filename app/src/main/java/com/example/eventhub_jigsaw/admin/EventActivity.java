@@ -1,6 +1,7 @@
 package com.example.eventhub_jigsaw.admin;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +14,30 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventhub_jigsaw.Event;
+import com.example.eventhub_jigsaw.Facility;
 import com.example.eventhub_jigsaw.R;
 import com.example.eventhub_jigsaw.entrant.UserInvitePageAdapter;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EventActivity extends Fragment {
 
-    private List<Events> eventList; // Declare eventList as a class variable
+    private ArrayList<Event> eventList; // Declare eventList as a class variable
     private UserInvitePageAdapter adapter;
+    private int lastClickedPosition = -1;
+
+    // Database
+    FirebaseFirestore db;
+    CollectionReference eventsRef;
 
     @Nullable
     @Override
@@ -34,38 +49,97 @@ public class EventActivity extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewEvents);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Sample event data
+
+        db = FirebaseFirestore.getInstance();
+        eventsRef = db.collection("events");
         eventList = new ArrayList<>();
-        eventList.add(new Events("Event #1", R.drawable.event_image_placeholder));
-        eventList.add(new Events("Event #2", R.drawable.event_image_placeholder));
 
         // Set up the adapter with the sample data
         EventAdapter adapter = new EventAdapter(eventList);
         recyclerView.setAdapter(adapter);
 
-        Button removeAllButton = view.findViewById(R.id.bottomButton);
-        removeAllButton.setOnClickListener(new View.OnClickListener() {
+        eventsRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                for (DocumentSnapshot document : task.getResult()) {
+                    String id = document.getId(); // This is the document ID
+                    Event event = document.toObject(Event.class);
+
+                    if (event != null) {
+                        event.setId(id); // Add the ID to your Facility object if necessary
+                        Log.d("Firestore", "Event ID: " + id + ", Event Name: " + event.getEventName());
+                    }
+                }
+            } else {
+                Log.e("Firestore", "Failed to fetch documents", task.getException());
+            }
+        });
+
+        // create snapshot listener to update database live
+        eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e("Firestore", error.toString());
+                    return;
+                }
+                if (querySnapshots != null) {
+                    eventList.clear();
+                    for (QueryDocumentSnapshot doc: querySnapshots) {
+                        try {
+                            String eventName = doc.getString("eventName");
+                            String eventDate = doc.getString("eventDate");
+                            String organizerId = doc.getString("organizerID");
+                            String description = doc.getString("description");
+                            int maxAttendees = doc.get("maxAttendees", int.class);
+                            Log.d("Firestore", String.format("Event(%s, %s, %s) fetched", eventName, eventDate, organizerId));
+                            eventList.add(new Event(eventName, eventDate, organizerId, maxAttendees, description));
+                        } catch (Exception e) {
+                            Log.e("Firestore", "Error processing document: " + doc.getId(), e);
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.d("Firestore", "No facilities found");
+                }
+            }
+        });
+
+        Button removeEventButton = view.findViewById(R.id.bottomButton);
+        removeEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeAllEvents();
+                if (lastClickedPosition != -1) {
+                    Event event = eventList.remove(lastClickedPosition);
+                    removeEvent(event);
+                }
             }
         });
 
         return view;
     }
 
-    private void removeAllEvents() {
-
+    private void removeEvent(Event event) {
         if (eventList.isEmpty()) {
             Toast.makeText(getContext(), "No events to remove.", Toast.LENGTH_SHORT).show();
             return; // Exit the method if there are no events
         }
-        // Clear the event list
-        eventList.clear();
-        // Notify the adapter that the data has changed
-        adapter.notifyDataSetChanged();
+
+        lastClickedPosition = -1; // reset last clicked position
+
+        eventList.remove(event); // Clear the event list
+        adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+
+        // remove permanently from database
+        eventsRef.document(event.getId()).delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d("Firestore", "Document deleted successfully");
+            } else {
+                Log.e("Firestore", "Failed to delete document", task.getException());
+            }
+        });
+
 
         // Optionally, show a message or an empty state
-        Toast.makeText(getContext(), "All events removed.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Event removed successfully!", Toast.LENGTH_SHORT).show();
     }
 }

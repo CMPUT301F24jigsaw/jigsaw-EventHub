@@ -64,7 +64,6 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation("com.google.firebase:firebase-firestore:24.9.1")
     implementation("com.google.firebase:firebase-auth:22.1.1") // If using Firebase Auth
-//    implementation("com.google.android.gms:play-services-auth:20.8.0") // For Google Sign-In or APIs
 
     // Glide
     implementation ("com.github.bumptech.glide:glide:4.15.1")

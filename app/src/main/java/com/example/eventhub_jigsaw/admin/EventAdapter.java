@@ -9,8 +9,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventhub_jigsaw.Event;
 import com.example.eventhub_jigsaw.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,13 +21,14 @@ import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
-    private List<Events> eventList;
+    private ArrayList<Event> eventList;
+
     /**
      * Constructor for the EventAdapter.
      *
      * @param eventList The list of events to display in the RecyclerView.
      */
-    public EventAdapter(List<Events> eventList) {
+    public EventAdapter(ArrayList<Event> eventList) {
         this.eventList = eventList;
     }
     /**
@@ -41,6 +44,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.items_event, parent, false);
         return new EventViewHolder(view);
     }
+
     /**
      * Called by RecyclerView to display the data at the specified position.
      *
@@ -49,9 +53,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      */
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        Events event = eventList.get(position);
+        Event event = eventList.get(position);
         holder.eventName.setText(event.getEventName());
-        holder.eventImage.setImageResource(event.getEventImage());
+//        holder.eventImage.setImageResource(event.getEventImage());
     }
 
     /**
