@@ -63,7 +63,7 @@ public class FacilitiesFragment extends Fragment {
         View view = inflater.inflate(R.layout.facilities_list, container, false);
 
         db = FirebaseFirestore.getInstance();
-        facilitiesRef = db.collection("facility");
+        facilitiesRef = db.collection("facilities");
 
         facilityList = view.findViewById(R.id.facility_list);
         facilityDataList = new ArrayList<>();
@@ -84,12 +84,12 @@ public class FacilitiesFragment extends Fragment {
                     facilityDataList.clear();
                     for (QueryDocumentSnapshot doc: querySnapshots) {
                         try {
-                            String id = doc.getId();
+                            String organizerId = doc.getString("organizerID");
                             String name = doc.getString("name");
                             String location = doc.getString("location");
                             int capacity = doc.get("capacity", int.class);
                             Log.d("Firestore", String.format("Facility(%s, %s) fetched", name, location));
-                            facilityDataList.add(new Facility(id, name, location, capacity));
+                            facilityDataList.add(new Facility(name, organizerId, location, capacity));
                         } catch (Exception e) {
                             Log.e("Firestore", "Error processing document: " + doc.getId(), e);
                         }
@@ -131,6 +131,6 @@ public class FacilitiesFragment extends Fragment {
         facilityArrayAdapter.notifyDataSetChanged();
 
         // Remove city from Firestore collection with city name as the document Id
-        facilitiesRef.document(facility.getId()).delete();
+        facilitiesRef.document(facility.getFacilityID()).delete();
     }
 }
