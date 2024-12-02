@@ -32,7 +32,7 @@ public class User implements Serializable {
         this.phone = phone;
         this.role = role;
         this.adminNotification = false;
-        this.organizerNotification = false;
+        this.organizerNotification = true;
         this.WaitingList = new ArrayList<>();
     }
 
