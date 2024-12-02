@@ -45,4 +45,12 @@
         android:gravity="center"
         android:textSize="18sp"
         android:layout_marginTop="4dp" />
+
+    <Button
+        android:id="@+id/button_leave_waitlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Leave Waitlist">
+
+    </Button>
 </LinearLayout>

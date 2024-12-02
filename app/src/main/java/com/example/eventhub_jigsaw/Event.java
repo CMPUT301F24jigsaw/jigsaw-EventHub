@@ -150,6 +150,12 @@ public class Event implements Serializable {
         this.description = description;
     }
 
+    public Event(String eventName, String eventDate, String description) {
+        this.eventName = eventName;
+        this.eventDate = eventDate;
+        this.description = description;
+    }
+
     public List<String> getWaitingList() {
         return waitingList;
     }
@@ -208,5 +214,6 @@ public class Event implements Serializable {
     public void setWaitingListLimit(int waitingListLimit) {
         this.waitingListLimit = waitingListLimit;
     }
+
 }
 
