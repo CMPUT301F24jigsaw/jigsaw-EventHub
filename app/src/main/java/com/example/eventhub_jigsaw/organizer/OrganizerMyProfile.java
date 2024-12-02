@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.entrant.UserMyprofile;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,6 +39,9 @@ public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEd
     private FirebaseFirestore db;
     private StorageReference storageReference;
     private String organizerID;
+    private String username;
+    private String email;
+    private long phone;
 
     @Nullable
     @Override
@@ -58,15 +62,21 @@ public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEd
         fetchOrganizerData();
 
         // Handle Edit button
+        // Handle Edit button
         Button editButton = view.findViewById(R.id.edit_button);
         editButton.setOnClickListener(v -> {
             OrganizerMyProfileEdit editDialog = new OrganizerMyProfileEdit();
             Bundle args = new Bundle();
             args.putString("organizerID", organizerID); // Pass the organizer ID
+            args.putString("currentUsername", username); // Pass the current username
+            args.putString("currentEmail", email); // Pass the current email
+            args.putLong("currentPhone", phone); // Pass the current phone number
             editDialog.setArguments(args);
             editDialog.setTargetFragment(OrganizerMyProfile.this, 0);
             editDialog.show(getParentFragmentManager(), "edit_organizer_profile_dialog");
         });
+
+
 
         return view;
     }
@@ -78,12 +88,13 @@ public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEd
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            String name = document.getString("name");
-                            String email = document.getString("email");
+                            username = document.getString("name");
+                            email = document.getString("email");
+                            phone = document.getLong("phone");
                             String profilePicturePath = document.getString("profileImageUrl");
 
                             if (isAdded()) {
-                                organizerNameField.setText(name);
+                                organizerNameField.setText(username);
                                 organizerEmailField.setText(email);
                             }
 
@@ -103,6 +114,7 @@ public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEd
                     }
                 });
     }
+
 
     private void fetchProfileImage(String profilePicturePath) {
                 // Prepend the "images/users/" path to the provided file name

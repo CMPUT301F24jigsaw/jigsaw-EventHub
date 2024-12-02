@@ -28,6 +28,15 @@
         android:hint="Enter Phone"
         android:layout_marginBottom="16dp" />
 
+    <!-- Remove Profile Button -->
+    <Button
+        android:id="@+id/delete_photo_button"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remove profile photo" />
 
     <!-- Save Button -->
     <Button

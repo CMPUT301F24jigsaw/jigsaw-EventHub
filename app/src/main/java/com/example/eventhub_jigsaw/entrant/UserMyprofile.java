@@ -39,6 +39,9 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
     private StorageReference storageReference;
     private FirebaseFirestore db;
     private String userID;
+    private String username;
+    private String email;
+    private long phone;
 
     @Nullable
     @Override
@@ -62,9 +65,12 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
         Button Button_edit = view.findViewById(R.id.edit_button);
         Button_edit.setOnClickListener(v -> {
             // Show the edit dialog
-            com.example.eventhub_jigsaw.entrant.UserMyProfileEdit editDialog = new com.example.eventhub_jigsaw.entrant.UserMyProfileEdit();
+            UserMyProfileEdit editDialog = new UserMyProfileEdit();
             Bundle args = new Bundle();
-            args.putString("userID", userID); // Pass the userID
+            args.putString("userID", userID);
+            args.putString("currentUsername", username);
+            args.putString("currentEmail", email);
+            args.putLong("currentPhone", phone);
             editDialog.setArguments(args);
             editDialog.setTargetFragment(UserMyprofile.this, 0); // Set target for communication
             editDialog.show(getParentFragmentManager(), "edit_profile_dialog");
@@ -73,38 +79,40 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
         return view;
     }
 
-    // Fetch user data from Firestore
-    private void fetchUserData() {
-        db.collection("users").document(userID)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            String username = document.getString("name");
-                            String email = document.getString("email");
-                            String profilePicturePath = document.getString("profileImageUrl");
-                            // Ensure Fragment is still attached
-                            if (isAdded()) {
-                                Text_username.setText(username);
-                                Text_email.setText(email);
-                            }
-                            // Load the profile image using Glide
-                            if (profilePicturePath != null && !profilePicturePath.isEmpty()) {
-                                fetchProfileImage(profilePicturePath);
+        private void fetchUserData() {
+            db.collection("users").document(userID)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                username = document.getString("name");
+                                email = document.getString("email");
+                                phone = document.getLong("phone");  // Assuming phone is stored as a long
+                                String profilePicturePath = document.getString("profileImageUrl");
+
+                                // Ensure Fragment is still attached
+                                if (isAdded()) {
+                                    Text_username.setText(username);
+                                    Text_email.setText(email);
+                                }
+
+                                if (profilePicturePath != null && !profilePicturePath.isEmpty()) {
+                                    fetchProfileImage(profilePicturePath);
+                                }
+
+                            } else {
+                                Log.d(TAG, "No such document");
+                                if (isAdded()) {
+                                    Text_username.setText("User not found");
+                                    Text_email.setText("Email not found");
+                                }
                             }
                         } else {
-                            Log.d(TAG, "No such document");
-                            if (isAdded()) {
-                                Text_username.setText("User not found");
-                                Text_email.setText("Email not found");
-                            }
+                            Log.e(TAG, "Failed to fetch document", task.getException());
                         }
-                    } else {
-                        Log.e(TAG, "Failed to fetch document", task.getException());
-                    }
-                });
-    }
+                    });
+        }
 
     private void fetchProfileImage(String profilePicturePath) {
         // Prepend the "images/users/" path to the provided file name
