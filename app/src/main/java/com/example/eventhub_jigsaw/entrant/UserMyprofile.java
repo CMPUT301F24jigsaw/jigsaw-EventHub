@@ -1,5 +1,7 @@
 package com.example.eventhub_jigsaw.entrant;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,15 +19,24 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.eventhub_jigsaw.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
+
 
 public class UserMyprofile extends Fragment implements com.example.eventhub_jigsaw.entrant.UserMyProfileEdit.OnProfileUpdateListener {
     private static final String TAG = "UserMyprofile";
     private TextView Text_username;
     private TextView Text_email;
     private ImageView profileImage;
-
+    private StorageReference storageReference;
     private FirebaseFirestore db;
     private String userID;
 
@@ -35,6 +47,7 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
         userID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Find and set the TextViews
@@ -70,19 +83,16 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
                         if (document.exists()) {
                             String username = document.getString("name");
                             String email = document.getString("email");
-                            String profilePictureUrl = document.getString("profile_picture");
+                            String profilePicturePath = document.getString("profileImageUrl");
                             // Ensure Fragment is still attached
                             if (isAdded()) {
                                 Text_username.setText(username);
                                 Text_email.setText(email);
                             }
                             // Load the profile image using Glide
-                            if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
-                                Glide.with(requireContext())
-                                        .load(profilePictureUrl)
-                                        .circleCrop()  // Optionally crop the image to a circle
-                                        .into(profileImage);
-                                }
+                            if (profilePicturePath != null && !profilePicturePath.isEmpty()) {
+                                fetchProfileImage(profilePicturePath);
+                            }
                         } else {
                             Log.d(TAG, "No such document");
                             if (isAdded()) {
@@ -94,6 +104,35 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
                         Log.e(TAG, "Failed to fetch document", task.getException());
                     }
                 });
+    }
+
+    private void fetchProfileImage(String profilePicturePath) {
+        // Prepend the "images/users/" path to the provided file name
+        String fullImagePath = "images/users/" + profilePicturePath;
+
+        // Create a reference to the image in Firebase Storage
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference().child(fullImagePath);
+
+        try {
+            final File localFile = File.createTempFile("profile_photo", "jpg");
+            imageRef.getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                            profileImage.setImageBitmap(bitmap);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Display a toast with the error message
+                            Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

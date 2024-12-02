@@ -15,7 +15,8 @@ public class Event implements Serializable {
     private List<String> sampledUsers;
     private List<String> registeredUsers;
     private List<String> declinedInvitationUser;
-    private String facilityId; // Add this field for facility ID
+    private String facilityId;// Add this field for facility ID
+    private String imageID;
 
     public String getEventName() {
         return eventName;
@@ -27,6 +28,14 @@ public class Event implements Serializable {
 
     public List<User> getAttendees() {
         return attendees;
+    }
+
+    public String getImageID() {
+        return imageID;
+    }
+
+    public void setImageID(String imageID) {
+        this.imageID = imageID;
     }
 
     public void setAttendees(List<User> attendees) {

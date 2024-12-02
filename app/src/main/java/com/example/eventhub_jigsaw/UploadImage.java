@@ -20,19 +20,20 @@ public class UploadImage {
         storageReference = FirebaseStorage.getInstance().getReference(); // Initialize Firebase Storage
     }
 
-    public void uploadImage(Uri fileUri, OnUploadCompleteListener listener) {
+    public void uploadImage(Uri fileUri, OnUploadCompleteListener listener, String deviceId) {
         if (fileUri == null) {
             listener.onFailure("No file selected.");
             return;
         }
 
-        StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
+        StorageReference ref = storageReference.child("images/users/"  + deviceId);
         UploadTask uploadTask = ref.putFile(fileUri);
 
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        listener.onSuccess(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+                        // Return the deviceId on successful upload
+                        listener.onSuccess(deviceId);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -42,6 +43,33 @@ public class UploadImage {
                     }
                 });
     }
+
+    public void uploadImageEvents(Uri fileUri, OnUploadCompleteListener listener, String eventId) {
+        if (fileUri == null) {
+            listener.onFailure("No file selected.");
+            return;
+        }
+
+        // Generate a random eventId
+
+        StorageReference ref = storageReference.child("images/events/" + eventId);
+        UploadTask uploadTask = ref.putFile(fileUri);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Return the generated eventId on successful upload
+                        listener.onSuccess(eventId);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onFailure(e.getMessage());
+                    }
+                });
+    }
+
 
     public interface OnUploadCompleteListener {
         void onSuccess(String imageUrl);

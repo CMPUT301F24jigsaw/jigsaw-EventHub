@@ -189,8 +189,6 @@ public class UserSignUp extends AppCompatActivity {
             return;
         }
 
-        // Save image URL if uploaded
-        String imageUrl = null;
         // Check if an image was selected
         if (selectedImageUri != null) {
             // If an image was selected, upload it
@@ -206,7 +204,7 @@ public class UserSignUp extends AppCompatActivity {
                     // Handle failure in image upload
                     Toast.makeText(UserSignUp.this, "Failed to upload image: " + errorMessage, Toast.LENGTH_SHORT).show();
                 }
-            });
+            }, userID);
         } else {
             // No image selected, proceed with saving the user to Firestore without an image
             saveUserToFirestore(userID, name, email, phone, role, null); // Pass null for imageUrl if no image was selected

@@ -1,5 +1,7 @@
 package com.example.eventhub_jigsaw.organizer;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,16 +19,24 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.eventhub_jigsaw.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
 
 public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEdit.OnProfileUpdateListener {
     private static final String TAG = "OrganizerMyProfile";
     private TextView organizerNameField;
     private TextView organizerEmailField;
     private ImageView organizerProfileImage;
-
     private FirebaseFirestore db;
+    private StorageReference storageReference;
     private String organizerID;
 
     @Nullable
@@ -35,6 +46,7 @@ public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEd
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
         organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Find views
@@ -68,19 +80,17 @@ public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEd
                         if (document.exists()) {
                             String name = document.getString("name");
                             String email = document.getString("email");
-                            String profilePictureUrl = document.getString("profile_picture");
+                            String profilePicturePath = document.getString("profileImageUrl");
 
                             if (isAdded()) {
                                 organizerNameField.setText(name);
                                 organizerEmailField.setText(email);
                             }
 
-                            if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
-                                Glide.with(requireContext())
-                                        .load(profilePictureUrl)
-                                        .circleCrop()
-                                        .into(organizerProfileImage);
+                            if (profilePicturePath != null && !profilePicturePath.isEmpty()) {
+                                fetchProfileImage(profilePicturePath);
                             }
+
                         } else {
                             Log.d(TAG, "No such document");
                             if (isAdded()) {
@@ -93,6 +103,37 @@ public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEd
                     }
                 });
     }
+
+    private void fetchProfileImage(String profilePicturePath) {
+        // Prepend the "images/users/" path to the provided file name
+        String fullImagePath = "images/users/" + profilePicturePath;
+
+        // Create a reference to the image in Firebase Storage
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference().child(fullImagePath);
+
+        try {
+            final File localFile = File.createTempFile("profile_photo", "jpg");
+            imageRef.getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                            // Set the bitmap image to the ImageView
+                            organizerProfileImage.setImageBitmap(bitmap);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Display a toast with the error message
+                            Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public void onProfileUpdate(String newName, String newEmail) {

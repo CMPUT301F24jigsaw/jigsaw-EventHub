@@ -1,20 +1,26 @@
 package com.example.eventhub_jigsaw.organizer.event;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -22,6 +28,8 @@ import androidx.fragment.app.DialogFragment;
 import com.example.eventhub_jigsaw.Event;
 import com.example.eventhub_jigsaw.Facility;
 import com.example.eventhub_jigsaw.R;
+import com.example.eventhub_jigsaw.SelectImage;
+import com.example.eventhub_jigsaw.UploadImage;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -41,6 +49,11 @@ public class OrganizerAddEvent extends DialogFragment {
     private EditText eventName, maxAttendees, dateTime, eventDescription;
     Spinner facilityLocation ;
     private ImageView qrCodeImageView;
+    private ImageView selectedImageView;
+    private Button buttonUploadImage;
+    private Uri selectedImageUri;
+    private SelectImage selectImage;
+    private UploadImage uploadImage;
 
     private OnEventAddedListener eventAddedListener;// Listener for notifying when an event is added
 
@@ -67,6 +80,11 @@ public class OrganizerAddEvent extends DialogFragment {
         eventDescription = view.findViewById(R.id.eventDescription);
         qrCodeImageView = view.findViewById(R.id.eventQR);
         facilityLocation = view.findViewById(R.id.eventLocation);
+        selectedImageView = view.findViewById(R.id.eventImage);
+        buttonUploadImage = view.findViewById(R.id.editImageButton);
+        selectedImageView = view.findViewById(R.id.eventImage);
+        selectImage = new SelectImage(activityResultLauncher, selectedImageView); // Initialize SelectImage helper
+        uploadImage = new UploadImage(); // Initialize UploadImage helper
 
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         db = FirebaseFirestore.getInstance();
@@ -75,6 +93,12 @@ public class OrganizerAddEvent extends DialogFragment {
 
         ImageButton backButton = view.findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> dismiss());
+
+        // Handle image selection
+        buttonUploadImage.setOnClickListener(v -> {
+            selectImage.selectImage(); // Trigger the image picker
+        });
+
 
         view.findViewById(R.id.saveEventButton).setOnClickListener(v -> {
             if (!validateInput()) return;
@@ -92,13 +116,53 @@ public class OrganizerAddEvent extends DialogFragment {
             newEvent.setSampledUsers(new ArrayList<>());
             newEvent.setRegisteredUsers(new ArrayList<>());
             newEvent.setDeclinedInvitationUser(new ArrayList<>());
+            newEvent.setImageID(null);
 
+            // Add the event to the Firestore collection
             db.collection("events").add(newEvent)
-                    .addOnSuccessListener(documentReference -> generateAndSaveQrCode(documentReference.getId()))
+                    .addOnSuccessListener(documentReference -> {
+                        // Get the event ID from Firestore and generate the QR code
+                        String eventId = documentReference.getId();
+                        generateAndSaveQrCode(eventId);
+
+                        // Upload the image if an image is selected
+                        if (selectedImageUri != null) {
+                            uploadImage.uploadImageEvents(selectedImageUri, new UploadImage.OnUploadCompleteListener() {
+                                @Override
+                                public void onSuccess(String imageUrl) {
+                                    // Store the image URL or handle the success logic
+                                    db.collection("events").document(eventId)
+                                            .update("imageID", imageUrl)
+                                            .addOnSuccessListener(aVoid -> {
+                                                // Optionally show a success message
+                                                Log.e("OrganizerAddEvent", "Image uploaded: " + imageUrl);
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e("OrganizerAddEvent", "Image uploaded: " + imageUrl);
+                                            } );
+                                }
+
+                                @Override
+                                public void onFailure(String errorMessage) {
+                                    // Show a failure message for image upload
+                                    showToast("Failed to upload image: " + errorMessage);
+                                }
+                            }, eventId);
+                        } else {
+                            showToast("Event created successfully without an image.");
+                        }
+                    })
                     .addOnFailureListener(e -> showToast("Failed to create event: " + e.getMessage()));
         });
     }
 
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                selectImage.getActivityResultCallback().onActivityResult(result);
+                selectedImageUri = selectImage.getSelectedImageUri();
+            }
+    );
     private void loadFacilities() {
         db.collection("facilities").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {

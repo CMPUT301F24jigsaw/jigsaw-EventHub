@@ -26,6 +26,8 @@ android {
             )
         }
     }
+
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -38,7 +40,7 @@ android {
 
 
 dependencies {
-    //Android libraries
+    // Android libraries
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -60,6 +62,7 @@ dependencies {
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+    implementation ("com.google.firebase:firebase-storage:21.0.1")
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
 

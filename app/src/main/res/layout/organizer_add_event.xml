@@ -28,7 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="135dp"
         android:orientation="horizontal">
-
         <ImageView
             android:id="@+id/eventImage"
             android:layout_width="150dp"
