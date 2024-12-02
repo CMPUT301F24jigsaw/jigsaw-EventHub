@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:labelFor="@id/eventName"
             android:paddingEnd="67dp"
-            android:text="Event Name" />
+            android:text="Facility Name" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/facility_name"
@@ -59,7 +59,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Max Attendees"
+            android:text="Max Capacity"
             android:paddingEnd="46dp"
             android:labelFor="@id/maxAttendees" />
 
@@ -68,7 +68,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Max Attendees"
+            android:hint="Max Capacity"
             android:inputType="number" />
     </LinearLayout>
 
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:labelFor="@id/eventName"
             android:paddingEnd="67dp"
-            android:text="Event Location" />
+            android:text="Facility Location" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/facilityLocation"
