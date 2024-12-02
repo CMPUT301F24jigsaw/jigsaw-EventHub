@@ -16,17 +16,14 @@ import com.example.eventhub_jigsaw.R;
 import java.util.ArrayList;
 
 /**
- * FacilityArrayAdapter displays Facility objects in a ListView.
- * Converts Facility objects into list items for user interaction.
+ * Custom ArrayAdapter for Facility objects.
  */
-import android.util.DisplayMetrics;
-
 public class FacilityArrayAdapter extends ArrayAdapter<Facility> {
     private ArrayList<Facility> facilities;
     private Context context;
 
-    public FacilityArrayAdapter(Context context, ArrayList<Facility> facilities){
-        super(context,0, facilities);
+    public FacilityArrayAdapter(Context context, ArrayList<Facility> facilities) {
+        super(context, 0, facilities);
         this.facilities = facilities;
         this.context = context;
     }
@@ -34,11 +31,9 @@ public class FacilityArrayAdapter extends ArrayAdapter<Facility> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//        return super.getView(position, convertView, parent);
         View view = convertView;
-
-        if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.facilities_item, parent,false);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.facilities_item, parent, false);
         }
 
         Facility facility = facilities.get(position);
@@ -47,20 +42,6 @@ public class FacilityArrayAdapter extends ArrayAdapter<Facility> {
         TextView facilityLocation = view.findViewById(R.id.location_text);
         TextView facilityCapacity = view.findViewById(R.id.capacity_text);
 
-        // Get screen width
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-
-        int screenWidth = displayMetrics.widthPixels;
-
-        // Calculate 30% of screen width
-        int maxWidth = (int) (screenWidth * 0.4);
-        int capacityWidth = (int) (screenWidth * 0.2);
-
-        // Set maxWidth programmatically
-        facilityName.setWidth(maxWidth);
-        facilityLocation.setWidth(capacityWidth);
-
-        // Set data
         facilityName.setText(facility.getName() != null ? facility.getName() : "N/A");
         facilityLocation.setText(facility.getLocation());
         facilityCapacity.setText(String.valueOf(facility.getCapacity()));
