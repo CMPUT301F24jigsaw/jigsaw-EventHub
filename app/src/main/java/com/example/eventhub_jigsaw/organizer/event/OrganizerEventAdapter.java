@@ -1,5 +1,6 @@
 package com.example.eventhub_jigsaw.organizer.event;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,8 +41,18 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         OrganizerEventPage event = eventList.get(position);
+
+        // Set the event name
         holder.eventName.setText(event.getEventName_organizer());
-        holder.eventImage.setImageResource(event.getEventImage_organizer());
+
+        // Set the event image using Bitmap
+        Bitmap eventImageBitmap = event.getEventImageBitmap_organizer();
+        if (eventImageBitmap != null) {
+            holder.eventImage.setImageBitmap(eventImageBitmap);
+        } else {
+            // Set a placeholder image if Bitmap is null
+            holder.eventImage.setImageResource(R.drawable.event_image_placeholder); // Replace with your placeholder resource ID
+        }
 
         holder.MoreInfo.setOnClickListener(v -> {
             // Create a new DialogFragment instance
@@ -50,7 +61,6 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
             // Pass data to the DialogFragment
             Bundle bundle = new Bundle();
             bundle.putString("event_name", event.getEventName_organizer());
-            bundle.putInt("event_image", event.getEventImage_organizer());
             infoFragment.setArguments(bundle);
 
             // Show the DialogFragment
@@ -72,15 +82,6 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
             canceledUser.setArguments(bundle);
             canceledUser.show(fragmentManager, "event_canceled_user");
         });
-
-//        holder.SampleUser.setOnClickListener(v -> {
-//            OrganizerSampleEntrant sampleUsersDialog = new OrganizerSampleEntrant();
-//            Bundle bundle = new Bundle();
-//            bundle.putString("event_id", event.getEventId()); // Pass event ID
-//            sampleUsersDialog.setArguments(bundle);
-//            sampleUsersDialog.show(fragmentManager, "sample_users_dialog");
-//
-//        });
     }
 
     @Override

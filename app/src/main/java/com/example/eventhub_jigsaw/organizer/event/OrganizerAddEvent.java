@@ -92,9 +92,6 @@ public class OrganizerAddEvent extends DialogFragment {
 
         loadFacilities();
 
-        ImageButton backButton = view.findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> dismiss());
-
         // Handle image selection
         buttonUploadImage.setOnClickListener(v -> {
             selectImage.selectImage(); // Trigger the image picker

@@ -1,10 +1,16 @@
 package com.example.eventhub_jigsaw.organizer.event;
 
+import static android.content.ContentValues.TAG;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,9 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventhub_jigsaw.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +36,9 @@ public class OrganizerEventActivity extends Fragment {
 
     private List<OrganizerEventPage> eventList;
     private OrganizerEventAdapter adapter;
+    private FirebaseFirestore db;
+    private StorageReference storageReference;
+    private ImageView organizerEventImage;
 
     @Nullable
     @Override
@@ -35,10 +49,12 @@ public class OrganizerEventActivity extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewEvents_organizer);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        db = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
         eventList = new ArrayList<>();
         adapter = new OrganizerEventAdapter(eventList, getChildFragmentManager());
         recyclerView.setAdapter(adapter);
-
+//        organizerEventImage = view.findViewById(R.id.eventImage_organizer);
         // Fetch initial events
         fetchEventsByOrganizer();
 
@@ -55,7 +71,6 @@ public class OrganizerEventActivity extends Fragment {
 
     private void fetchEventsByOrganizer() {
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("events")
                 .whereEqualTo("organizerID", organizerID)
@@ -66,15 +81,54 @@ public class OrganizerEventActivity extends Fragment {
                     }
 
                     if (querySnapshot != null) {
-                        eventList.clear();
+                        List<OrganizerEventPage> tempEventList = new ArrayList<>();
+                        List<Runnable> imageFetchTasks = new ArrayList<>();
+
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             String eventName = document.getString("eventName");
-                            int placeholderImage = R.drawable.event_image_placeholder;
+                            String eventId = document.getString("imageID");
+                            String imagePath = "images/events/" + eventId; // Adjust path as needed
+                            StorageReference imageRef = storageReference.child(imagePath);
 
-                            eventList.add(new OrganizerEventPage(eventName, placeholderImage));
+                            // Add a task for each image fetch
+                            imageFetchTasks.add(() -> {
+                                try {
+                                    File localFile = File.createTempFile("event_image", "jpg");
+                                    imageRef.getFile(localFile)
+                                            .addOnSuccessListener(taskSnapshot -> {
+                                                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                                synchronized (tempEventList) {
+                                                    tempEventList.add(new OrganizerEventPage(eventName, bitmap));
+                                                }
+                                                checkAndUpdateAdapter(tempEventList, querySnapshot.size());
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                synchronized (tempEventList) {
+                                                    tempEventList.add(new OrganizerEventPage(eventName, null));
+                                                }
+                                                checkAndUpdateAdapter(tempEventList, querySnapshot.size());
+                                            });
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            });
                         }
-                        adapter.notifyDataSetChanged();
+
+                        // Execute image fetch tasks sequentially
+                        for (Runnable task : imageFetchTasks) {
+                            task.run();
+                        }
                     }
                 });
     }
+
+    private void checkAndUpdateAdapter(List<OrganizerEventPage> tempEventList, int expectedSize) {
+        // Update the adapter only after all events have been processed
+        if (tempEventList.size() == expectedSize) {
+            eventList.clear();
+            eventList.addAll(tempEventList);
+            requireActivity().runOnUiThread(adapter::notifyDataSetChanged);
+        }
+    }
+
 }

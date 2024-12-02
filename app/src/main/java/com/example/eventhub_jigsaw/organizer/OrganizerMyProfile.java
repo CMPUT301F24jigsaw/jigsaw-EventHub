@@ -105,32 +105,32 @@ public class OrganizerMyProfile extends Fragment implements OrganizerMyProfileEd
     }
 
     private void fetchProfileImage(String profilePicturePath) {
-        // Prepend the "images/users/" path to the provided file name
-        String fullImagePath = "images/users/" + profilePicturePath;
+                // Prepend the "images/users/" path to the provided file name
+                String fullImagePath = "images/users/" + profilePicturePath;
 
-        // Create a reference to the image in Firebase Storage
-        StorageReference imageRef = FirebaseStorage.getInstance().getReference().child(fullImagePath);
+                // Create a reference to the image in Firebase Storage
+                StorageReference imageRef = FirebaseStorage.getInstance().getReference().child(fullImagePath);
 
-        try {
-            final File localFile = File.createTempFile("profile_photo", "jpg");
-            imageRef.getFile(localFile)
-                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                            // Set the bitmap image to the ImageView
-                            organizerProfileImage.setImageBitmap(bitmap);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // Display a toast with the error message
-                            Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                try {
+                    final File localFile = File.createTempFile("profile_photo", "jpg");
+                    imageRef.getFile(localFile)
+                            .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                    // Set the bitmap image to the ImageView
+                                    organizerProfileImage.setImageBitmap(bitmap);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Display a toast with the error message
+                                    Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
         }
     }
 
