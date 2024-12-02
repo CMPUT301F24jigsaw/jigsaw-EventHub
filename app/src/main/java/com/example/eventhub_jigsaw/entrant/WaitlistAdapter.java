@@ -10,11 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventhub_jigsaw.Event;
 import com.example.eventhub_jigsaw.R;
-import com.example.eventhub_jigsaw.admin.EventAdapter;
 
 import java.util.List;
 
-public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.EventViewHolder> {
+public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.WaitlistViewHolder> {
 
     private final List<Event> events;
 
@@ -24,13 +23,13 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.EventV
 
     @NonNull
     @Override
-    public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WaitlistViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_waitlist_item, parent, false);
-        return new EventViewHolder(view);
+        return new WaitlistViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WaitlistViewHolder holder, int position) {
         Event event = events.get(position);
         holder.eventNameTextView.setText(event.getEventName());
         holder.eventDateTextView.setText(event.getEventDate());
@@ -42,14 +41,14 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.EventV
         return events.size();
     }
 
-    static class EventViewHolder extends RecyclerView.ViewHolder {
+    static class WaitlistViewHolder extends RecyclerView.ViewHolder {
         TextView eventNameTextView, eventDateTextView, eventDescriptionTextView;
 
-        public EventViewHolder(@NonNull View itemView) {
+        public WaitlistViewHolder(@NonNull View itemView) {
             super(itemView);
-            eventNameTextView = itemView.findViewById(R.id.event_name);
-            eventDateTextView = itemView.findViewById(R.id.event_date);
-            eventDescriptionTextView = itemView.findViewById(R.id.event_description);
+            eventNameTextView = itemView.findViewById(R.id.event_nam);
+            eventDateTextView = itemView.findViewById(R.id.event_dat);
+            eventDescriptionTextView = itemView.findViewById(R.id.event_descriptio);
         }
     }
 }

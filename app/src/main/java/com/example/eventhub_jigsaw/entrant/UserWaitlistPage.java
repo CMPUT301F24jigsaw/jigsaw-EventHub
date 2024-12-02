@@ -26,7 +26,7 @@ public class UserWaitlistPage extends Fragment {
     private String userId;
     private RecyclerView eventsRecyclerView;
     private TextView noEventsText;
-    private EventsAdapter adapter;
+    private WaitlistAdapter adapter;
     private List<Event> eventsList = new ArrayList<>();
 
     @Nullable
@@ -40,7 +40,7 @@ public class UserWaitlistPage extends Fragment {
         eventsRecyclerView = view.findViewById(R.id.events_recycler_view);
         noEventsText = view.findViewById(R.id.no_events_text);
 
-        adapter = new EventsAdapter(eventsList);
+        adapter = new WaitlistAdapter(eventsList);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
 

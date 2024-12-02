@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Search Bar -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/SearchBar_user"
         android:layout_width="0dp"
@@ -14,6 +15,7 @@
         android:layout_margin="16dp"
         android:queryHint="Search" />
 
+    <!-- Recycler View -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewEvents_user"
         android:layout_width="0dp"
@@ -24,6 +26,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Fragment Container (if used for fragments within this page) -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

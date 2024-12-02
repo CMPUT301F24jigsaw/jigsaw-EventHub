@@ -4,25 +4,54 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="8dp"
+    >
 
+    <!-- Image View -->
+    <ImageView
+        android:id="@+id/eventImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Event Name Text -->
     <TextView
         android:id="@+id/event_name"
-        android:layout_width="match_parent"
+        android:layout_width="396dp"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:alpha="0.7"
+        android:background="@android:color/black"
+        android:padding="8dp"
+        android:gravity="center"
+        android:text="Event #1"
+        android:textColor="@android:color/white"
+        android:textSize="22sp" />
 
+    <!-- Event Date Text -->
     <TextView
         android:id="@+id/event_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp" />
+        android:gravity="center"
+        android:layout_marginTop="8sp"
+        android:textSize="20sp" />
 
+    <!-- Event Description Text -->
     <TextView
         android:id="@+id/event_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
+        android:gravity="center"
+        android:textSize="18sp"
         android:layout_marginTop="4dp" />
 </LinearLayout>
+
+
+
+
+
+
+
+

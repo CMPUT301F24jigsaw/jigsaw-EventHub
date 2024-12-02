@@ -6,6 +6,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <!-- Image View -->
     <ImageView
         android:id="@+id/image_profile"
         android:layout_width="100dp"
@@ -14,71 +15,94 @@
         android:src="@drawable/ic_person_background"
         tools:srcCompat="@tools:sample/avatars"/>
 
+    <!-- Upload Image Button -->
     <Button
         android:id="@+id/button_upload_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload Image" />
+        android:text="Upload Image"
+        android:layout_marginTop="5sp"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
+        android:layout_marginBottom="25sp"/>
 
+    <!-- Enter Name Label -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/text_name"
         android:text="Enter Name:"
+        android:textSize="17sp"
         >
 
     </TextView>
 
+    <!-- Enter Name Text -->
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/edit_name"
+        android:textSize="17sp"
         android:hint="Name">
 
     </EditText>
 
+    <!-- Enter Email Label -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="17sp"
         android:id="@+id/text_email"
         android:text="Enter Email: ">
 
     </TextView>
 
+    <!-- Enter Email Text -->
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="17sp"
         android:id="@+id/edit_email"
         android:hint="Email">
     </EditText>
 
+    <!-- Enter Phone no Label -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/text_phone"
+        android:textSize="17sp"
         android:text="Enter Phone No: ">
 
     </TextView>
 
+    <!-- Enter Phone no Text -->
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/edit_phone"
+        android:textSize="17sp"
         android:hint="Phone number">
     </EditText>
 
+    <!-- Dropdown to chose between ORGANISER and ENTRANT -->
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spinner_user"
-        android:entries="@array/user_type">
+        android:entries="@array/user_type"
+        android:layout_marginTop="8sp"
+        android:layout_marginBottom="15sp">
 
     </Spinner>
 
+    <!-- Sign Up Button -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button_signup"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
         android:text="Sign Up">
 
     </Button>

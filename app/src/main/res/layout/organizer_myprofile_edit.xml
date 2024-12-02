@@ -2,23 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:padding="50dp">
 
+    <!-- Edit Name -->
     <EditText
         android:id="@+id/edit_organizer_name_field"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter Name" />
+        android:hint="Enter Name"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Edit Email -->
     <EditText
         android:id="@+id/edit_organizer_email_field"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter Email" />
+        android:hint="Enter Email"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Save Changes Button -->
     <Button
         android:id="@+id/organizer_save_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save" />
+        android:text="Save Changes"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
+        android:layout_marginTop="16dp" />
 </LinearLayout>

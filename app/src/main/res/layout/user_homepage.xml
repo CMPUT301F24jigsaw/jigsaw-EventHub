@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Frame Layout -->
     <FrameLayout
         android:id="@+id/flFragment_user"
         android:layout_width="match_parent"
@@ -15,8 +16,8 @@
         app:layout_constraintTop_toTopOf="parent"
         >
 
+        <!-- Bottom Navigation Bar -->
     </FrameLayout>
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavView_user"
         android:layout_width="match_parent"

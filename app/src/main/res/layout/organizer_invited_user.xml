@@ -6,16 +6,18 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Heading -->
     <TextView
         android:id="@+id/textView_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Invited Users"
-        android:textSize="18sp"
+        android:text="INVITED USERS"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
         android:paddingBottom="8dp"/>
 
+    <!-- Invited Users -->
     <TextView
         android:id="@+id/textView_invited_users"
         android:layout_width="match_parent"
@@ -24,8 +26,15 @@
         android:padding="8dp"
         android:textSize="16sp"/>
 
+    <!-- Space filler to push the buttons to the bottom -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Close and Remove all Buttons -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">
         <Button
@@ -33,15 +42,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Close"
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"
             android:layout_gravity="center_horizontal"
-            android:paddingTop="8dp"/>
+            android:paddingTop="8dp"
+            android:layout_marginRight="5dp"
+            android:textSize="10sp"/>
+
         <Button
             android:id="@+id/button_remove_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Remove All"
             android:layout_gravity="center_horizontal"
-            android:paddingTop="8dp"/>
+            android:backgroundTint="#8BC34A"
+            android:textColor="@color/black"
+            android:paddingTop="8dp"
+            android:text="Remove All Users"
+            android:layout_marginLeft="5dp"
+            android:textSize="10sp"/>
 
     </LinearLayout>
 

@@ -7,12 +7,11 @@
     tools:context=".MainActivity">
 
     <!-- Profile Image -->
-
     <ImageView
         android:id="@+id/profile_image"
         android:layout_width="180dp"
         android:layout_height="180dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintBottom_toTopOf="@+id/username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -21,47 +20,53 @@
         app:srcCompat="@drawable/ic_person_foreground"
         tools:srcCompat="@tools:sample/avatars" />
 
+    <!-- Username Label Text -->
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Username"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginTop="80dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
+    <!-- Username Text -->
     <TextView
         android:id="@+id/username_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:hint="Username"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username">
 
     </TextView>
 
+    <!-- Email Label Text -->
     <TextView
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginTop="80dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username" />
 
+    <!-- Email Text -->
     <TextView
         android:id="@+id/email_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:textSize="20sp"
         android:hint="Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,6 +74,7 @@
 
     </TextView>
 
+    <!-- Edit Button -->
     <Button
         android:id="@+id/edit_button"
         android:layout_width="wrap_content"
@@ -76,6 +82,8 @@
         app:layout_constraintTop_toBottomOf="@id/email_field"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
         android:text="Edit"
         app:layout_constraintBottom_toBottomOf="parent">
 

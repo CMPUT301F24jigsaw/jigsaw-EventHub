@@ -9,20 +9,24 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <!-- User Login Button -->
     <Button
         android:id="@+id/user_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/red"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
         android:text="User Login">
 
     </Button>
 
+    <!-- Admin Login Button -->
     <Button
         android:id="@+id/admin_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/red"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
         android:text="Admin Login">
 
     </Button>

@@ -7,14 +7,17 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <!-- Facilities Heading Text -->
     <TextView
         android:id="@+id/facilities_page_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Facilities"
+        android:text="FACILITIES"
+        android:layout_margin="23dp"
         android:textAlignment="center"
-        android:textSize="34sp" />
+        android:textSize="25sp" />
 
+    <!-- List of Facilities -->
     <ListView
         android:id="@+id/facility_list"
         android:layout_width="match_parent"
@@ -22,10 +25,13 @@
         android:layout_marginTop="20dp"
         tools:layout_editor_absoluteX="0dp" />
 
+    <!-- Remove Facility Button -->
     <Button
         android:id="@+id/remove_facility_btn"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:text="REMOVE  FACILITY"
-        android:textSize="24sp" />
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
+        android:text="REMOVE  FACILITY" />
 </LinearLayout>

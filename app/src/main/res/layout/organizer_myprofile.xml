@@ -7,7 +7,6 @@
     tools:context=".MainActivity">
 
     <!-- Profile Image -->
-
     <ImageView
         android:id="@+id/profile_image"
         android:layout_width="180dp"
@@ -21,21 +20,24 @@
         app:srcCompat="@drawable/ic_person_foreground"
         tools:srcCompat="@tools:sample/avatars" />
 
+    <!-- Username Label -->
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Username"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginTop="80dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
+    <!-- Username Text -->
     <TextView
         android:id="@+id/username_field"
         android:layout_width="wrap_content"
+        android:textSize="20sp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:hint="Username"
@@ -45,46 +47,49 @@
 
     </TextView>
 
+    <!-- Email Label -->
     <TextView
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username" />
 
+    <!-- Email Text -->
     <TextView
         android:id="@+id/email_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:hint="Email"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email">
 
     </TextView>
 
+    <!-- Location Text -->
     <TextView
         android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Location"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email"
-        android:layout_marginTop="80dp">
+        android:layout_marginTop="60dp">
 
     </TextView>
 
-
-
+    <!-- Edit Button -->
     <Button
         android:id="@+id/edit_button"
         android:layout_width="wrap_content"
@@ -92,6 +97,9 @@
         app:layout_constraintTop_toBottomOf="@id/location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="#8BC34A"
+        android:textColor="@color/black"
+        android:textSize="20sp"
         android:text="Edit"
         app:layout_constraintBottom_toBottomOf="parent">
 
