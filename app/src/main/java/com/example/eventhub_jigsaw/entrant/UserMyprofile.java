@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.eventhub_jigsaw.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,6 +23,7 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
     private static final String TAG = "UserMyprofile";
     private TextView Text_username;
     private TextView Text_email;
+    private ImageView profileImage;
 
     private FirebaseFirestore db;
     private String userID;
@@ -37,6 +40,7 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
         // Find and set the TextViews
         Text_username = view.findViewById(R.id.username_field);
         Text_email = view.findViewById(R.id.email_field);
+        profileImage = view.findViewById(R.id.profile_image);
 
         // Fetch user data from Firestore
         fetchUserData();
@@ -66,12 +70,19 @@ public class UserMyprofile extends Fragment implements com.example.eventhub_jigs
                         if (document.exists()) {
                             String username = document.getString("name");
                             String email = document.getString("email");
-
+                            String profilePictureUrl = document.getString("profile_picture");
                             // Ensure Fragment is still attached
                             if (isAdded()) {
                                 Text_username.setText(username);
                                 Text_email.setText(email);
                             }
+                            // Load the profile image using Glide
+                            if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
+                                Glide.with(requireContext())
+                                        .load(profilePictureUrl)
+                                        .circleCrop()  // Optionally crop the image to a circle
+                                        .into(profileImage);
+                                }
                         } else {
                             Log.d(TAG, "No such document");
                             if (isAdded()) {

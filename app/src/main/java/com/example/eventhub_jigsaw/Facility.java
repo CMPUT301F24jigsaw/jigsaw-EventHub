@@ -1,31 +1,33 @@
 package com.example.eventhub_jigsaw;
 
-import android.util.Log;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Facility implements Serializable {
-    private String id;
-    private String facilityname;
-    private String facilitylocation;
-    private int capacity;
-    private List<String> eventIDs; // List of event IDs hosted in this building
+public class Facility {
+    private String id; // Unique identifier for the facility
+    private String name; // Facility name
+    private String location; // Facility location
+    private int capacity; // Maximum capacity of the facility
+    private List<String> eventIds; // List of event IDs hosted in this facility
+    private String organizerID; // Organizer ID
+    private String facilityID;
 
-    // Constructor
-    public Facility(String id, String name, String location, int capacity) {
-        this.id = id;
-        this.facilityname = name;
-        this.facilitylocation = location;
-        this.capacity = capacity;
+    // No-argument constructor required by Firestore
+    public Facility() {
+        // Firestore needs a no-argument constructor for deserialization
     }
 
-    // Default Constructor
-    public Facility() {
-        this.eventIDs = new ArrayList<>();
+    public Facility(String name, String organizerID, String location, int maxAttendees) {
+        if (organizerID == null || organizerID.trim().isEmpty()) {
+            throw new IllegalArgumentException("Organizer ID cannot be null or empty.");
+        }
+
+        this.organizerID = organizerID.trim();  // Initialize final field
+        this.name = name != null ? name.trim() : null;
+        this.location = location != null ? location.trim() : null;
+        this.capacity = maxAttendees;
+        this.eventIds = new ArrayList<>();
     }
 
     // Getters and Setters
@@ -34,23 +36,31 @@ public class Facility implements Serializable {
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = id != null ? id.trim() : null;
     }
 
     public String getName() {
-        return facilityname;
+        return name;
     }
 
     public void setName(String name) {
-        this.facilityname = name;
+        if (name != "") {
+            this.name = name.trim();
+        } else {
+            throw new IllegalArgumentException("Name cannot be Empty");
+        }
     }
 
     public String getLocation() {
-        return facilitylocation;
+        return location;
     }
 
     public void setLocation(String location) {
-        this.facilitylocation = location;
+        if (location != "") {
+            this.location = location.trim();
+        } else {
+            throw new IllegalArgumentException("Location cannot be empty");
+        }
     }
 
     public int getCapacity() {
@@ -58,40 +68,79 @@ public class Facility implements Serializable {
     }
 
     public void setCapacity(int capacity) {
-        this.capacity = capacity;
+        if (capacity > 0) {
+            this.capacity = capacity;
+        } else {
+            throw new IllegalArgumentException("Capacity must be greater than 0.");
+        }
     }
 
-    public List<String> getEventIDs() {
-        return eventIDs;
+    public List<String> getEventIds() {
+        return new ArrayList<>(eventIds); // Return a copy for safety
     }
 
-    public void addEvent(String eventID) {
-        this.eventIDs.add(eventID);
+    // Add an event ID to the facility's event list
+    public void addEvent(String eventId) {
+        if (eventId != null && !eventId.trim().isEmpty() && !eventIds.contains(eventId.trim())) {
+            eventIds.add(eventId.trim());
+        } else {
+            throw new IllegalArgumentException("Event ID cannot be null, empty, or duplicate.");
+        }
     }
 
-    public void removeEvent(String eventID) {
-        this.eventIDs.remove(eventID);
+    // Remove an event ID from the facility's event list
+    public void removeEvent(String eventId) {
+        if (eventId != null && !eventId.trim().isEmpty()) {
+            eventIds.remove(eventId.trim());
+        } else {
+            throw new IllegalArgumentException("Event ID cannot be null or empty.");
+        }
     }
 
-    // Utility Method: Check if a specific event is hosted in this building
-    public boolean hasEvent(String eventID) {
-        return this.eventIDs.contains(eventID);
+    // Check if a specific event is hosted in this facility
+    public boolean hasEvent(String eventId) {
+        if (eventId == null || eventId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Event ID cannot be null or empty.");
+        }
+        return eventIds.contains(eventId.trim());
     }
 
-
+    // Validate facility fields
     public boolean checkFields() {
-        // Check for null or empty string fields
-        if (id == null || id.trim().isEmpty()) return false;
-        if (facilityname == null || facilityname.trim().isEmpty()) return false;
-        if (facilitylocation == null || facilitylocation.trim().isEmpty()) return false;
-
-        // Check for invalid capacity (e.g., negative or zero)
-        if (capacity <= 0) return false;
-
-        // All fields are valid
-        return true;
+        return id != null && !id.trim().isEmpty() &&
+                name != null && !name.trim().isEmpty() &&
+                location != null && !location.trim().isEmpty() &&
+                capacity > 0 &&
+                organizerID != null && !organizerID.trim().isEmpty();
     }
 
+    @Override
+    public String toString() {
+        return name; // Return the facility name for display
+    }
 
+    public void setEventIds(List<String> eventIds) {
+        this.eventIds = eventIds;
+    }
 
+    public String getOrganizerID() {
+        return organizerID;
+    }
+
+    public void setOrganizerID(String organizerID) {
+        this.organizerID = organizerID;
+    }
+
+    public String getFacilityID() {
+        return facilityID;
+    }
+
+    public void setFacilityID(String facilityID) {
+        this.facilityID = facilityID;
+    }
+
+    public Facility(String facilityID, String name) {
+        this.facilityID = facilityID;
+        this.name = name;
+    }
 }

@@ -15,17 +15,21 @@ public class User implements Serializable {
     private String name;
     private String email;
     private String userID;
-    private int phone;
+    private long phone;
     private Boolean adminNotification;
     private Boolean organizerNotification;
     private Role role; // Role of the user (ENTRANT or ORGANIZER)
+    private String profileImageUrl; // URL for the profile image
     private List<String> WaitingList;
     private List<String> eventAcceptedByOrganizer;
     private List<String> registeredEvents;
     private List<String> notifications;
+    private double latitude;
+    private double longitude;
+
 
     // Constructor for general users
-    public User(String name, String email, String userID, int phone, Role role) {
+    public User(String name, String email, String userID, long phone, Role role) {
         this.name = name;
         this.email = email;
         this.userID = userID;
@@ -61,11 +65,11 @@ public class User implements Serializable {
         this.userID = userID;
     }
 
-    public int getPhone() {
+    public long getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(long phone) {
         this.phone = phone;
     }
 
@@ -109,6 +113,14 @@ public class User implements Serializable {
         this.role = role;
     }
 
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
     public List<String> getEventAcceptedByOrganizer() {
         return eventAcceptedByOrganizer;
     }
@@ -123,5 +135,21 @@ public class User implements Serializable {
 
     public void setNotifications(List<String> notifications) {
         this.notifications = notifications;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

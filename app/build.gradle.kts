@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.firebase.storage)
 
     // JUnit 5
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
@@ -61,8 +62,13 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
+    implementation("com.google.firebase:firebase-firestore:24.9.1")
+    implementation("com.google.firebase:firebase-auth:22.1.1") // If using Firebase Auth
 
     // Glide
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+
+    // location
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
 }

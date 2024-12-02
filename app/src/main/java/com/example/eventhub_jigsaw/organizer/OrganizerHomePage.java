@@ -12,8 +12,9 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.eventhub_jigsaw.MainActivity;
 import com.example.eventhub_jigsaw.admin.ProfilesFragment;
 import com.example.eventhub_jigsaw.R;
-import com.example.eventhub_jigsaw.entrant.UserMyprofile;
 import com.example.eventhub_jigsaw.entrant.UserScanQR;
+import com.example.eventhub_jigsaw.organizer.event.OrganizerEventActivity;
+import com.example.eventhub_jigsaw.organizer.facility.OrganizerFacilityActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class OrganizerHomePage extends AppCompatActivity {
@@ -34,15 +35,9 @@ public class OrganizerHomePage extends AppCompatActivity {
             if (item.getItemId() == R.id.profile_organizer) {
                 fragment = new OrganizerMyProfile(); // TEMPORARILY HARDCODED
             } else if (item.getItemId() == R.id.home_organizer) {
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (item.getItemId() == R.id.invites_organizer) {
                 fragment = new OrganizerEventActivity();
-            } else if (item.getItemId() == R.id.notifications_organizer) {
-                fragment = new ProfilesFragment();
-            } else if (item.getItemId() == R.id.scan_qr_organizer) {
-                fragment = new UserScanQR();
+            } else if (item.getItemId() == R.id.facilities_organizer) {
+                fragment = new OrganizerFacilityActivity();
             }
 
             if (fragment != null) {
@@ -57,7 +52,11 @@ public class OrganizerHomePage extends AppCompatActivity {
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Ensure the transaction is a replacement
         fragmentTransaction.replace(R.id.flFragment_organizer, fragment);
+        fragmentTransaction.addToBackStack(null); // Optional: If you want the fragment to be added to the back stack
         fragmentTransaction.commit();
     }
+
 }

@@ -23,6 +23,13 @@
         android:text="Event Description"
         android:textSize="16sp"
         android:layout_marginBottom="16dp" />
+    <TextView
+        android:id="@+id/textview_geolocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="">
+
+    </TextView>
 
     <ImageView
         android:id="@+id/eventQrImageView"

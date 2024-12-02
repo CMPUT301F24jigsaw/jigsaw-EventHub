@@ -2,34 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/home_organizer"
-        android:title="Home"
-        android:icon="@drawable/ic_home_page_foreground">
+        android:title="Events"
+        android:icon="@drawable/ic_events_new_foreground">
+
+    </item>
+
+    <item
+        android:id="@+id/facilities_organizer"
+        android:title="Facilities"
+        android:icon="@drawable/ic_events_foreground">
 
     </item>
     <item
         android:id="@+id/profile_organizer"
         android:title="My Profile"
         android:icon="@drawable/ic_person_foreground">
-
-    </item>
-    <item
-        android:id="@+id/invites_organizer"
-        android:title="Invites"
-        android:icon="@drawable/ic_events_foreground">
-
-    </item>
-
-    <item
-        android:id="@+id/notifications_organizer"
-        android:title="Notifications"
-        android:icon="@drawable/ic_notifications_foreground">
-
-    </item>
-
-    <item
-        android:id="@+id/scan_qr_organizer"
-        android:title="Scan QR"
-        android:icon="@drawable/ic_scan_qr_foreground">
 
     </item>
 </menu>

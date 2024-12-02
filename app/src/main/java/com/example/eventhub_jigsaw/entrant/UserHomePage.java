@@ -26,7 +26,7 @@ public class UserHomePage extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavView_user);
 
         // Set the default fragment to display
-        loadFragment(new UserMyprofile());
+        loadFragment(new UserEventPage());
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment = null;

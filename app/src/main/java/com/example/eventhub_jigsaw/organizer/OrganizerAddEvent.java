@@ -57,7 +57,8 @@ public class OrganizerAddEvent extends DialogFragment {
         dateTime = view.findViewById(R.id.dateTime);
         eventDescription = view.findViewById(R.id.eventDescription);
         qrCodeImageView = view.findViewById(R.id.eventQR);
-        facilityName = view.findViewById(R.id.facilityName);
+        // needs to be reflected in the corresponding xml file
+        facilityName = view.findViewById(R.id.eventLocation);
         facilityLocation = view.findViewById(R.id.facilityLocation);
 
         String organizerID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -87,7 +88,6 @@ public class OrganizerAddEvent extends DialogFragment {
             newEvent.setWaitingList(new ArrayList<>()); // Initialize waiting list
             newEvent.setSampledUsers(new ArrayList<>()); // Initialize sampled users
             newEvent.setRegisteredUsers(new ArrayList<>());
-            newEvent.setDeclinedInvitationUser(new ArrayList<>());
 
             //Create a new facility
             Facility newFacility = new Facility(organizerID, facilityname, facilitylocation, maxAttendeesInt);
