@@ -130,7 +130,6 @@ public class Event implements Serializable {
     public void setSampledUsers(List<String> sampledUsers) {
         this.sampledUsers = sampledUsers;
     }
-<<<<<<< HEAD
 
     public Event(String eventName, String eventDate, String description) {
         this.eventName = eventName;
